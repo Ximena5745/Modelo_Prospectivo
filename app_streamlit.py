@@ -265,34 +265,54 @@ def agregar_traza(fig, x, y, nombre, color, tipo_grafico, mostrar_numeros=True, 
     # Obtener el formato de texto con los decimales correctos
     text_format = y.apply(lambda val: format_number(val, decimal_places)) if mostrar_numeros else None
     
+    # Configuración común para todos los tipos de gráfico
+    common_kwargs = {
+        'x': x,
+        'y': y,
+        'name': nombre,
+        'hovertemplate': f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>',
+        'textfont': dict(size=10, color=color) if mostrar_numeros else None
+    }
+    
     if tipo_grafico == "Línea":
-        mode = "lines+markers+text" if mostrar_numeros else "lines+markers"
+        # Para líneas, solo mostramos los marcadores sin texto para evitar duplicados
         fig.add_trace(go.Scatter(
-            x=x, y=y, mode=mode, name=nombre,
-            line=dict(color=color, width=3),
-            marker=dict(size=6, color=color),
-            text=text_format,
-            textposition="top center" if mostrar_numeros else None,
-            textfont=dict(size=10, color=color) if mostrar_numeros else None,
-            hovertemplate='%{x}<br>%{y:.' + str(int(decimal_places)) + 'f}<extra></extra>'
+            **common_kwargs,
+            mode="lines+markers",
+            line=dict(color=color, width=2.5),
+            marker=dict(size=8, color=color, line=dict(width=1, color='white'))
         ))
+        
+        # Agregar etiquetas de texto como una traza separada para mejor control
+        if mostrar_numeros:
+            fig.add_trace(go.Scatter(
+                x=x,
+                y=y,
+                mode="text",
+                text=text_format,
+                textposition="top center",
+                textfont=dict(size=10, color=color),
+                showlegend=False,
+                hoverinfo='skip'
+            ))
+            
     elif tipo_grafico == "Barras":
         fig.add_trace(go.Bar(
-            x=x, y=y, name=nombre,
+            **common_kwargs,
             marker_color=color,
-            text=text_format,
-            textposition="outside" if mostrar_numeros else None,
-            hovertemplate='%{x}<br>%{y:.' + str(int(decimal_places)) + 'f}<extra></extra>'
+            text=text_format if mostrar_numeros else None,
+            textposition="outside",
+            textfont_size=10,
+            textangle=0
         ))
+        
     elif tipo_grafico == "Dispersión":
         fig.add_trace(go.Scatter(
-            x=x, y=y, mode="markers+text" if mostrar_numeros else "markers",
-            name=nombre,
-            marker=dict(size=8, color=color, symbol="circle"),
-            text=text_format,
-            textposition="top center" if mostrar_numeros else None,
-            textfont=dict(size=10, color=color) if mostrar_numeros else None,
-            hovertemplate='%{x}<br>%{y:.' + str(int(decimal_places)) + 'f}<extra></extra>'
+            **common_kwargs,
+            mode="markers",
+            marker=dict(size=10, color=color, symbol="circle", line=dict(width=1, color='white')),
+            text=text_format if mostrar_numeros else None,
+            textposition="top center"
         ))
 
 # Obtener el número de decimales para el indicador seleccionado
@@ -342,31 +362,41 @@ for i, escenario in enumerate(escenarios_sel):
             if not df_escenario.empty:
                 # Ordenar por fecha para asegurar el orden correcto
                 df_escenario = df_escenario.sort_values('Fecha')
-                # Usar el color original para la línea continua
-                agregar_traza(fig, df_escenario["Fecha"], df_escenario["Proyección"], 
-                             f"{escenario}", color, tipo_grafico, mostrar_numeros, decimal_places)
                 
-                # Opcional: agregar marcadores con colores diferentes para S1 y S2
+                # Crear una sola traza para la línea
+                fig.add_trace(go.Scatter(
+                    x=df_escenario["Fecha"],
+                    y=df_escenario["Proyección"],
+                    mode='lines+markers',
+                    name=escenario,
+                    line=dict(color=color, width=2.5),
+                    marker=dict(size=8, color=color, symbol='circle', 
+                              line=dict(width=1, color='white')),
+                    hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'
+                ))
+                
+                # Agregar etiquetas de texto para los puntos
                 if mostrar_numeros:
+                    # Combinar S1 y S2 y ordenar por fecha
+                    puntos = []
                     if not df_proj_s1.empty:
-                        fig.add_trace(go.Scatter(
-                            x=df_proj_s1["Fecha"],
-                            y=df_proj_s1["Proyección"],
-                            mode='markers+text',
-                            marker=dict(color=color, size=8, symbol='circle'),
-                            text=df_proj_s1["Proyección"].apply(lambda x: format_number(x, decimal_places)),
-                            textposition='top center',
-                            textfont=dict(size=10, color=color),
-                            showlegend=False,
-                            hoverinfo='skip'
-                        ))
+                        puntos.extend([(d, v, 'S1') for d, v in zip(df_proj_s1["Fecha"], 
+                                                                  df_proj_s1["Proyección"].apply(lambda x: format_number(x, decimal_places)))])
                     if not df_proj_s2.empty:
+                        puntos.extend([(d, v, 'S2') for d, v in zip(df_proj_s2["Fecha"], 
+                                                                  df_proj_s2["Proyección"].apply(lambda x: format_number(x, decimal_places)))])
+                    
+                    # Ordenar por fecha
+                    puntos.sort()
+                    
+                    # Agregar una sola traza de texto para todos los puntos
+                    if puntos:
+                        fechas, valores, _ = zip(*puntos)
                         fig.add_trace(go.Scatter(
-                            x=df_proj_s2["Fecha"],
-                            y=df_proj_s2["Proyección"],
-                            mode='markers+text',
-                            marker=dict(color=color, size=10, symbol='diamond'),
-                            text=df_proj_s2["Proyección"].apply(lambda x: format_number(x, decimal_places)),
+                            x=fechas,
+                            y=df_escenario[df_escenario["Fecha"].isin(fechas)]["Proyección"] * 1.03,  # Ajustar posición vertical
+                            mode='text',
+                            text=valores,
                             textposition='top center',
                             textfont=dict(size=10, color=color),
                             showlegend=False,
@@ -419,10 +449,12 @@ if mostrar_linea_divisoria and not df_hist_sel.empty and not df_proj_sel.empty:
 todas_fechas = pd.concat([df_hist_sel["Fecha"], df_proj_sel["Fecha"]]).drop_duplicates().sort_values()
 
 fig.update_layout(
-    template="plotly_dark",
+    template="plotly_white",  # Cambiar a tema claro para mejor legibilidad
     xaxis_title="Fecha",
     yaxis_title=indicador_sel,
-    height=500,
+    height=600,  # Aumentar altura para mejor visualización
+    margin=dict(l=50, r=50, t=80, b=80),  # Márgenes más amplios
+    font=dict(family="Arial", size=12, color="#2c3e50"),  # Fuente más legible
     yaxis=dict(
         tickformat=",",
         separatethousands=True
