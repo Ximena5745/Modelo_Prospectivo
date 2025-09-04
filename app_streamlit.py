@@ -41,7 +41,7 @@ with st.sidebar:
     # Líneas Estratégicas con colores específicos
     lineas_estrategicas = {
         "Expansión": "#FBAF17",
-        "Transformación": "#42F2F2", 
+        "Transformación_Organizacional": "#42F2F2", 
         "Calidad": "#EC0677",
         "Experiencia": "#1FB2DE",
         "Sostenibilidad": "#A6CE38",
@@ -62,7 +62,7 @@ with st.sidebar:
         # Mapear nombres de líneas estratégicas a valores en el dataset
         linea_mapping = {
             "Expansión": "Expansión",
-            "Transformación": "Transformación", 
+            "Transformación_Organizacional": "Transformación Organizacional", 
             "Calidad": "Calidad",
             "Experiencia": "Experiencia",
             "Sostenibilidad": "Sostenibilidad",
@@ -392,13 +392,17 @@ for i, escenario in enumerate(escenarios_sel):
                     # Agregar una sola traza de texto para todos los puntos
                     if puntos:
                         fechas, valores, _ = zip(*puntos)
+                        # Calcular la posición vertical de las etiquetas (más cerca de los puntos)
+                        y_positions = df_escenario[df_escenario["Fecha"].isin(fechas)]["Proyección"]
+                        offset = y_positions.max() * 0.015  # Reducir el desplazamiento vertical
+                        
                         fig.add_trace(go.Scatter(
                             x=fechas,
-                            y=df_escenario[df_escenario["Fecha"].isin(fechas)]["Proyección"] * 1.03,  # Ajustar posición vertical
+                            y=y_positions + offset,  # Ajuste más sutil
                             mode='text',
                             text=valores,
                             textposition='top center',
-                            textfont=dict(size=10, color=color),
+                            textfont=dict(size=10, color=color, family='Arial'),
                             showlegend=False,
                             hoverinfo='skip'
                         ))
