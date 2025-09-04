@@ -12,4 +12,3 @@ statsmodels
 scipy
 python-dateutil
 pytz
-pmdarima
