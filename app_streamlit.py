@@ -39,13 +39,14 @@ with st.sidebar:
     st.header("⚙️ Controles de Escenario")
 
     # Líneas Estratégicas con colores específicos
+    # Mapeo de nombres mostrados a valores en el dataset
     lineas_estrategicas = {
-        "Expansión": "#FBAF17",
-        "Transformación_Organizacional": "#42F2F2", 
-        "Calidad": "#EC0677",
-        "Experiencia": "#1FB2DE",
-        "Sostenibilidad": "#A6CE38",
-        "Educación_para_la_vida": "#0F385A"
+        "Expansión": ("Expansión", "#FBAF17"),
+        "Transformación_Organizacional": ("Transformación Organizacional", "#42F2F2"), 
+        "Calidad": ("Calidad", "#EC0677"),
+        "Experiencia": ("Experiencia", "#1FB2DE"),
+        "Sostenibilidad": ("Sostenibilidad", "#A6CE38"),
+        "Educación_para_la_vida": ("Educación para la vida", "#0F385A")
     }
 
     linea_sel = st.selectbox(
@@ -54,22 +55,20 @@ with st.sidebar:
         help="Selecciona la línea estratégica"
     )
 
-    # Aplicar color de la línea estratégica seleccionada
-    color_linea = lineas_estrategicas[linea_sel]
+    # Obtener el nombre real de la línea y su color
+    linea_real, color_linea = lineas_estrategicas[linea_sel]
 
     # Filtrar indicadores por línea estratégica seleccionada
     if 'Linea' in df_hist.columns:
-        # Mapear nombres de líneas estratégicas a valores en el dataset
-        linea_mapping = {
-            "Expansión": "Expansión",
-            "Transformación_Organizacional": "Transformación Organizacional", 
-            "Calidad": "Calidad",
-            "Experiencia": "Experiencia",
-            "Sostenibilidad": "Sostenibilidad",
-            "Educación_para_la_vida": "Educación para la vida"
-        }
-        linea_filtro = linea_mapping.get(linea_sel, linea_sel)
-        df_hist_filtrado = df_hist[df_hist["Linea"] == linea_filtro]
+        # Filtrar usando el nombre real de la línea
+        df_hist_filtrado = df_hist[df_hist["Linea"].str.strip() == linea_real.strip()]
+        
+        # Verificar si hay datos para la línea seleccionada
+        if df_hist_filtrado.empty:
+            st.warning(f"No se encontraron datos para la línea: {linea_real}")
+            # Mostrar todas las líneas disponibles para depuración
+            st.write("Líneas disponibles en el dataset:", df_hist["Linea"].unique())
+        
         indicadores = sorted(df_hist_filtrado["Indicador"].unique())
     else:
         indicadores = sorted(df_hist["Indicador"].unique())
