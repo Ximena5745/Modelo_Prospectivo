@@ -58,37 +58,24 @@ with st.sidebar:
     # Obtener el nombre real de la línea y su color
     display_name, color_linea = lineas_estrategicas[linea_sel]
     
-    # Para depuración, mostrar información sobre el dataset
-    st.sidebar.write(f"Línea seleccionada: {display_name}")
-    
     # Filtrar indicadores por línea estratégica seleccionada
     if 'Linea' in df_hist.columns:
-        # Mostrar líneas disponibles para depuración
-        lineas_disponibles = df_hist["Linea"].dropna().unique()
-        st.sidebar.write("Líneas disponibles en el dataset:", lineas_disponibles)
+        # Filtrar por el nombre exacto de la línea
+        df_hist_filtrado = df_hist[df_hist["Linea"] == display_name]
         
-        # Buscar coincidencias sin importar mayúsculas o espacios
-        df_hist_filtrado = df_hist[
-            df_hist["Linea"].str.strip().str.lower() == display_name.lower().strip()
-        ]
-        
-        # Si no hay coincidencias exactas, intentar coincidencia parcial
+        # Si no hay coincidencias, intentar con el nombre mostrado (sin guiones)
         if df_hist_filtrado.empty:
-            df_hist_filtrado = df_hist[
-                df_hist["Linea"].str.lower().str.contains(display_name.lower().strip())
-            ]
+            df_hist_filtrado = df_hist[df_hist["Linea"].str.replace('_', ' ') == linea_sel]
         
-        # Verificar si hay datos para la línea seleccionada
+        # Si aún no hay coincidencias, mostrar todos los indicadores
         if df_hist_filtrado.empty:
-            st.warning(f"No se encontraron datos para la línea: {display_name}")
-            # Mostrar todas las líneas disponibles para depuración
-            st.write("Líneas disponibles en el dataset:", lineas_disponibles)
+            df_hist_filtrado = df_hist
         
         indicadores = sorted(df_hist_filtrado["Indicador"].unique())
     else:
         indicadores = sorted(df_hist["Indicador"].unique())
     
-    indicador_sel = st.selectbox("Selecciona un Indicador", indicadores)
+    indicador_sel = st.selectbox("Selecciona un Indicador", indicadores, key="selector_indicador")
     # Obtener modelos disponibles y filtrar ARIMA
     modelos = df_proj["Modelo"].unique()
     modelos_filtrados = [m for m in modelos if m != "ARIMA"]
@@ -138,21 +125,20 @@ with st.sidebar:
 # ==============================
 # FILTRAR DATOS SEGÚN SELECCIÓN
 # ==============================
-# Histórico del indicador (filtrado por línea estratégica)
+# Histórico del indicador
 if 'Linea' in df_hist.columns:
-    linea_mapping = {
-        "Expansión": "Expansión",
-        "Transformación": "Transformación", 
-        "Calidad": "Calidad",
-        "Experiencia": "Experiencia",
-        "Sostenibilidad": "Sostenibilidad",
-        "Educación_para_la_vida": "Educación para la vida"
-    }
-    linea_filtro = linea_mapping.get(linea_sel, linea_sel)
+    # Usar el display_name que ya tiene el formato correcto para la base de datos
     df_hist_sel = df_hist[
         (df_hist["Indicador"] == indicador_sel) &
-        (df_hist["Linea"] == linea_filtro)
+        (df_hist["Linea"] == display_name)
     ]
+    
+    # Si no hay coincidencias, intentar con el nombre mostrado (sin guiones)
+    if df_hist_sel.empty:
+        df_hist_sel = df_hist[
+            (df_hist["Indicador"] == indicador_sel) &
+            (df_hist["Linea"].str.replace('_', ' ') == linea_sel)
+        ]
 else:
     df_hist_sel = df_hist[df_hist["Indicador"] == indicador_sel]
 
