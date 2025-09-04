@@ -39,14 +39,14 @@ with st.sidebar:
     st.header("⚙️ Controles de Escenario")
 
     # Líneas Estratégicas con colores específicos
-    # Formato: "Nombre mostrado": ("Nombre en el dataset", "color")
+    # Formato: "Nombre mostrado": ("Nombre exacto en el dataset", "color")
     lineas_estrategicas = {
         "Expansión": ("Expansión", "#FBAF17"),
-        "Transformación Organizacional": ("Transformación Organizacional", "#42F2F2"), 
+        "Transformación Organizacional": ("Transformación_Organizacional", "#42F2F2"), 
         "Calidad": ("Calidad", "#EC0677"),
         "Experiencia": ("Experiencia", "#1FB2DE"),
         "Sostenibilidad": ("Sostenibilidad", "#A6CE38"),
-        "Educación para la vida": ("Educación para la vida", "#0F385A")
+        "Educación para la vida": ("Educación_para_toda_la_vida", "#0F385A")
     }
 
     linea_sel = st.selectbox(
