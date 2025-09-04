@@ -1,0 +1,15 @@
+streamlit
+pandas
+numpy
+altair
+xlsxwriter
+openpyxl
+plotly
+scikit-learn
+xgboost>=1.7.0
+prophet
+statsmodels
+scipy
+python-dateutil
+pytz
+pmdarima
