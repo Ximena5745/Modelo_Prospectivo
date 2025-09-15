@@ -12,3 +12,5 @@ statsmodels
 scipy
 python-dateutil
 pytz
+matplotlib
+reportlab
