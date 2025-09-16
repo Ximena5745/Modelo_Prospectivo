@@ -10,8 +10,8 @@ import random
 # CONFIGURACIÓN STREAMLIT
 # ==============================
 st.set_page_config(
-    page_title="Modelo Prospectivo ML 2026-2030",
-    page_icon="🧠",
+    page_title="Modelo Prospectivo Poli 2026-2030",
+    page_icon="📈",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -27,9 +27,31 @@ RUTA_PROYECCIONES = "Data/Proyecciones_Multimodelo.xlsx"
 df_hist = pd.read_excel(RUTA_DATASET)
 df_hist["Fecha"] = pd.to_datetime(df_hist["Fecha"])
 
-# Proyecciones (2026-2030)
-df_proj = pd.read_excel(RUTA_PROYECCIONES)
-df_proj["Fecha"] = pd.to_datetime(df_proj["Fecha"])
+# Proyecciones (2026-2030) - Nueva estructura
+df_proj_raw = pd.read_excel(RUTA_PROYECCIONES)
+df_proj_raw["Fecha_Proyeccion"] = pd.to_datetime(df_proj_raw["Fecha_Proyeccion"])
+
+# Transformar la estructura de datos para compatibilidad
+# Convertir las columnas de escenarios en filas
+df_proj_list = []
+if not df_proj_raw.empty:
+    for _, row in df_proj_raw.iterrows():
+        base_data = {
+            'Indicador': row['Indicador'],
+            'Periodicidad': row.get('Periodicidad', 'Semestral'),
+            'Fecha': row['Fecha_Proyeccion'],
+            'Modelo': row['Modelo']
+        }
+        
+        # Agregar cada escenario como una fila separada
+        if pd.notna(row.get('Escenario_Base')):
+            df_proj_list.append({**base_data, 'Escenario': 'Base', 'Proyección': row['Escenario_Base']})
+        if pd.notna(row.get('Escenario_Pesimista')):
+            df_proj_list.append({**base_data, 'Escenario': 'Pesimista', 'Proyección': row['Escenario_Pesimista']})
+        if pd.notna(row.get('Escenario_Optimista')):
+            df_proj_list.append({**base_data, 'Escenario': 'Optimista', 'Proyección': row['Escenario_Optimista']})
+
+df_proj = pd.DataFrame(df_proj_list) if df_proj_list else pd.DataFrame()
 
 
 # ==============================
@@ -76,22 +98,56 @@ with st.sidebar:
         indicadores = sorted(df_hist["Indicador"].unique())
     
     indicador_sel = st.selectbox("Selecciona un Indicador", indicadores, key="selector_indicador")
-    # Obtener modelos disponibles y filtrar ARIMA
-    modelos = df_proj["Modelo"].unique()
-    modelos_filtrados = [m for m in modelos if m != "ARIMA"]
+    # Obtener todos los modelos disponibles (incluyendo ARIMA)
+    modelos = sorted(df_proj["Modelo"].unique()) if not df_proj.empty else []
     
-    # Seleccionar modelo
-    modelo_sel = st.selectbox("🧠 Modelo ML", modelos_filtrados, help="Selecciona el modelo de Machine Learning para las proyecciones")
+    if not modelos:
+        st.error("⚠️ No se encontraron modelos en el archivo de proyecciones. Verifica la estructura del archivo Excel.")
+        st.stop()
+    
+    # Mapeo de nombres de modelos para mejor visualización
+    modelo_display_names = {
+        'ARIMA': '📊 ARIMA',
+        'Random_Forest': '🌳 Random Forest',
+        'SVR': '🎯 Support Vector Regression',
+        'Linear_Regression': '📈 Regresión Lineal',
+        'Prophet': '🔮 Prophet',
+        'Crecimiento_Historico': '📜 Crecimiento Histórico'
+    }
+    
+    # Crear lista de opciones con nombres mejorados
+    modelo_options = [modelo_display_names.get(m, m) for m in modelos]
+    modelo_display_sel = st.selectbox("🧠 Modelo ML", modelo_options, help="Selecciona el modelo de Machine Learning para las proyecciones")
+    
+    # Obtener el nombre real del modelo seleccionado
+    modelo_sel = next((k for k, v in modelo_display_names.items() if v == modelo_display_sel), modelo_display_sel)
 
     # Filtrar escenarios por modelo seleccionado
-    escenarios_modelo = df_proj[df_proj["Modelo"] == modelo_sel]["Escenario"].unique() if modelo_sel in df_proj["Modelo"].unique() else df_proj["Escenario"].unique()
-    st.write("🌍 **Selecciona Escenarios:**")
+    escenarios_disponibles = ['Base', 'Pesimista', 'Optimista']
+    if not df_proj.empty and modelo_sel in df_proj["Modelo"].unique():
+        escenarios_modelo = df_proj[df_proj["Modelo"] == modelo_sel]["Escenario"].unique()
+        escenarios_disponibles = [e for e in escenarios_disponibles if e in escenarios_modelo]
     
-    # Crear checkboxes para cada escenario
-    escenarios_sel = []
-    for escenario in escenarios_modelo:
-        if st.checkbox(f"☐ {escenario}", value=(escenario in escenarios_modelo[:2] if len(escenarios_modelo) >= 2 else True)):
-            escenarios_sel.append(escenario)
+    if not escenarios_disponibles:
+        st.warning(f"⚠️ No se encontraron escenarios para el modelo {modelo_sel}")
+        escenarios_sel = []
+    else:
+        st.write("🌍 **Selecciona Escenarios:**")
+        
+        # Mapeo de iconos para escenarios
+        escenario_icons = {
+            'Base': '⚖️',
+            'Pesimista': '📉',
+            'Optimista': '📈'
+        }
+        
+        # Crear checkboxes para cada escenario
+        escenarios_sel = []
+        for escenario in escenarios_disponibles:
+            icon = escenario_icons.get(escenario, '🌍')
+            default_value = escenario in ['Base', 'Optimista']  # Seleccionar Base y Optimista por defecto
+            if st.checkbox(f"{icon} {escenario}", value=default_value, key=f"escenario_{escenario}"):
+                escenarios_sel.append(escenario)
 
     # Botón para refrescar (si hay randomización futura)
     if st.button("🔄 Refrescar"):
@@ -165,7 +221,7 @@ with col1:
 with col2:
     st.metric("🌍 Escenarios activos", len(escenarios_sel))
 with col3:
-    if not df_proj_sel.empty:
+    if not df_proj_sel.empty and len(escenarios_sel) > 0:
         df2030 = df_proj_sel[df_proj_sel["Fecha"].dt.year == 2030]
         if not df2030.empty:
             valor_promedio_2030 = df2030["Proyección"].mean()
@@ -349,10 +405,12 @@ for i, escenario in enumerate(escenarios_sel):
         df_proj_s2 = df_escenario[df_escenario["Fecha"].dt.month == 12]  # Diciembre (S2)
         
         # Asignar colores específicos según el tipo de escenario
-        if "optimista" in escenario.lower() or "alto" in escenario.lower():
+        if escenario == "Optimista":
             color = "#00FF00"  # Verde brillante para optimista
-        elif "pesimista" in escenario.lower() or "bajo" in escenario.lower():
+        elif escenario == "Pesimista":
             color = "#FF0000"  # Rojo para pesimista
+        elif escenario == "Base":
+            color = "#4169E1"  # Azul real para base
         else:
             color = colores[i % len(colores)]  # Color por defecto
         
@@ -523,12 +581,15 @@ for i, escenario in enumerate(escenarios_sel):
         variacion_periodo = ((valor_2030 - valor_2026) / valor_2026 * 100) if valor_2026 != 0 else 0
         
         # Determinar color y tipo de escenario
-        if "optimista" in escenario.lower() or "alto" in escenario.lower():
+        if escenario == "Optimista":
             color = "#00FF00"  # Verde brillante
             tipo_escenario = "Optimista"
-        elif "pesimista" in escenario.lower() or "bajo" in escenario.lower():
+        elif escenario == "Pesimista":
             color = "#FF0000"  # Rojo
             tipo_escenario = "Pesimista"
+        elif escenario == "Base":
+            color = "#4169E1"  # Azul real
+            tipo_escenario = "Base"
         else:
             color = colores_fichas[i % len(colores_fichas)]
             tipo_escenario = "Neutral"
