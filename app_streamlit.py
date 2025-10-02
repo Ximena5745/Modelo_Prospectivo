@@ -20,8 +20,8 @@ st.set_page_config(
 # ==============================
 # LECTURA DE DATOS REALES
 # ==============================
-RUTA_DATASET = "Data/Dataset_Unificado.xlsx"
-RUTA_PROYECCIONES = "Data/Proyecciones_Multimodelo.xlsx"
+RUTA_DATASET = "Prospectiva/Data/Dataset_Unificado.xlsx"
+RUTA_PROYECCIONES = "Prospectiva/Data/Proyecciones_Multimodelo.xlsx"
 
 # Datos históricos
 df_hist = pd.read_excel(RUTA_DATASET)
