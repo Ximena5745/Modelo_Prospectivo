@@ -203,10 +203,12 @@ colores_escenarios = {
 }
 
 # ==============================
-# TARJETAS DE RESUMEN (Verificar si el escenario base existe)
+# TARJETAS DE RESUMEN
 # ==============================
 
-df_base = df_proj_sel[df_proj_sel['Escenario'] == 'Base']
+# Se busca el escenario base directamente para el modelo e indicador,
+# sin depender del filtro 'escenarios_sel' del usuario, asegurando que se muestre el resumen si el dato existe.
+df_base = df_proj[(df_proj["Indicador"] == indicador_sel) & (df_proj["Modelo"] == modelo_sel) & (df_proj["Escenario"] == 'Base')]
 
 if not df_base.empty:
     # Obtener el valor de proyección para 2026 y 2030 (el último registro de ese año)
@@ -232,13 +234,13 @@ if not df_base.empty:
         st.markdown(f'<div class="metric-card" style="border-left-color: {color_tend};"><div class="metric-label">📊 TENDENCIA PERIODO</div><div style="font-size: 2rem; margin: 0.5rem 0;">{icon_tend}</div><div style="color: {color_tend}; font-size: 1.1rem; font-weight: 700;">{tendencia}</div></div>', unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 else:
-    # Mensaje si no hay datos del escenario base para que el usuario sepa por qué no aparecen
-    st.warning("⚠️ No hay datos de Proyección (Escenario Base) para el Modelo/Indicador seleccionado. Las tarjetas de resumen están ocultas.")
+    # Mensaje de advertencia si no se encuentran datos para el Escenario Base
+    st.warning(f"⚠️ Las tarjetas de resumen están ocultas: No se encontraron datos para el **Escenario Base** del indicador **{indicador_sel}** usando el modelo **{modelo_sel}** en su archivo de proyecciones.")
     st.markdown("<br>", unsafe_allow_html=True)
 
 
 # ==============================
-# GRÁFICO 
+# GRÁFICO (CON CORRECCIÓN DE FILTRO ANUAL)
 # ==============================
 st.subheader("Evolución Histórica y Proyección Detallada")
 
@@ -263,11 +265,15 @@ for escenario in escenarios_sel:
     if not df_esc.empty:
         color = colores_escenarios.get(escenario, '#1a73e8')
         
-        # Filtra solo fechas que coincidan con la periodicidad para Anual (Enero, asumido como cierre)
         df_plot = df_esc.sort_values('Fecha')
+        
         if tipo_visualizacion == "Anual":
-            df_plot = df_esc[df_esc["Fecha"].dt.month == 1].sort_values('Fecha')
-
+            # CORRECCIÓN APLICADA: Tomar la última proyección disponible en cada año (la más representativa del cierre anual)
+            # 1. Encuentra el índice de la fecha máxima para cada año proyectado
+            idx = df_esc.groupby(df_esc['Fecha'].dt.year)['Fecha'].idxmax()
+            # 2. Usa esos índices para seleccionar solo los puntos de cierre anual
+            df_plot = df_esc.loc[idx].sort_values('Fecha')
+        
         if not df_plot.empty:
             fig.add_trace(go.Scatter(x=df_plot["Fecha"], y=df_plot["Proyección"], name=escenario + (" (Anual)" if tipo_visualizacion == "Anual" else ""), line=dict(color=color, width=2.5, dash='dot'), marker=dict(size=8, color=color, line=dict(width=1, color='white')), mode='lines+markers', hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'))
             if mostrar_numeros:
@@ -402,7 +408,7 @@ with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)"):
     # Ajustar el formato de la columna Fecha (solo mostrar fecha)
     df_final_display['Fecha'] = df_final_display['Fecha'].dt.strftime('%Y-%m-%d')
     
-    # --- BOTÓN DE DESCARGA (Solución al segundo problema) ---
+    # --- BOTÓN DE DESCARGA ---
     csv_file = convert_df_to_csv(df_download)
     
     st.download_button(
