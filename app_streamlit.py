@@ -20,23 +20,30 @@ st.set_page_config(
 # Configuración del tema personalizado
 st.markdown("""
     <style>
+        /* Importar fuentes */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
         /* Estilo general */
-        .main {
-            background-color: #ffffff !important;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #1a202c;
+        * {
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
-        /* Fondo blanco para toda la aplicación */
+        .main {
+            background-color: #f5f8ff !important;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+        
+        /* Fondo de la aplicación */
         .stApp {
-            background-color: #ffffff !important;
+            background-color: #f5f8ff !important;
         }
         
         /* Contenedor principal */
         .main .block-container {
-            padding: 1.5rem 2rem;
-            max-width: 1400px;
-            background-color: #ffffff;
+            padding: 1.5rem 2.5rem;
+            max-width: 1600px;
+            background-color: transparent;
         }
         
         /* Secciones */
@@ -96,10 +103,27 @@ st.markdown("""
         
         /* Sidebar */
         [data-testid="stSidebar"] {
-            background-color: #ffffff !important;
-            border-right: 1px solid #e2e8f0;
+            background-color: #0f2d5f !important;  /* Azul oscuro institucional */
+            color: white !important;
             padding: 1.5rem 1.25rem;
-            box-shadow: 2px 0 15px rgba(0,0,0,0.05);
+            box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+        }
+        
+        /* Texto en sidebar */
+        [data-testid="stSidebar"] p, 
+        [data-testid="stSidebar"] label,
+        [data-testid="stSidebar"] div[data-baseweb="select"] {
+            color: rgba(255,255,255,0.9) !important;
+        }
+        
+        /* Títulos en sidebar */
+        [data-testid="stSidebar"] h1,
+        [data-testid="stSidebar"] h2,
+        [data-testid="stSidebar"] h3 {
+            color: white !important;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.25rem;
         }
         
         [data-testid="stSidebar"] h1,
@@ -114,25 +138,46 @@ st.markdown("""
         
         /* Botones */
         .stButton > button {
-            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            background: linear-gradient(135deg, #1e88e5 0%, #0d47a1 100%);
             color: white !important;
             border-radius: 8px;
             border: none;
-            padding: 0.75rem 1.5rem;
+            padding: 0.8rem 1.75rem;
             font-weight: 600;
             font-size: 0.95rem;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 6px rgba(67, 97, 238, 0.25);
+            box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3);
             width: 100%;
             margin: 0.5rem 0;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stButton > button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.5s ease, height 0.5s ease;
+        }
+        
+        .stButton > button:hover::after {
+            width: 200px;
+            height: 200px;
+            opacity: 0;
         }
         
         .stButton > button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(67, 97, 238, 0.35);
-            background: linear-gradient(135deg, #3a56d9 0%, #2a0a8a 100%);
+            box-shadow: 0 8px 16px rgba(30, 136, 229, 0.4);
+            background: linear-gradient(135deg, #2196f3 0%, #1565c0 100%);
         }
         
         .stButton > button:active {
@@ -202,23 +247,25 @@ st.markdown("""
         
         /* Pestañas */
         .stTabs [data-baseweb="tab-list"] {
-            gap: 4px;
-            margin: 1.5rem 0;
-            border-bottom: 2px solid #f1f5f9;
+            gap: 6px;
+            margin: 2rem 0 1.5rem 0;
+            border-bottom: 2px solid #e3f2fd;
             padding-bottom: 0;
         }
         
         .stTabs [data-baseweb="tab"] {
             background-color: #f8fafc;
             border-radius: 8px 8px 0 0;
-            padding: 0.75rem 1.5rem;
-            margin: 0 2px 0 0;
-            font-weight: 600;
-            color: #64748b;
-            transition: all 0.25s ease;
+            padding: 0.85rem 1.75rem;
+            margin: 0 4px 0 0;
+            font-weight: 500;
+            color: #546e7a;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: none;
             position: relative;
             bottom: 0;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
         }
         
         .stTabs [data-baseweb="tab"]:hover {
@@ -227,11 +274,12 @@ st.markdown("""
         }
         
         .stTabs [aria-selected="true"] {
-            background: #4361ee;
+            background: #1e88e5;
             color: white !important;
             font-weight: 600;
             border: none;
-            box-shadow: 0 -4px 0 #3a0ca3 inset, 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 -4px 0 #0d47a1 inset, 0 4px 12px rgba(30, 136, 229, 0.2);
+            transform: translateY(-1px);
         }
         
         /* Tarjetas y métricas */
@@ -337,12 +385,13 @@ st.markdown("""
 
 # Encabezado principal
 st.markdown("""
-<div style="text-align: center; margin: 0 0 2rem 0; padding: 2.5rem 0; background: #ffffff; border-bottom: 1px solid #e2e8f0;">
-    <h1 style="color: #1e293b; font-size: 2.5rem; font-weight: 800; margin: 0 0 0.5rem 0; letter-spacing: -0.5px; text-transform: uppercase;">
+<div style="text-align: center; margin: 0 0 2.5rem 0; padding: 3.5rem 2rem; background: linear-gradient(135deg, #0f2d5f 0%, #1e88e5 100%); border-radius: 12px; box-shadow: 0 10px 25px rgba(15, 45, 95, 0.2); position: relative; overflow: hidden;">
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgcGF0dGVyblRyYW5zZm9ybT0icm90YXRlKDQ1KSI+PHJlY3Qgd2lkdGg9IjUwJSIgaGVpZ2h0PSI1MCUiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wMykiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjcGF0dGVybikiLz48L3N2Zz4=');"></div>
+    <h1 style="color: white; font-size: 2.75rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px; text-transform: uppercase; position: relative; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
         MODELO DE PROSPECTIVA POLI
     </h1>
-    <div style="height: 5px; width: 200px; background: linear-gradient(90deg, #4361ee, #3a0ca3); margin: 0 auto 1rem; border-radius: 5px;"></div>
-    <p style="color: #64748b; font-size: 1.1rem; margin: 0; font-weight: 500; max-width: 800px; margin: 0 auto; line-height: 1.6;">
+    <div style="height: 6px; width: 180px; background: linear-gradient(90deg, rgba(255,255,255,0.8), #ffffff); margin: 0 auto 1.25rem; border-radius: 3px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div>
+    <p style="color: rgba(255,255,255,0.9); font-size: 1.15rem; margin: 0; font-weight: 400; max-width: 800px; margin: 0 auto; line-height: 1.6; position: relative; text-shadow: 0 1px 2px rgba(0,0,0,0.1);">
         Plataforma de análisis y proyección de indicadores estratégicos 2026-2030
     </p>
 </div>
