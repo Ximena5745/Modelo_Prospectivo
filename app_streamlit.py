@@ -4,6 +4,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import plotly.colors
 import random
+from pathlib import Path
 
 
 # ==============================
@@ -20,8 +21,10 @@ st.set_page_config(
 # ==============================
 # LECTURA DE DATOS REALES
 # ==============================
-RUTA_DATASET = "Prospectiva/Data/Dataset_Unificado.xlsx"
-RUTA_PROYECCIONES = "Prospectiva/Data/Proyecciones_Multimodelo.xlsx"
+# Usar pathlib para rutas multiplataforma
+BASE_DIR = Path(__file__).parent
+RUTA_DATASET = str(BASE_DIR / "Prospectiva" / "Data" / "Dataset_Unificado.xlsx")
+RUTA_PROYECCIONES = str(BASE_DIR / "Prospectiva" / "Data" / "Proyecciones_Multimodelo.xlsx")
 
 # Datos históricos
 df_hist = pd.read_excel(RUTA_DATASET)
