@@ -50,12 +50,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("""
-<div style="text-align: center; margin: 1.5rem 0 2.5rem 0;">
-    <h1 style="margin: 0 0 0.5rem 0; color: #0d47a1 !important; font-size: 2.75rem; font-weight: 800; letter-spacing: -0.5px;">MODELO DE PROSPECTIVA POLI</h1>
-    <div style="height: 5px; width: 240px; background: linear-gradient(90deg, #1a73e8, #2ecc71); margin: 0 auto 1rem; border-radius: 3px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div>
-    <p style="color: #475569; font-size: 1.2rem; margin: 0.5rem 0 0 0; font-weight: 500; letter-spacing: 0.3px;">Plataforma de análisis y proyección de indicadores estratégicos 2026-2030</p>
+<div style="text-align: center; margin: 1.5rem 0 2.5rem 0;">er; margin-bottom: 2rem;">
+    <h1 style="margin: 0 0 0.5rem 0; color: #0d47a1 !important; font-size: 2.75rem; font-weight: 800; letter-spacing: -0.5px;">MODELO DE PROSPECTIVA POLI</h1>: 0.5rem; color: #0d47a1 !important; font-size: 2.5rem; font-weight: 700;">MODELO DE PROSPECTIVA POLI</h1>
+    <div style="height: 5px; width: 240px; background: linear-gradient(90deg, #1a73e8, #2ecc71); margin: 0 auto 1rem; border-radius: 3px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div> width: 200px; background: linear-gradient(90deg, #1a73e8, #2ecc71); margin: 0 auto 1rem; border-radius: 2px;"></div>
+    <p style="color: #475569; font-size: 1.2rem; margin: 0.5rem 0 0 0; font-weight: 500; letter-spacing: 0.3px;">Plataforma de análisis y proyección de indicadores estratégicos 2026-2030</p>; font-size: 1.1rem; margin: 0;">Plataforma de análisis y proyección de indicadores estratégicos 2026-2030</p>
 </div>
-"""
+""", unsafe_allow_html=True)
 
 # ==============================
 # LECTURA DE DATOS
@@ -63,13 +63,6 @@ st.markdown("""
 BASE_DIR = Path(__file__).parent
 RUTA_DATASET = str(BASE_DIR / "Data" / "Dataset_Unificado.xlsx")
 RUTA_PROYECCIONES = str(BASE_DIR / "Data" / "Proyecciones_Multimodelo.xlsx")
-
-df_hist = pd.read_excel(RUTA_DATASET)
-df_hist["Fecha"] = pd.to_datetime(df_hist["Fecha"])
-
-
-# ==============================# # # LECTURA DE DATOS# # # ==============================# # BASE_DIR = Path(__file__).parent# # RUTA_DATASET = str(BASE_DIR / "Data" / "Dataset_Unificado.xlsx")# # RUTA_PROYECCIONES = str(BASE_DIR / "Data" / "Proyecciones_Multimodelo.xlsx")# # spacing: -0.5px;">MODELO DE PROSPECTIVA POLI</h1>: 0.5rem; color: #0d47a1 !important; font-size: 2.5rem; font-weight: 700;">MODELO DE PROSPECTIVA POLI</h1>to 1rem; border-radius: 3px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div> width: 200px; background: linear-gradient(90deg, #1a73e8, #2ecc71); margin: 0 auto 1rem; border-radius: 2px;"></div>x;">Plataforma de análisis y proyección de indicadores estratégicos 2026-2030</p>; font-size: 1.1rem; margin: 0;">Plataforma de análisis y proyección de indicadores estratégicos 2026-2030</p>
-
 
 df_hist = pd.read_excel(RUTA_DATASET)
 df_hist["Fecha"] = pd.to_datetime(df_hist["Fecha"])
