@@ -531,46 +531,128 @@ colores_escenarios = {
 }
 
 # Agregar históricos
-if tipo_visualizacion == "Semestral" and not df_hist_semestral.empty:
-    fig.add_trace(go.Scatter(
-        x=df_hist_semestral["Fecha"],
-        y=df_hist_semestral["Ejecución"],
-        name="Histórico",
-        line=dict(color='#64748b', width=3),
-        marker=dict(size=8, color='#64748b'),
-        mode='lines+markers'
-    ))
-elif tipo_visualizacion == "Anual" and not df_hist_anual.empty:
-    fig.add_trace(go.Scatter(
-        x=df_hist_anual["Fecha"],
-        y=df_hist_anual["Ejecución"],
-        name="Histórico",
-        line=dict(color='#64748b', width=3),
-        marker=dict(size=8, color='#64748b'),
-        mode='lines+markers'
-    ))
+if tipo_visualizacion == "Semestral":
+    if not df_hist_semestral.empty:
+        fig.add_trace(go.Scatter(
+            x=df_hist_semestral["Fecha"],
+            y=df_hist_semestral["Ejecución"],
+            name="Histórico Semestral",
+            line=dict(color='#5c8bf2', width=2.5),
+            marker=dict(size=8, color='#5c8bf2', line=dict(width=1, color='white')),
+            mode='lines+markers',
+            hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'
+        ))
+        if mostrar_numeros:
+            text_values = df_hist_semestral["Ejecución"].apply(lambda x: format_number(x, decimal_places))
+            fig.add_trace(go.Scatter(
+                x=df_hist_semestral["Fecha"],
+                y=df_hist_semestral["Ejecución"],
+                mode="text",
+                text=text_values,
+                textposition="top center",
+                textfont=dict(size=10, color='#5c8bf2'),
+                showlegend=False,
+                hoverinfo='skip'
+            ))
+elif tipo_visualizacion == "Anual":
+    if not df_hist_anual.empty:
+        fig.add_trace(go.Scatter(
+            x=df_hist_anual["Fecha"],
+            y=df_hist_anual["Ejecución"],
+            name="Histórico Anual",
+            line=dict(color='#5c8bf2', width=2.5),
+            marker=dict(size=8, color='#5c8bf2', line=dict(width=1, color='white')),
+            mode='lines+markers',
+            hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'
+        ))
+        if mostrar_numeros:
+            text_values = df_hist_anual["Ejecución"].apply(lambda x: format_number(x, decimal_places))
+            fig.add_trace(go.Scatter(
+                x=df_hist_anual["Fecha"],
+                y=df_hist_anual["Ejecución"],
+                mode="text",
+                text=text_values,
+                textposition="top center",
+                textfont=dict(size=10, color='#5c8bf2'),
+                showlegend=False,
+                hoverinfo='skip'
+            ))
 
 # Agregar proyecciones
 for escenario in escenarios_sel:
     df_esc = df_proj_sel[df_proj_sel["Escenario"] == escenario]
     if not df_esc.empty:
         color = colores_escenarios.get(escenario, '#1a73e8')
-        fig.add_trace(go.Scatter(
-            x=df_esc["Fecha"],
-            y=df_esc["Proyección"],
-            name=escenario,
-            line=dict(color=color, width=3, dash='dot'),
-            marker=dict(size=10, color=color),
-            mode='lines+markers'
-        ))
+        
+        # Separar por semestre
+        df_proj_s1 = df_esc[df_esc["Fecha"].dt.month == 6]
+        df_proj_s2 = df_esc[df_esc["Fecha"].dt.month == 12]
+        
+        if tipo_visualizacion == "Semestral":
+            # Mostrar ambos semestres
+            df_esc_sorted = df_esc.sort_values('Fecha')
+            fig.add_trace(go.Scatter(
+                x=df_esc_sorted["Fecha"],
+                y=df_esc_sorted["Proyección"],
+                name=escenario,
+                line=dict(color=color, width=2.5, dash='dot'),
+                marker=dict(size=8, color=color, line=dict(width=1, color='white')),
+                mode='lines+markers',
+                hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'
+            ))
+            if mostrar_numeros:
+                text_values = df_esc_sorted["Proyección"].apply(lambda x: format_number(x, decimal_places))
+                fig.add_trace(go.Scatter(
+                    x=df_esc_sorted["Fecha"],
+                    y=df_esc_sorted["Proyección"],
+                    mode="text",
+                    text=text_values,
+                    textposition="top center",
+                    textfont=dict(size=10, color=color),
+                    showlegend=False,
+                    hoverinfo='skip'
+                ))
+        elif tipo_visualizacion == "Anual":
+            # Mostrar solo diciembre (S2)
+            if not df_proj_s2.empty:
+                fig.add_trace(go.Scatter(
+                    x=df_proj_s2["Fecha"],
+                    y=df_proj_s2["Proyección"],
+                    name=f"{escenario} (Anual)",
+                    line=dict(color=color, width=2.5, dash='dot'),
+                    marker=dict(size=8, color=color, line=dict(width=1, color='white')),
+                    mode='lines+markers',
+                    hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'
+                ))
+                if mostrar_numeros:
+                    text_values = df_proj_s2["Proyección"].apply(lambda x: format_number(x, decimal_places))
+                    fig.add_trace(go.Scatter(
+                        x=df_proj_s2["Fecha"],
+                        y=df_proj_s2["Proyección"],
+                        mode="text",
+                        text=text_values,
+                        textposition="top center",
+                        textfont=dict(size=10, color=color),
+                        showlegend=False,
+                        hoverinfo='skip'
+                    ))
 
 # Línea divisoria
 if mostrar_linea_divisoria and not df_hist_sel.empty and not df_proj_sel.empty:
     fecha_division = pd.Timestamp('2025-12-31')
-    fig.add_vline(x=fecha_division, line_dash="dash", line_color="#e74c3c", line_width=2)
+    fig.add_vline(
+        x=fecha_division, 
+        line_dash="dash", 
+        line_color="#e74c3c", 
+        line_width=3,
+        annotation_text="Histórico / Proyección",
+        annotation_position="top"
+    )
 
 fig.update_layout(
-    template="plotly_white",
+    template="plotly",
+    plot_bgcolor='#f5f5f5',
+    paper_bgcolor='#f5f5f5',
     height=550,
     font=dict(family="Poppins", size=12, color="#1e293b"),
     hovermode='x unified',
@@ -585,8 +667,16 @@ fig.update_layout(
         borderwidth=1
     ),
     margin=dict(l=50, r=50, t=80, b=50),
-    xaxis=dict(showgrid=True, gridcolor='#f1f5f9'),
-    yaxis=dict(showgrid=True, gridcolor='#f1f5f9')
+    xaxis=dict(
+        showgrid=True, 
+        gridcolor='white',
+        tickformat="%Y-%m"
+    ),
+    yaxis=dict(
+        showgrid=True, 
+        gridcolor='white',
+        tickformat=","
+    )
 )
 
 st.plotly_chart(fig, use_container_width=True)
@@ -608,38 +698,56 @@ for escenario in escenarios_sel:
     df_esc = df_proj_sel[df_proj_sel["Escenario"] == escenario]
     
     if not df_esc.empty:
-        valor_2026 = df_esc[df_esc["Fecha"].dt.year == 2026]["Proyección"].iloc[0] if not df_esc[df_esc["Fecha"].dt.year == 2026].empty else 0
-        valor_2030 = df_esc[df_esc["Fecha"].dt.year == 2030]["Proyección"].iloc[0] if not df_esc[df_esc["Fecha"].dt.year == 2030].empty else 0
+        valor_2026 = df_esc[df_esc["Fecha"].dt.year == 2026]["Proyección"].mean() if not df_esc[df_esc["Fecha"].dt.year == 2026].empty else 0
+        valor_2030 = df_esc[df_esc["Fecha"].dt.year == 2030]["Proyección"].mean() if not df_esc[df_esc["Fecha"].dt.year == 2030].empty else 0
         
         variacion_2030 = ((valor_2030 - ultimo_valor_historico) / ultimo_valor_historico * 100) if ultimo_valor_historico != 0 else 0
         variacion_periodo = ((valor_2030 - valor_2026) / valor_2026 * 100) if valor_2026 != 0 else 0
         
-        clase_escenario = f"scenario-{escenario.lower()}"
-        icon_clase = f"scenario-icon-{escenario.lower()}"
+        # Determinar clase y color del escenario
+        if escenario == "Base":
+            clase_escenario = "scenario-base"
+            icon_clase = "scenario-icon-base"
+            icon = "⚖️"
+        elif escenario == "Optimista":
+            clase_escenario = "scenario-optimista"
+            icon_clase = "scenario-icon-optimista"
+            icon = "📈"
+        else:  # Pesimista
+            clase_escenario = "scenario-pesimista"
+            icon_clase = "scenario-icon-pesimista"
+            icon = "📉"
         
-        st.markdown(f"""
-        <div class="scenario-card {clase_escenario}">
-            <div class="scenario-header">
-                <div class="scenario-icon {icon_clase}">
-                    {'⚖️' if escenario == 'Base' else '📈' if escenario == 'Optimista' else '📉'}
-                </div>
-                <div class="scenario-title">{escenario}</div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        # Card del escenario
+        col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
         
-        col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("2026", f"{valor_2026:,.0f}")
+            st.markdown(f"""
+            <div class="scenario-card {clase_escenario}">
+                <div class="scenario-header">
+                    <div class="scenario-icon {icon_clase}">{icon}</div>
+                    <div class="scenario-title">{escenario}</div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        
         with col2:
-            st.metric("2030", f"{valor_2030:,.0f}", f"{variacion_2030:+.1f}%")
+            st.metric("📊 2026", f"{valor_2026:,.{int(decimal_places)}f}")
+        
         with col3:
-            st.metric("Variación 2026-2030", f"{variacion_periodo:+.1f}%")
+            st.metric("🎯 2030", f"{valor_2030:,.{int(decimal_places)}f}", f"{variacion_2030:+.1f}%")
+        
         with col4:
             tendencia = "🟢 Creciente" if variacion_periodo > 0 else "🔴 Decreciente" if variacion_periodo < 0 else "🟡 Estable"
-            st.markdown(f"**Tendencia:** {tendencia}")
+            st.markdown(f"""
+            <div style="padding: 1rem; text-align: center;">
+                <div style="font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Variación</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #1e293b;">{variacion_periodo:+.1f}%</div>
+                <div style="margin-top: 0.5rem; font-weight: 600;">{tendencia}</div>
+            </div>
+            """, unsafe_allow_html=True)
         
-        st.markdown("---")
+        st.markdown("<div style='height: 1px; background: #e2e8f0; margin: 1.5rem 0;'></div>", unsafe_allow_html=True)
 
 # ==============================
 # TABLA DE DATOS
