@@ -17,6 +17,71 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# Configuración del tema personalizado
+st.markdown("""
+    <style>
+        /* Estilo general */
+        .main {
+            background-color: #f8f9fa;
+        }
+        
+        /* Sidebar */
+        [data-testid="stSidebar"] {
+            background-color: #e9f2ff;
+            border-right: 1px solid #d0e0ff;
+        }
+        
+        /* Títulos */
+        h1, h2, h3, h4, h5, h6 {
+            color: #1a3d6d;
+        }
+        
+        /* Botones */
+        .stButton>button {
+            background-color: #1a73e8;
+            color: white;
+            border-radius: 4px;
+            border: none;
+            padding: 0.5rem 1rem;
+        }
+        
+        .stButton>button:hover {
+            background-color: #1557b0;
+            color: white;
+        }
+        
+        /* Selectores */
+        .stSelectbox, .stTextInput, .stNumberInput, .stDateInput {
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+        }
+        
+        /* Tabs */
+        .stTabs [data-baseweb="tab-list"] {
+            gap: 8px;
+        }
+        
+        .stTabs [data-baseweb="tab"] {
+            background-color: #e9f2ff;
+            border-radius: 4px 4px 0 0;
+            padding: 8px 16px;
+        }
+        
+        .stTabs [aria-selected="true"] {
+            background-color: #1a73e8;
+            color: white;
+        }
+        
+        /* Cards */
+        .stMetric {
+            background-color: white;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 
 # ==============================
 # LECTURA DE DATOS REALES
@@ -63,15 +128,14 @@ df_proj = pd.DataFrame(df_proj_list) if df_proj_list else pd.DataFrame()
 with st.sidebar:
     st.header("⚙️ Controles de Escenario")
 
-    # Líneas Estratégicas con colores específicos
-    # Formato: "Nombre mostrado": ("Nombre exacto en el dataset", "color")
+    # Líneas Estratégicas con colores en tonos azules profesionales
     lineas_estrategicas = {
-        "Expansión": ("Expansión", "#FBAF17"),
-        "Transformación Organizacional": ("Transformación_Organizacional", "#42F2F2"), 
-        "Calidad": ("Calidad", "#EC0677"),
-        "Experiencia": ("Experiencia", "#1FB2DE"),
-        "Sostenibilidad": ("Sostenibilidad", "#A6CE38"),
-        "Educación para la vida": ("Educación_para_toda_la_vida", "#0F385A")
+        "Expansión": ("Expansión", "#1a73e8"),
+        "Transformación Organizacional": ("Transformación_Organizacional", "#4285f4"), 
+        "Calidad": ("Calidad", "#5c8bf2"),
+        "Experiencia": ("Experiencia", "#7ea7f7"),
+        "Sostenibilidad": ("Sostenibilidad", "#a0bff5"),
+        "Educación para la vida": ("Educación_para_toda_la_vida", "#0d47a1")
     }
 
     linea_sel = st.selectbox(
@@ -380,23 +444,38 @@ if 'Decimales_Ejecucion' in df_hist_sel.columns and not df_hist_sel.empty:
     # Tomar el primer valor de Decimales_Ejecucion (debería ser el mismo para todos los registros del mismo indicador)
     decimal_places = int(df_hist_sel['Decimales_Ejecucion'].iloc[0]) if pd.notna(df_hist_sel['Decimales_Ejecucion'].iloc[0]) else 0
 
+# Configuración de colores para las proyecciones
+colores_escenarios = {
+    'Base': '#1a73e8',        # Azul principal
+    'Pesimista': '#ea4335',   # Rojo para pesimista
+    'Optimista': '#34a853'    # Verde para optimista
+}
+
 # Agregar datos históricos según la configuración
 if tipo_visualizacion == "Semestral":
     # Para "Semestral" mostrar todos los datos semestrales en una línea
     if not df_hist_semestral.empty:
         agregar_traza(fig, df_hist_semestral["Fecha"], df_hist_semestral["Ejecución"], 
-                     "Histórico Semestral", "#3498DB", tipo_grafico, mostrar_numeros, decimal_places)
+                     "Histórico Semestral", "#5c8bf2", tipo_grafico, mostrar_numeros, decimal_places)
 
 elif tipo_visualizacion == "Anual":
     # Para "Anual" mostrar solo datos de cierre (anuales)
     if not df_hist_anual.empty:
         agregar_traza(fig, df_hist_anual["Fecha"], df_hist_anual["Ejecución"], 
-                     "Histórico Anual (Cierre)", "#FF6B6B", tipo_grafico, mostrar_numeros, decimal_places)
+                     "Histórico Anual (Cierre)", "#5c8bf2", tipo_grafico, mostrar_numeros, decimal_places)
 
 # Si no hay datos separados, mostrar línea histórica general
 if df_hist_semestral.empty and df_hist_anual.empty and not df_hist_sel.empty:
     agregar_traza(fig, df_hist_sel["Fecha"], df_hist_sel["Ejecución"], 
-                 "Histórico", "#2C3E50", tipo_grafico, mostrar_numeros, decimal_places)
+                 "Histórico", "#5c8bf2", tipo_grafico, mostrar_numeros, decimal_places)
+
+# Agregar proyecciones para cada escenario seleccionado
+for escenario in escenarios_sel:
+    df_escenario = df_proj_sel[df_proj_sel["Escenario"] == escenario]
+    if not df_escenario.empty:
+        color_escenario = colores_escenarios.get(escenario, "#5c8bf2")
+        agregar_traza(fig, df_escenario["Fecha"], df_escenario["Proyección"], 
+                     f"Proyección {escenario}", color_escenario, tipo_grafico, mostrar_numeros, decimal_places)
 
 # Agregar proyecciones según la configuración
 colores = ['#FF00FF', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F']
