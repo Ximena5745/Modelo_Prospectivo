@@ -588,7 +588,27 @@ for escenario in escenarios_sel:
         df_proj_s1 = df_esc[df_esc["Fecha"].dt.month == 6]
         df_proj_s2 = df_esc[df_esc["Fecha"].dt.month == 12]
         
-        if tipo_visualizacion == "Semestral":
+        # Agregar anotación de inicio de proyección
+        if mostrar_numeros and not df_esc_sorted.empty:
+            primer_valor = df_esc_sorted.iloc[0]
+            fig.add_annotation(
+                x=primer_valor["Fecha"],
+                y=primer_valor["Proyección"],
+                text=f"Inicio {escenario}",
+                showarrow=True,
+                arrowhead=2,
+                arrowsize=1,
+                arrowwidth=2,
+                arrowcolor=color,
+                ax=40,
+                ay=-40,
+                font=dict(size=10, color=color, weight="bold"),
+                bgcolor="white",
+                bordercolor=color,
+                borderwidth=1,
+                borderpad=4,
+                opacity=0.9
+            )
             # Mostrar ambos semestres
             df_esc_sorted = df_esc.sort_values('Fecha')
             fig.add_trace(go.Scatter(
@@ -662,8 +682,8 @@ if mostrar_linea_divisoria and not df_hist_sel.empty and not df_proj_sel.empty:
 fig.update_layout(
     template="plotly",
     plot_bgcolor='#f5f5f5',
-    paper_bgcolor='#f5f5f5',
-    height=550,
+    paper_bgcolor='#ffffff',
+    height=600,
     font=dict(family="Poppins", size=12, color="#1e293b"),
     hovermode='x unified',
     legend=dict(
@@ -672,20 +692,40 @@ fig.update_layout(
         y=1.02,
         xanchor="right",
         x=1,
-        bgcolor="rgba(255,255,255,0.9)",
-        bordercolor="#e2e8f0",
-        borderwidth=1
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1,
+        font=dict(size=11)
     ),
-    margin=dict(l=50, r=50, t=80, b=50),
+    margin=dict(l=60, r=40, t=100, b=80),
     xaxis=dict(
+        title=dict(text="Periodo", font=dict(size=13, weight=600)),
         showgrid=True, 
         gridcolor='white',
-        tickformat="%Y-%m"
+        gridwidth=1.5,
+        tickformat="%Y-%m",
+        tickfont=dict(size=11),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True
     ),
     yaxis=dict(
+        title=dict(text=indicador_sel, font=dict(size=13, weight=600)),
         showgrid=True, 
         gridcolor='white',
-        tickformat=","
+        gridwidth=1.5,
+        tickformat=",",
+        tickfont=dict(size=11),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        zeroline=False
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=12,
+        font_family="Poppins",
+        bordercolor="#cbd5e0"
     )
 )
 
@@ -708,56 +748,117 @@ for escenario in escenarios_sel:
     df_esc = df_proj_sel[df_proj_sel["Escenario"] == escenario]
     
     if not df_esc.empty:
+        # Calcular valores promedio para cada año
         valor_2026 = df_esc[df_esc["Fecha"].dt.year == 2026]["Proyección"].mean() if not df_esc[df_esc["Fecha"].dt.year == 2026].empty else 0
         valor_2030 = df_esc[df_esc["Fecha"].dt.year == 2030]["Proyección"].mean() if not df_esc[df_esc["Fecha"].dt.year == 2030].empty else 0
         
         variacion_2030 = ((valor_2030 - ultimo_valor_historico) / ultimo_valor_historico * 100) if ultimo_valor_historico != 0 else 0
         variacion_periodo = ((valor_2030 - valor_2026) / valor_2026 * 100) if valor_2026 != 0 else 0
         
-        # Determinar clase y color del escenario
+        # Configurar colores según escenario
         if escenario == "Base":
-            clase_escenario = "scenario-base"
-            icon_clase = "scenario-icon-base"
+            border_color = "#1a73e8"
+            bg_color = "#e3f2fd"
             icon = "⚖️"
         elif escenario == "Optimista":
-            clase_escenario = "scenario-optimista"
-            icon_clase = "scenario-icon-optimista"
+            border_color = "#2ecc71"
+            bg_color = "#d5f4e6"
             icon = "📈"
         else:  # Pesimista
-            clase_escenario = "scenario-pesimista"
-            icon_clase = "scenario-icon-pesimista"
+            border_color = "#e74c3c"
+            bg_color = "#fadbd8"
             icon = "📉"
         
-        # Card del escenario
-        col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
+        # Crear card del escenario
+        st.markdown(f"""
+        <div style="background: white; border-left: 5px solid {border_color}; border-radius: 10px; 
+                    padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div style="width: 50px; height: 50px; background: {bg_color}; border-radius: 50%; 
+                            display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                    {icon}
+                </div>
+                <h3 style="margin: 0; color: #1e293b; font-size: 1.5rem; font-weight: 700;">{escenario}</h3>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Métricas en columnas
+        col1, col2, col3, col4 = st.columns(4)
         
         with col1:
+            st.markdown("""
+            <div style="text-align: center; padding: 1rem; background: #f8fafc; border-radius: 8px;">
+                <div style="color: #64748b; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">
+                    📊 VALOR 2026
+                </div>
+                <div style="color: #0d47a1; font-size: 1.75rem; font-weight: 700;">
+                    {valor}
+                </div>
+            </div>
+            """.format(valor=f"{valor_2026:,.{int(decimal_places)}f}"), unsafe_allow_html=True)
+        
+        with col2:
+            arrow = "↗" if variacion_2030 > 0 else "↘" if variacion_2030 < 0 else "→"
+            color_var = "#2ecc71" if variacion_2030 > 0 else "#e74c3c" if variacion_2030 < 0 else "#64748b"
             st.markdown(f"""
-            <div class="scenario-card {clase_escenario}">
-                <div class="scenario-header">
-                    <div class="scenario-icon {icon_clase}">{icon}</div>
-                    <div class="scenario-title">{escenario}</div>
+            <div style="text-align: center; padding: 1rem; background: #f8fafc; border-radius: 8px;">
+                <div style="color: #64748b; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">
+                    🎯 VALOR 2030
+                </div>
+                <div style="color: #0d47a1; font-size: 1.75rem; font-weight: 700;">
+                    {valor_2030:,.{int(decimal_places)}f}
+                </div>
+                <div style="color: {color_var}; font-size: 0.875rem; font-weight: 600; margin-top: 0.25rem;">
+                    {arrow} {variacion_2030:+.1f}% vs. histórico
                 </div>
             </div>
             """, unsafe_allow_html=True)
         
-        with col2:
-            st.metric("📊 2026", f"{valor_2026:,.{int(decimal_places)}f}")
-        
         with col3:
-            st.metric("🎯 2030", f"{valor_2030:,.{int(decimal_places)}f}", f"{variacion_2030:+.1f}%")
-        
-        with col4:
-            tendencia = "🟢 Creciente" if variacion_periodo > 0 else "🔴 Decreciente" if variacion_periodo < 0 else "🟡 Estable"
             st.markdown(f"""
-            <div style="padding: 1rem; text-align: center;">
-                <div style="font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Variación</div>
-                <div style="font-size: 1.5rem; font-weight: 700; color: #1e293b;">{variacion_periodo:+.1f}%</div>
-                <div style="margin-top: 0.5rem; font-weight: 600;">{tendencia}</div>
+            <div style="text-align: center; padding: 1rem; background: #f8fafc; border-radius: 8px;">
+                <div style="color: #64748b; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">
+                    📈 VARIACIÓN 2026-2030
+                </div>
+                <div style="color: #0d47a1; font-size: 1.75rem; font-weight: 700;">
+                    {variacion_periodo:+.1f}%
+                </div>
+                <div style="color: #64748b; font-size: 0.875rem; margin-top: 0.25rem;">
+                    Δ {valor_2030 - valor_2026:+,.{int(decimal_places)}f}
+                </div>
             </div>
             """, unsafe_allow_html=True)
         
-        st.markdown("<div style='height: 1px; background: #e2e8f0; margin: 1.5rem 0;'></div>", unsafe_allow_html=True)
+        with col4:
+            if variacion_periodo > 0:
+                tendencia = "Creciente"
+                icon_tend = "🟢"
+                color_tend = "#2ecc71"
+            elif variacion_periodo < 0:
+                tendencia = "Decreciente"
+                icon_tend = "🔴"
+                color_tend = "#e74c3c"
+            else:
+                tendencia = "Estable"
+                icon_tend = "🟡"
+                color_tend = "#f1c40f"
+            
+            st.markdown(f"""
+            <div style="text-align: center; padding: 1rem; background: #f8fafc; border-radius: 8px;">
+                <div style="color: #64748b; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">
+                    📊 TENDENCIA
+                </div>
+                <div style="font-size: 2rem; margin: 0.5rem 0;">
+                    {icon_tend}
+                </div>
+                <div style="color: {color_tend}; font-size: 1.1rem; font-weight: 700;">
+                    {tendencia}
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        st.markdown("<br>", unsafe_allow_html=True)
 
 # ==============================
 # TABLA DE DATOS
