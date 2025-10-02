@@ -22,147 +22,230 @@ st.markdown("""
     <style>
         /* Estilo general */
         .main {
-            background-color: #f8f9fa;
+            background-color: #ffffff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #2d3748;
         }
         
-        /* Título principal */
+        /* Contenedor principal */
         .main .block-container {
-            padding-top: 2rem;
+            padding: 2rem 2.5rem;
+            max-width: 1400px;
         }
         
+        /* Secciones */
+        .stContainer {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+        
+        /* Títulos */
         h1 {
             color: #0F385A;
             font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
+            font-weight: 800;
+            margin: 0 0 1.5rem 0;
             text-align: center;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             padding-bottom: 1rem;
             border-bottom: 3px solid #1a73e8;
+            background: linear-gradient(135deg, #0F385A 0%, #1a73e8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        h2 {
+            color: #1a3d6d;
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 2rem 0 1.25rem 0;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #e2e8f0;
+            position: relative;
+        }
+        
+        h2:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #1a73e8, #34a853);
+            border-radius: 2px;
+        }
+        
+        h3 {
+            color: #2c5282;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 1.75rem 0 1rem 0;
         }
         
         /* Sidebar */
         [data-testid="stSidebar"] {
-            background-color: #f0f7ff;
-            border-right: 1px solid #d0e0ff;
-            padding: 1.5rem 1rem;
+            background-color: #f8fafc;
+            border-right: 1px solid #e2e8f0;
+            padding: 1.5rem 1.25rem;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.03);
         }
         
         [data-testid="stSidebar"] h1,
         [data-testid="stSidebar"] h2,
         [data-testid="stSidebar"] h3 {
             color: #0F385A;
-            font-weight: 600;
-            margin-top: 1.5rem;
-        }
-        
-        /* Títulos */
-        h1, h2, h3, h4, h5, h6 {
-            color: #1a3d6d;
-            font-weight: 600;
-        }
-        
-        h2 {
-            color: #1a3d6d;
-            font-size: 1.75rem;
-            margin: 1.5rem 0 1rem;
+            font-weight: 700;
+            margin: 1.5rem 0 1rem 0;
             padding-bottom: 0.5rem;
-            border-bottom: 2px solid #e1e5eb;
-        }
-        
-        h3 {
-            color: #2c5282;
-            font-size: 1.4rem;
-            margin: 1.2rem 0 0.8rem;
+            border-bottom: 2px solid #e2e8f0;
         }
         
         /* Botones */
-        .stButton>button {
-            background-color: #1a73e8;
+        .stButton > button {
+            background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
             color: white;
-            border-radius: 6px;
+            border-radius: 8px;
             border: none;
-            padding: 0.6rem 1.2rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0.7rem 1.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 6px rgba(26, 115, 232, 0.3);
             width: 100%;
             margin: 0.5rem 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
-        .stButton>button:hover {
-            background-color: #1557b0;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        .stButton > button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(26, 115, 232, 0.4);
+            background: linear-gradient(135deg, #1557b0 0%, #0a2d6e 100%);
         }
         
-        /* Selectores y controles de formulario */
+        .stButton > button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(26, 115, 232, 0.3);
+        }
+        
+        /* Controles de formulario */
         .stSelectbox, .stTextInput, .stNumberInput, .stDateInput, .stCheckbox {
-            margin: 0.5rem 0 1rem;
-            font-size: 1rem;
+            margin: 0.75rem 0 1.25rem;
+            font-size: 0.95rem;
         }
         
-        .stSelectbox>div, .stTextInput>div, .stNumberInput>div, .stDateInput>div {
-            border-radius: 6px;
-            border: 1px solid #cbd5e0;
-            transition: all 0.2s;
+        /* Selectores */
+        .stSelectbox > div, .stTextInput > div, .stNumberInput > div, .stDateInput > div {
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: #ffffff;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
         
-        .stSelectbox>div:hover, .stTextInput>div:hover, .stNumberInput>div:hover, .stDateInput>div:hover {
+        .stSelectbox > div:hover, .stTextInput > div:hover, 
+        .stNumberInput > div:hover, .stDateInput > div:hover {
             border-color: #90cdf4;
-            box-shadow: 0 0 0 1px #90cdf4;
+            box-shadow: 0 0 0 3px rgba(144, 205, 244, 0.2);
+        }
+        
+        .stSelectbox > div:focus-within, .stTextInput > div:focus-within, 
+        .stNumberInput > div:focus-within, .stDateInput > div:focus-within {
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
         }
         
         /* Checkboxes */
         .stCheckbox {
             color: #2d3748;
             font-size: 0.95rem;
+            margin: 1rem 0;
         }
         
-        .stCheckbox>label {
+        .stCheckbox > label {
             cursor: pointer;
-            padding: 0.5rem 0;
+            padding: 0.5rem 0.5rem 0.5rem 0;
             display: flex;
             align-items: center;
+            transition: all 0.2s;
+            border-radius: 6px;
+            margin: 0.25rem 0;
+        }
+        
+        .stCheckbox > label:hover {
+            background-color: #f7fafc;
+            transform: translateX(2px);
+        }
+        
+        .stCheckbox > label > div:first-child {
+            margin-right: 0.75rem;
+            border-radius: 4px;
+            border: 1px solid #cbd5e0;
+        }
+        
+        .stCheckbox > label > div[data-baseweb="checkbox"] {
+            background-color: #1a73e8;
+            border-color: #1a73e8;
         }
         
         /* Pestañas */
         .stTabs [data-baseweb="tab-list"] {
             gap: 8px;
-            margin-bottom: 1.5rem;
+            margin: 1.5rem 0;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 0.5rem;
         }
         
         .stTabs [data-baseweb="tab"] {
-            background-color: #edf2f7;
-            border-radius: 6px;
-            padding: 0.6rem 1.2rem;
-            margin: 0.2rem;
+            background-color: #f8fafc;
+            border-radius: 6px 6px 0 0;
+            padding: 0.75rem 1.5rem;
+            margin: 0 0.25rem;
             font-weight: 500;
             color: #4a5568;
-            transition: all 0.2s;
+            transition: all 0.25s ease;
+            border: 1px solid transparent;
+            border-bottom: none;
+            position: relative;
+            bottom: -1px;
+        }
+        
+        .stTabs [data-baseweb="tab"]:hover {
+            background-color: #edf2f7;
+            color: #2d3748;
         }
         
         .stTabs [aria-selected="true"] {
-            background-color: #1a73e8;
-            color: white;
+            background-color: #ffffff;
+            color: #1a73e8;
             font-weight: 600;
+            border-color: #e2e8f0;
+            border-bottom-color: #ffffff;
+            box-shadow: 0 -2px 0 #1a73e8 inset;
         }
         
         /* Tarjetas y métricas */
         .stMetric {
-            background-color: white;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
             border-radius: 10px;
-            padding: 1.2rem;
+            padding: 1.5rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
             border-left: 4px solid #1a73e8;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin: 0.75rem 0;
+            border: 1px solid #e2e8f0;
         }
         
         .stMetric:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-left-color: #1557b0;
         }
         
         .stMetric > div {
@@ -171,36 +254,92 @@ st.markdown("""
         
         .stMetric > div > div:first-child {
             color: #4a5568;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 500;
+            letter-spacing: 0.3px;
         }
         
         .stMetric > div > div:last-child {
             color: #1a365d;
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             font-weight: 700;
+            margin-top: 0.5rem;
         }
         
-        /* Mejoras en los tooltips */
+        /* Gráficos */
+        .stPlotlyChart {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            background: white;
+        }
+        
+        /* Tooltips */
         .stTooltip {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 0.9rem;
-            border-radius: 6px;
+            border-radius: 8px;
             padding: 0.75rem 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            background: white;
+            max-width: 300px;
+        }
+        
+        /* Secciones colapsables */
+        .stExpander {
+            background: #ffffff;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        
+        .stExpander > label {
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+            background-color: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .stExpander > div[data-testid="stExpanderContent"] {
+            padding: 1.5rem;
+        }
+        
+        /* Scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
         }
     </style>
 """, unsafe_allow_html=True)
 
 
-# Título principal
+# Encabezado principal
 st.markdown("""
-<div style="text-align: center; margin-bottom: 2rem;">
-    <h1 style="color: #0F385A; font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem;">
+<div style="text-align: center; margin: 0 0 2.5rem 0; padding: 2rem 0; background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%); border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0;">
+    <h1 style="color: #0F385A; font-size: 2.75rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px;">
         MODELO DE PROSPECTIVA POLI
     </h1>
-    <p style="color: #4a5568; font-size: 1.2rem; margin-top: 0;">
-        Análisis de indicadores estratégicos 2026-2030
+    <div style="height: 4px; width: 120px; background: linear-gradient(90deg, #1a73e8, #34a853); margin: 0 auto 1rem; border-radius: 2px;"></div>
+    <p style="color: #4a5568; font-size: 1.25rem; margin: 0; font-weight: 400; max-width: 800px; margin: 0 auto; line-height: 1.6;">
+        Plataforma de análisis y proyección de indicadores estratégicos 2026-2030
     </p>
 </div>
 """, unsafe_allow_html=True)
@@ -413,8 +552,19 @@ df_proj_sel = df_proj[
 # ==============================
 # Mostrar línea estratégica seleccionada con su color
 st.markdown(f"""
-<div style="background-color: {color_linea}; padding: 10px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
-    <h3 style="color: white; margin: 0;">🎯 Línea Estratégica: {linea_sel}</h3>
+<div style="background: linear-gradient(135deg, {color_linea} 0%, {color_linea}99 100%); 
+            padding: 1.25rem; 
+            border-radius: 10px; 
+            margin: 1.5rem 0 2rem 0; 
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;">
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%); pointer-events: none;"></div>
+    <h3 style="color: white; margin: 0; font-size: 1.5rem; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+        🎯 Línea Estratégica: {linea_sel.upper()}
+    </h3>
 </div>
 """, unsafe_allow_html=True)
 
