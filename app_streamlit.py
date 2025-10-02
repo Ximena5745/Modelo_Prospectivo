@@ -22,15 +22,21 @@ st.markdown("""
     <style>
         /* Estilo general */
         .main {
-            background-color: #ffffff;
+            background-color: #ffffff !important;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #2d3748;
+            color: #1a202c;
+        }
+        
+        /* Fondo blanco para toda la aplicación */
+        .stApp {
+            background-color: #ffffff !important;
         }
         
         /* Contenedor principal */
         .main .block-container {
-            padding: 2rem 2.5rem;
+            padding: 1.5rem 2rem;
             max-width: 1400px;
+            background-color: #ffffff;
         }
         
         /* Secciones */
@@ -90,10 +96,10 @@ st.markdown("""
         
         /* Sidebar */
         [data-testid="stSidebar"] {
-            background-color: #f8fafc;
+            background-color: #ffffff !important;
             border-right: 1px solid #e2e8f0;
             padding: 1.5rem 1.25rem;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.03);
+            box-shadow: 2px 0 15px rgba(0,0,0,0.05);
         }
         
         [data-testid="stSidebar"] h1,
@@ -108,15 +114,15 @@ st.markdown("""
         
         /* Botones */
         .stButton > button {
-            background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
-            color: white;
+            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            color: white !important;
             border-radius: 8px;
             border: none;
-            padding: 0.7rem 1.5rem;
+            padding: 0.75rem 1.5rem;
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.95rem;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 6px rgba(26, 115, 232, 0.3);
+            box-shadow: 0 4px 6px rgba(67, 97, 238, 0.25);
             width: 100%;
             margin: 0.5rem 0;
             text-transform: uppercase;
@@ -125,8 +131,8 @@ st.markdown("""
         
         .stButton > button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(26, 115, 232, 0.4);
-            background: linear-gradient(135deg, #1557b0 0%, #0a2d6e 100%);
+            box-shadow: 0 6px 12px rgba(67, 97, 238, 0.35);
+            background: linear-gradient(135deg, #3a56d9 0%, #2a0a8a 100%);
         }
         
         .stButton > button:active {
@@ -196,38 +202,36 @@ st.markdown("""
         
         /* Pestañas */
         .stTabs [data-baseweb="tab-list"] {
-            gap: 8px;
+            gap: 4px;
             margin: 1.5rem 0;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 0;
         }
         
         .stTabs [data-baseweb="tab"] {
             background-color: #f8fafc;
-            border-radius: 6px 6px 0 0;
+            border-radius: 8px 8px 0 0;
             padding: 0.75rem 1.5rem;
-            margin: 0 0.25rem;
-            font-weight: 500;
-            color: #4a5568;
+            margin: 0 2px 0 0;
+            font-weight: 600;
+            color: #64748b;
             transition: all 0.25s ease;
-            border: 1px solid transparent;
-            border-bottom: none;
+            border: none;
             position: relative;
-            bottom: -1px;
+            bottom: 0;
         }
         
         .stTabs [data-baseweb="tab"]:hover {
-            background-color: #edf2f7;
-            color: #2d3748;
+            background-color: #e2e8f0;
+            color: #334155;
         }
         
         .stTabs [aria-selected="true"] {
-            background-color: #ffffff;
-            color: #1a73e8;
+            background: #4361ee;
+            color: white !important;
             font-weight: 600;
-            border-color: #e2e8f0;
-            border-bottom-color: #ffffff;
-            box-shadow: 0 -2px 0 #1a73e8 inset;
+            border: none;
+            box-shadow: 0 -4px 0 #3a0ca3 inset, 0 2px 4px rgba(0,0,0,0.1);
         }
         
         /* Tarjetas y métricas */
@@ -333,12 +337,12 @@ st.markdown("""
 
 # Encabezado principal
 st.markdown("""
-<div style="text-align: center; margin: 0 0 2.5rem 0; padding: 2rem 0; background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%); border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0;">
-    <h1 style="color: #0F385A; font-size: 2.75rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px;">
+<div style="text-align: center; margin: 0 0 2rem 0; padding: 2.5rem 0; background: #ffffff; border-bottom: 1px solid #e2e8f0;">
+    <h1 style="color: #1e293b; font-size: 2.5rem; font-weight: 800; margin: 0 0 0.5rem 0; letter-spacing: -0.5px; text-transform: uppercase;">
         MODELO DE PROSPECTIVA POLI
     </h1>
-    <div style="height: 4px; width: 120px; background: linear-gradient(90deg, #1a73e8, #34a853); margin: 0 auto 1rem; border-radius: 2px;"></div>
-    <p style="color: #4a5568; font-size: 1.25rem; margin: 0; font-weight: 400; max-width: 800px; margin: 0 auto; line-height: 1.6;">
+    <div style="height: 5px; width: 200px; background: linear-gradient(90deg, #4361ee, #3a0ca3); margin: 0 auto 1rem; border-radius: 5px;"></div>
+    <p style="color: #64748b; font-size: 1.1rem; margin: 0; font-weight: 500; max-width: 800px; margin: 0 auto; line-height: 1.6;">
         Plataforma de análisis y proyección de indicadores estratégicos 2026-2030
     </p>
 </div>
@@ -552,37 +556,111 @@ df_proj_sel = df_proj[
 # ==============================
 # Mostrar línea estratégica seleccionada con su color
 st.markdown(f"""
-<div style="background: linear-gradient(135deg, {color_linea} 0%, {color_linea}99 100%); 
-            padding: 1.25rem; 
-            border-radius: 10px; 
+<div style="background: {color_linea};
+            padding: 1.25rem 1.5rem; 
+            border-radius: 8px; 
             margin: 1.5rem 0 2rem 0; 
-            text-align: center;
+            text-align: left;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-left: 5px solid darken({color_linea}, 10%);
             position: relative;
-            overflow: hidden;">
-    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%); pointer-events: none;"></div>
-    <h3 style="color: white; margin: 0; font-size: 1.5rem; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
-        🎯 Línea Estratégica: {linea_sel.upper()}
-    </h3>
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 1rem;">
+    <div style="font-size: 1.8rem;">🎯</div>
+    <div>
+        <div style="color: rgba(255,255,255,0.9); font-size: 0.9rem; font-weight: 600; margin-bottom: 0.25rem;">LÍNEA ESTRATÉGICA</div>
+        <h3 style="color: white; margin: 0; font-size: 1.5rem; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.1);">
+            {linea_sel}
+        </h3>
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
+# Estilo personalizado para las métricas
+st.markdown("""
+<style>
+    .metric-container {
+        display: flex;
+        flex-direction: column;
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 1.25rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+    .metric-container:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    }
+    .metric-icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: #4361ee;
+    }
+    .metric-title {
+        color: #64748b;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .metric-value {
+        color: #1e293b;
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0;
+        line-height: 1.2;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# Crear columnas para las métricas
 col1, col2, col3 = st.columns(3)
+
+# Métrica 1: Modelo seleccionado
 with col1:
-    st.metric("📈 Modelo seleccionado", modelo_sel)
+    st.markdown(f"""
+    <div class="metric-container">
+        <div class="metric-icon">📊</div>
+        <div class="metric-title">Modelo Seleccionado</div>
+        <div class="metric-value">{modelo_sel}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+# Métrica 2: Escenarios activos
 with col2:
-    st.metric("🌍 Escenarios activos", len(escenarios_sel))
+    st.markdown(f"""
+    <div class="metric-container">
+        <div class="metric-icon">🌍</div>
+        <div class="metric-title">Escenarios Activos</div>
+        <div class="metric-value">{len(escenarios_sel)}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+# Métrica 3: Promedio 2030
 with col3:
     if not df_proj_sel.empty and len(escenarios_sel) > 0:
         df2030 = df_proj_sel[df_proj_sel["Fecha"].dt.year == 2030]
         if not df2030.empty:
             valor_promedio_2030 = df2030["Proyección"].mean()
-            st.metric("📌 Promedio 2030", f"{valor_promedio_2030:,.0f}")
+            valor_formateado = f"{valor_promedio_2030:,.0f}"
         else:
-            st.metric("📌 Promedio 2030", "N/A")
+            valor_formateado = "N/A"
     else:
-        st.metric("📌 Promedio 2030", "N/A")
+        valor_formateado = "N/A"
+    
+    st.markdown(f"""
+    <div class="metric-container">
+        <div class="metric-icon">📌</div>
+        <div class="metric-title">Promedio 2030</div>
+        <div class="metric-value">{valor_formateado}</div>
+    </div>
+    """, unsafe_allow_html=True)
 
 # ==============================
 # GRÁFICO PRINCIPAL
