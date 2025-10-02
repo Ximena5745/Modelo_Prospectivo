@@ -260,22 +260,33 @@ for escenario in escenarios_sel:
                     text_values = df_proj_anual["Proyección"].apply(lambda x: format_number(x, decimal_places))
                     fig.add_trace(go.Scatter(x=df_proj_anual["Fecha"], y=df_proj_anual["Proyección"], mode="text", text=text_values, textposition="top center", textfont=dict(size=10, color=color), showlegend=False, hoverinfo='skip'))
 
-# Línea divisoria (CORRECCIÓN FINAL APLICADA)
+# Línea divisoria (CORRECCIÓN FINAL APLICADA: Línea y Anotación Separadas)
 if mostrar_linea_divisoria and not df_hist_sel.empty and not df_proj_sel.empty:
     last_hist_date = df_hist_sel['Fecha'].max()
     fecha_corte = last_hist_date + pd.Timedelta(days=1)
-    
-    # Se sigue usando string para Plotly, pero el error se corrige eliminando 'annotation_position'
     fecha_corte_str = fecha_corte.strftime('%Y-%m-%d')
 
+    # 1. Añadir la línea vertical (SOLO LA LÍNEA)
     fig.add_vline(
         x=fecha_corte_str, 
         line_width=3, 
         line_dash="dash", 
-        line_color="#e74c3c", 
-        annotation_text="Inicio Proyección", 
-        # SE ELIMINA: annotation_position="top left", <--- ESTA ERA LA CAUSA DEL TypeError
-        annotation_font=dict(color="#e74c3c", size=12, weight="bold")
+        line_color="#e74c3c"
+    )
+    
+    # 2. Añadir la anotación por separado (EVITA EL TypeError)
+    fig.add_annotation(
+        x=fecha_corte_str, 
+        y=1,               # Posiciona en la parte superior del gráfico
+        xref="x",          # Usa la escala del Eje X
+        yref="paper",      # Usa la escala del gráfico (0 a 1)
+        text="Inicio Proyección",
+        showarrow=False,
+        xanchor="left",
+        yanchor="top",
+        font=dict(color="#e74c3c", size=12, weight="bold"),
+        # Ajuste vertical para que el texto no se superponga
+        yshift=-10 
     )
 
 
