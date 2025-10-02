@@ -50,10 +50,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("""
-<div style="text-align: center; margin-bottom: 2rem;">
-    <h1 style="margin-bottom: 0.5rem;">MODELO DE PROSPECTIVA POLI</h1>
-    <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #1a73e8, #2ecc71); margin: 0 auto 1rem; border-radius: 2px;"></div>
-    <p style="color: #64748b; font-size: 1.1rem; margin: 0;">Plataforma de análisis y proyección de indicadores estratégicos 2026-2030</p>
+<div style="text-align: center; margin: 1.5rem 0 2.5rem 0;">er; margin-bottom: 2rem;">
+    <h1 style="margin: 0 0 0.5rem 0; color: #0d47a1 !important; font-size: 2.75rem; font-weight: 800; letter-spacing: -0.5px;">MODELO DE PROSPECTIVA POLI</h1>: 0.5rem; color: #0d47a1 !important; font-size: 2.5rem; font-weight: 700;">MODELO DE PROSPECTIVA POLI</h1>
+    <div style="height: 5px; width: 240px; background: linear-gradient(90deg, #1a73e8, #2ecc71); margin: 0 auto 1rem; border-radius: 3px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div> width: 200px; background: linear-gradient(90deg, #1a73e8, #2ecc71); margin: 0 auto 1rem; border-radius: 2px;"></div>
+    <p style="color: #475569; font-size: 1.2rem; margin: 0.5rem 0 0 0; font-weight: 500; letter-spacing: 0.3px;">Plataforma de análisis y proyección de indicadores estratégicos 2026-2030</p>; font-size: 1.1rem; margin: 0;">Plataforma de análisis y proyección de indicadores estratégicos 2026-2030</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -166,7 +166,7 @@ with col3:
 # ==============================
 # GRÁFICO
 # ==============================
-st.markdown(f"## 📈 {indicador_sel}")
+# No need for this title as we have a more prominent one in the figure
 
 fig = go.Figure()
 df_hist_semestral = df_hist_sel[df_hist_sel["Fuente"] == "Semestral"]
@@ -184,7 +184,13 @@ decimal_places = 0
 if 'Decimales_Ejecucion' in df_hist_sel.columns and not df_hist_sel.empty:
     decimal_places = int(df_hist_sel['Decimales_Ejecucion'].iloc[0]) if pd.notna(df_hist_sel['Decimales_Ejecucion'].iloc[0]) else 0
 
-colores_escenarios = {'Base': '#1a73e8', 'Pesimista': '#e74c3c', 'Optimista': '#2ecc71'}
+colores_escenarios = {
+    'Base': '#1a73e8', 
+    'Pesimista': '#e74c3c',
+    'Optimista': '#2ecc71',
+    'Histórico Semestral': '#5c8bf2',
+    'Histórico Anual': '#5c8bf2'
+}
 
 # Agregar históricos
 if tipo_visualizacion == "Semestral" and not df_hist_semestral.empty:
@@ -223,75 +229,8631 @@ if mostrar_linea_divisoria and not df_hist_sel.empty and not df_proj_sel.empty:
     fig.add_shape(type="line", x0=fecha_division, x1=fecha_division, y0=0, y1=1, yref="paper", line=dict(color="#e74c3c", width=3, dash="dash"))
     fig.add_annotation(x=fecha_division, y=0.95, yref="paper", text="Histórico / Proyección", showarrow=False, font=dict(color="#e74c3c", size=12, weight="bold"), xanchor="center")
 
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
 fig.update_layout(
     template="plotly_white",
     plot_bgcolor='#ffffff',
     paper_bgcolor='#ffffff',
     height=650,
-    font=dict(family="Poppins", size=14, color="#2c3e50"),
+    font=dict(family="Poppins", size=14, color="#1e293b"),
     title=dict(
-        text=f"{indicador_sel} - Evolución Histórica y Proyección",
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
         x=0.5,
         y=0.95,
         xanchor='center',
         yanchor='top',
-        font=dict(size=20, color="#2c3e50", family="Poppins")
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
     ),
     hovermode='x unified',
     legend=dict(
         orientation="h",
         yanchor="bottom",
-        y=1.02,
+        y=1.05,
         xanchor="center",
         x=0.5,
         bgcolor="rgba(255,255,255,0.95)",
-        bordercolor="#e0e6ed",
-        borderwidth=1,
-        font=dict(size=13, family="Poppins")
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
     ),
     margin=dict(l=80, r=60, t=120, b=100),
     xaxis=dict(
         title=dict(
-            text="<b>Periodo</b>",
-            font=dict(size=16, weight=600, family="Poppins"),
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
             standoff=15
         ),
         showgrid=True,
         gridcolor='rgba(0,0,0,0.05)',
         gridwidth=1,
-        tickformat="%b %Y",
-        tickfont=dict(size=13, family="Poppins"),
-        linecolor='#e0e6ed',
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
         linewidth=2,
         mirror=True,
         showline=True,
         automargin=True,
-        tickangle=-30
+        tickangle=0,
+        fixedrange=True
     ),
     yaxis=dict(
         title=dict(
-            text=f"<b>{indicador_sel}</b>",
-            font=dict(size=16, weight=600, family="Poppins"),
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
             standoff=15
         ),
         showgrid=True,
         gridcolor='rgba(0,0,0,0.05)',
         gridwidth=1,
-        tickformat=",",
-        tickfont=dict(size=13, family="Poppins"),
-        linecolor='#e0e6ed',
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
         linewidth=2,
         mirror=True,
         showline=True,
         zeroline=False,
-        automargin=True
+        automargin=True,
+        fixedrange=True
     ),
     hoverlabel=dict(
         bgcolor="white",
-        font_size=14,
+        font_size=13,
         font_family="Poppins",
-        bordercolor="#e0e6ed",
+        bordercolor="#cbd5e0",
         namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}white",
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}ffff',
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}fffff',
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}"Poppins", size=14, color="#2c3e50"),
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}ador_sel} - Evolución Histórica y Proyección",
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}er',
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+},
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}e=20, color="#2c3e50", family="Poppins")
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}ied',
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}h",
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}om",
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}er",
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}(255,255,255,0.95)",
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}#e0e6ed",
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+},
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}e=13, family="Poppins")
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+} r=60, t=120, b=100),
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}Periodo</b>",
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}(size=16, weight=600, family="Poppins"),
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}15
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+},
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}ba(0,0,0,0.05)',
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}b %Y",
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}(size=13, family="Poppins"),
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}0e6ed',
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+},
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}ue,
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}>{indicador_sel}</b>",
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}(size=16, weight=600, family="Poppins"),
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}15
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+},
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}ba(0,0,0,0.05)',
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}",
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}(size=13, family="Poppins"),
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}0e6ed',
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+},
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}e,
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}ue
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}e",
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}Poppins",
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}#e0e6ed",
+# Configuración del formato de fechas para el eje X
+tickvals = []
+ticktext = []
+
+# Obtener años únicos de los datos históricos
+if not df_hist_sel.empty:
+    years = sorted(df_hist_sel['Fecha'].dt.year.unique())
+    for year in years:
+        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Añadir años de proyección si no existen en los datos históricos
+if not df_proj_sel.empty:
+    proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique())
+    for year in proj_years:
+        if year not in years:
+            tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
+            ticktext.extend([f"{year}-S1", f"{year}-S2"])
+
+# Actualizar el layout del gráfico
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#1e293b"),
+    title=dict(
+        text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#cbd5e0",
+        borderwidth=1.5,
+        font=dict(size=13, family="Poppins", color="#1e293b"),
+        itemsizing='constant',
+        itemclick=False,
+        itemdoubleclick=False
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>PERIODO</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=0,
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel.upper()}</b>",
+            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",  # Formato de números con separadores de miles
+        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        linecolor='#cbd5e0',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True,
+        fixedrange=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=13,
+        font_family="Poppins",
+        bordercolor="#cbd5e0",
+        namelength=-1
+    )
+)
+Estilos CSS Adicionales (al inicio del archivo, dentro de st.markdown con el estilo existente):
+css
+/* Añadir estos estilos dentro del bloque de estilos existente */
+.stPlotlyChart {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+/* Mejorar la visibilidad de las etiquetas de datos */
+.hovertext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* Mejorar la visibilidad de la leyenda */
+.legendtext {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+}
+
+/* Asegurar que los títulos de los ejes sean visibles */
+.xtitle, .ytitle {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+}
     )
 )
 
