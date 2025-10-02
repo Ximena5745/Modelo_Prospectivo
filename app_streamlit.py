@@ -23,8 +23,8 @@ st.set_page_config(
 # ==============================
 # Usar pathlib para rutas multiplataforma
 BASE_DIR = Path(__file__).parent
-RUTA_DATASET = str(BASE_DIR / "Prospectiva" / "Data" / "Dataset_Unificado.xlsx")
-RUTA_PROYECCIONES = str(BASE_DIR / "Prospectiva" / "Data" / "Proyecciones_Multimodelo.xlsx")
+RUTA_DATASET = str(BASE_DIR / "Data" / "Dataset_Unificado.xlsx")
+RUTA_PROYECCIONES = str(BASE_DIR / "Data" / "Proyecciones_Multimodelo.xlsx")
 
 # Datos históricos
 df_hist = pd.read_excel(RUTA_DATASET)
