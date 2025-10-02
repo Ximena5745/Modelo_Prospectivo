@@ -339,4 +339,6 @@ with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)"):
         df_final_display,
         use_container_width=True,
         hide_index=True
-    )
+    )   
+
+    ##rev
