@@ -223,7 +223,77 @@ if mostrar_linea_divisoria and not df_hist_sel.empty and not df_proj_sel.empty:
     fig.add_shape(type="line", x0=fecha_division, x1=fecha_division, y0=0, y1=1, yref="paper", line=dict(color="#e74c3c", width=3, dash="dash"))
     fig.add_annotation(x=fecha_division, y=0.95, yref="paper", text="Histórico / Proyección", showarrow=False, font=dict(color="#e74c3c", size=12, weight="bold"), xanchor="center")
 
-fig.update_layout(template="plotly", plot_bgcolor='#f5f5f5', paper_bgcolor='#ffffff', height=600, font=dict(family="Poppins", size=12, color="#1e293b"), hovermode='x unified', legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, bgcolor="rgba(255,255,255,0.95)", bordercolor="#cbd5e0", borderwidth=1, font=dict(size=11)), margin=dict(l=60, r=40, t=100, b=80), xaxis=dict(title=dict(text="Periodo", font=dict(size=13, weight=600)), showgrid=True, gridcolor='white', gridwidth=1.5, tickformat="%Y-%m", tickfont=dict(size=11), linecolor='#cbd5e0', linewidth=2, mirror=True), yaxis=dict(title=dict(text=indicador_sel, font=dict(size=13, weight=600)), showgrid=True, gridcolor='white', gridwidth=1.5, tickformat=",", tickfont=dict(size=11), linecolor='#cbd5e0', linewidth=2, mirror=True, zeroline=False), hoverlabel=dict(bgcolor="white", font_size=12, font_family="Poppins", bordercolor="#cbd5e0"))
+fig.update_layout(
+    template="plotly_white",
+    plot_bgcolor='#ffffff',
+    paper_bgcolor='#ffffff',
+    height=650,
+    font=dict(family="Poppins", size=14, color="#2c3e50"),
+    title=dict(
+        text=f"{indicador_sel} - Evolución Histórica y Proyección",
+        x=0.5,
+        y=0.95,
+        xanchor='center',
+        yanchor='top',
+        font=dict(size=20, color="#2c3e50", family="Poppins")
+    ),
+    hovermode='x unified',
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255,255,255,0.95)",
+        bordercolor="#e0e6ed",
+        borderwidth=1,
+        font=dict(size=13, family="Poppins")
+    ),
+    margin=dict(l=80, r=60, t=120, b=100),
+    xaxis=dict(
+        title=dict(
+            text="<b>Periodo</b>",
+            font=dict(size=16, weight=600, family="Poppins"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat="%b %Y",
+        tickfont=dict(size=13, family="Poppins"),
+        linecolor='#e0e6ed',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        automargin=True,
+        tickangle=-30
+    ),
+    yaxis=dict(
+        title=dict(
+            text=f"<b>{indicador_sel}</b>",
+            font=dict(size=16, weight=600, family="Poppins"),
+            standoff=15
+        ),
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)',
+        gridwidth=1,
+        tickformat=",",
+        tickfont=dict(size=13, family="Poppins"),
+        linecolor='#e0e6ed',
+        linewidth=2,
+        mirror=True,
+        showline=True,
+        zeroline=False,
+        automargin=True
+    ),
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=14,
+        font_family="Poppins",
+        bordercolor="#e0e6ed",
+        namelength=-1
+    )
+)
 
 st.plotly_chart(fig, use_container_width=True)
 
