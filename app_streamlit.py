@@ -23,65 +23,187 @@ st.markdown("""
         /* Estilo general */
         .main {
             background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* Título principal */
+        .main .block-container {
+            padding-top: 2rem;
+        }
+        
+        h1 {
+            color: #0F385A;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid #1a73e8;
         }
         
         /* Sidebar */
         [data-testid="stSidebar"] {
-            background-color: #e9f2ff;
+            background-color: #f0f7ff;
             border-right: 1px solid #d0e0ff;
+            padding: 1.5rem 1rem;
+        }
+        
+        [data-testid="stSidebar"] h1,
+        [data-testid="stSidebar"] h2,
+        [data-testid="stSidebar"] h3 {
+            color: #0F385A;
+            font-weight: 600;
+            margin-top: 1.5rem;
         }
         
         /* Títulos */
         h1, h2, h3, h4, h5, h6 {
             color: #1a3d6d;
+            font-weight: 600;
+        }
+        
+        h2 {
+            color: #1a3d6d;
+            font-size: 1.75rem;
+            margin: 1.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e1e5eb;
+        }
+        
+        h3 {
+            color: #2c5282;
+            font-size: 1.4rem;
+            margin: 1.2rem 0 0.8rem;
         }
         
         /* Botones */
         .stButton>button {
             background-color: #1a73e8;
             color: white;
-            border-radius: 4px;
+            border-radius: 6px;
             border: none;
-            padding: 0.5rem 1rem;
+            padding: 0.6rem 1.2rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 100%;
+            margin: 0.5rem 0;
         }
         
         .stButton>button:hover {
             background-color: #1557b0;
-            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
         
-        /* Selectores */
-        .stSelectbox, .stTextInput, .stNumberInput, .stDateInput {
+        /* Selectores y controles de formulario */
+        .stSelectbox, .stTextInput, .stNumberInput, .stDateInput, .stCheckbox {
+            margin: 0.5rem 0 1rem;
+            font-size: 1rem;
+        }
+        
+        .stSelectbox>div, .stTextInput>div, .stNumberInput>div, .stDateInput>div {
+            border-radius: 6px;
             border: 1px solid #cbd5e0;
-            border-radius: 4px;
+            transition: all 0.2s;
         }
         
-        /* Tabs */
+        .stSelectbox>div:hover, .stTextInput>div:hover, .stNumberInput>div:hover, .stDateInput>div:hover {
+            border-color: #90cdf4;
+            box-shadow: 0 0 0 1px #90cdf4;
+        }
+        
+        /* Checkboxes */
+        .stCheckbox {
+            color: #2d3748;
+            font-size: 0.95rem;
+        }
+        
+        .stCheckbox>label {
+            cursor: pointer;
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Pestañas */
         .stTabs [data-baseweb="tab-list"] {
             gap: 8px;
+            margin-bottom: 1.5rem;
         }
         
         .stTabs [data-baseweb="tab"] {
-            background-color: #e9f2ff;
-            border-radius: 4px 4px 0 0;
-            padding: 8px 16px;
+            background-color: #edf2f7;
+            border-radius: 6px;
+            padding: 0.6rem 1.2rem;
+            margin: 0.2rem;
+            font-weight: 500;
+            color: #4a5568;
+            transition: all 0.2s;
         }
         
         .stTabs [aria-selected="true"] {
             background-color: #1a73e8;
             color: white;
+            font-weight: 600;
         }
         
-        /* Cards */
+        /* Tarjetas y métricas */
         .stMetric {
             background-color: white;
-            border-radius: 8px;
-            padding: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            padding: 1.2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border-left: 4px solid #1a73e8;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .stMetric:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+        }
+        
+        .stMetric > div {
+            margin: 0;
+        }
+        
+        .stMetric > div > div:first-child {
+            color: #4a5568;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .stMetric > div > div:last-child {
+            color: #1a365d;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        /* Mejoras en los tooltips */
+        .stTooltip {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
     </style>
 """, unsafe_allow_html=True)
 
+
+# Título principal
+st.markdown("""
+<div style="text-align: center; margin-bottom: 2rem;">
+    <h1 style="color: #0F385A; font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem;">
+        MODELO DE PROSPECTIVA POLI
+    </h1>
+    <p style="color: #4a5568; font-size: 1.2rem; margin-top: 0;">
+        Análisis de indicadores estratégicos 2026-2030
+    </p>
+</div>
+""", unsafe_allow_html=True)
 
 # ==============================
 # LECTURA DE DATOS REALES
@@ -126,7 +248,14 @@ df_proj = pd.DataFrame(df_proj_list) if df_proj_list else pd.DataFrame()
 # SIDEBAR - CONTROLES
 # ==============================
 with st.sidebar:
-    st.header("⚙️ Controles de Escenario")
+    st.markdown("""
+    <div style="text-align: center; margin-bottom: 1.5rem;">
+        <h2 style="color: #0F385A; font-size: 1.5rem; font-weight: 600; margin: 0;">
+            ⚙️ CONTROLES DE ESCENARIO
+        </h2>
+        <div style="height: 3px; background: linear-gradient(90deg, #1a73e8, #34a853, #ea4335); margin: 0.5rem auto; width: 80%; border-radius: 3px;"></div>
+    </div>
+    """, unsafe_allow_html=True)
 
     # Líneas Estratégicas con colores en tonos azules profesionales
     lineas_estrategicas = {
@@ -223,7 +352,14 @@ with st.sidebar:
     # ==============================
     # CONFIGURACIÓN DEL GRÁFICO
     # ==============================
-    st.header("📊 Configuración del Gráfico")
+    st.markdown("""
+    <div style="text-align: center; margin: 2rem 0 1rem 0;">
+        <h3 style="color: #0F385A; font-size: 1.25rem; font-weight: 600; margin: 0;">
+            📊 CONFIGURACIÓN DEL GRÁFICO
+        </h3>
+        <div style="height: 2px; background: linear-gradient(90deg, #1a73e8, #34a853); margin: 0.5rem auto; width: 70%; border-radius: 2px;"></div>
+    </div>
+    """, unsafe_allow_html=True)
     
     # Tipo de visualización
     tipo_visualizacion = st.selectbox(
