@@ -60,7 +60,6 @@ st.markdown("""
 # ==============================
 BASE_DIR = Path(__file__).parent
 try:
-    # Estas rutas asumen que los archivos están en una carpeta 'Data'
     RUTA_DATASET = str(BASE_DIR / "Data" / "Dataset_Unificado.xlsx")
     RUTA_PROYECCIONES = str(BASE_DIR / "Data" / "Proyecciones_Multimodelo.xlsx")
 
@@ -102,7 +101,7 @@ if not df_proj_raw.empty:
 df_proj = pd.DataFrame(df_proj_list) if df_proj_list else pd.DataFrame()
 
 # ==============================
-# SIDEBAR (RESTAURADO AL CÓDIGO ORIGINAL SOLICITADO)
+# SIDEBAR (ESTRUCTURA ORIGINAL MANTENIDA)
 # ==============================
 with st.sidebar:
     st.markdown('<div style="text-align: center; margin-bottom: 1.5rem;"><h2>⚙️ CONTROLES</h2></div>', unsafe_allow_html=True)
@@ -194,6 +193,7 @@ colores_escenarios = {
 df_base = df_proj_sel[df_proj_sel['Escenario'] == 'Base']
 
 if not df_base.empty:
+    # Usar .max() para obtener la última fecha proyectada en 2026 y 2030 (si existen)
     valor_2026 = df_base[df_base['Fecha'].dt.year == 2026]['Proyección'].max()
     valor_2030 = df_base[df_base['Fecha'].dt.year == 2030]['Proyección'].max()
     ultimo_historico = df_hist_sel['Ejecución'].max() if not df_hist_sel.empty else np.nan
@@ -260,12 +260,12 @@ for escenario in escenarios_sel:
                     text_values = df_proj_anual["Proyección"].apply(lambda x: format_number(x, decimal_places))
                     fig.add_trace(go.Scatter(x=df_proj_anual["Fecha"], y=df_proj_anual["Proyección"], mode="text", text=text_values, textposition="top center", textfont=dict(size=10, color=color), showlegend=False, hoverinfo='skip'))
 
-# Línea divisoria (CORRECCIÓN APLICADA PARA EVITAR TypeError)
+# Línea divisoria (CORRECCIÓN FINAL APLICADA)
 if mostrar_linea_divisoria and not df_hist_sel.empty and not df_proj_sel.empty:
     last_hist_date = df_hist_sel['Fecha'].max()
     fecha_corte = last_hist_date + pd.Timedelta(days=1)
     
-    # FIX: Convertir el Timestamp a string para que Plotly pueda manejar la anotación sin error.
+    # Se sigue usando string para Plotly, pero el error se corrige eliminando 'annotation_position'
     fecha_corte_str = fecha_corte.strftime('%Y-%m-%d')
 
     fig.add_vline(
@@ -274,12 +274,12 @@ if mostrar_linea_divisoria and not df_hist_sel.empty and not df_proj_sel.empty:
         line_dash="dash", 
         line_color="#e74c3c", 
         annotation_text="Inicio Proyección", 
-        annotation_position="top left",
+        # SE ELIMINA: annotation_position="top left", <--- ESTA ERA LA CAUSA DEL TypeError
         annotation_font=dict(color="#e74c3c", size=12, weight="bold")
     )
 
 
-# Configuración del formato de fechas para el eje X
+# Configuración del formato de fechas para el eje X (YYYY-S#)
 tickvals = []
 ticktext = []
 years = []
@@ -290,7 +290,6 @@ all_years = sorted(list(set(years)))
 
 for year in all_years:
     if tipo_visualizacion == "Semestral":
-        # FORMATO SOLICITADO: YYYY-S1 / YYYY-S2
         tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
         ticktext.extend([f"{year}-S1", f"{year}-S2"]) 
     elif tipo_visualizacion == "Anual":
@@ -362,22 +361,17 @@ st.plotly_chart(fig, use_container_width=True)
 # ==============================
 st.markdown("---")
 with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)"):
-    # Prepara el DataFrame combinado para mostrar
     df_hist_display = df_hist_sel.rename(columns={'Ejecución': 'Histórico'})[['Fecha', 'Indicador', 'Histórico', 'Fuente']]
     
-    # Pivotear la tabla de proyecciones para un mejor formato
     df_proj_display = df_proj_sel.pivot_table(index='Fecha', columns='Escenario', values='Proyección').reset_index()
     
-    # Unir las tablas por Fecha
     df_final_display = pd.merge(df_hist_display, df_proj_display, on='Fecha', how='outer')
     df_final_display = df_final_display.sort_values(by='Fecha').reset_index(drop=True)
     
-    # Aplicar formato a los números
     for col in df_final_display.columns:
         if df_final_display[col].dtype in [np.float64, np.int64]:
             df_final_display[col] = df_final_display[col].apply(lambda x: format_number(x, decimal_places) if pd.notna(x) else '-')
     
-    # Ajustar el formato de la columna Fecha (solo mostrar fecha)
     df_final_display['Fecha'] = df_final_display['Fecha'].dt.strftime('%Y-%m-%d')
 
 
