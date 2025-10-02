@@ -28,7 +28,7 @@ st.markdown("""
         h1 { color: #0d47a1; font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.5px; }
         h2 { color: #1a73e8; font-size: 1.75rem; font-weight: 600; margin: 2rem 0 1rem 0; padding-bottom: 0.5rem; border-bottom: 3px solid #e3f2fd; }
         h3 { color: #1557b0; font-size: 1.25rem; font-weight: 600; margin: 1.5rem 0 0.75rem 0; }
-        /* Estilos del Sidebar (Mantenidos del original) */
+        /* Estilos del Sidebar */
         [data-testid="stSidebar"] { background: linear-gradient(180deg, #0d47a1 0%, #1565c0 100%); padding: 1.5rem 1rem; }
         [data-testid="stSidebar"] * { color: white !important; }
         [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 { color: white !important; border-bottom: 2px solid rgba(255,255,255,0.2); padding-bottom: 0.5rem; margin-bottom: 1rem; }
@@ -44,6 +44,16 @@ st.markdown("""
         .metric-label { color: #64748b; font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
         .metric-value { color: #0d47a1; font-size: 2rem; font-weight: 700; line-height: 1; }
         .stPlotlyChart { border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); overflow: hidden; margin: 1.5rem 0; }
+        /* Estilos específicos para el botón de descarga */
+        [data-testid="stDownloadButton"] > button {
+            background-color: #2ecc71; 
+            border-left: 4px solid #27ae60;
+            color: white !important;
+            padding: 0.5rem 1rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3) !important;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -101,7 +111,7 @@ if not df_proj_raw.empty:
 df_proj = pd.DataFrame(df_proj_list) if df_proj_list else pd.DataFrame()
 
 # ==============================
-# SIDEBAR (ESTRUCTURA ORIGINAL MANTENIDA)
+# SIDEBAR
 # ==============================
 with st.sidebar:
     st.markdown('<div style="text-align: center; margin-bottom: 1.5rem;"><h2>⚙️ CONTROLES</h2></div>', unsafe_allow_html=True)
@@ -166,6 +176,12 @@ df_proj_sel = df_proj[(df_proj["Indicador"] == indicador_sel) & (df_proj["Modelo
 # ==============================
 # FUNCIONES AUXILIARES
 # ==============================
+@st.cache_data
+def convert_df_to_csv(df):
+    """Convierte el DataFrame a una cadena CSV para descarga."""
+    # Usamos punto y coma como separador y codificación utf-8 para manejar caracteres especiales.
+    return df.to_csv(index=False, sep=';').encode('utf-8')
+
 def format_number(value, decimals):
     if pd.isna(value): return ''
     try:
@@ -187,13 +203,13 @@ colores_escenarios = {
 }
 
 # ==============================
-# TARJETAS DE RESUMEN
+# TARJETAS DE RESUMEN (Verificar si el escenario base existe)
 # ==============================
 
 df_base = df_proj_sel[df_proj_sel['Escenario'] == 'Base']
 
 if not df_base.empty:
-    # Usar .max() para obtener la última fecha proyectada en 2026 y 2030 (si existen)
+    # Obtener el valor de proyección para 2026 y 2030 (el último registro de ese año)
     valor_2026 = df_base[df_base['Fecha'].dt.year == 2026]['Proyección'].max()
     valor_2030 = df_base[df_base['Fecha'].dt.year == 2030]['Proyección'].max()
     ultimo_historico = df_hist_sel['Ejecución'].max() if not df_hist_sel.empty else np.nan
@@ -215,10 +231,14 @@ if not df_base.empty:
         else: tendencia, icon_tend, color_tend = "Estable", "🟡", "#f1c40f"
         st.markdown(f'<div class="metric-card" style="border-left-color: {color_tend};"><div class="metric-label">📊 TENDENCIA PERIODO</div><div style="font-size: 2rem; margin: 0.5rem 0;">{icon_tend}</div><div style="color: {color_tend}; font-size: 1.1rem; font-weight: 700;">{tendencia}</div></div>', unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
+else:
+    # Mensaje si no hay datos del escenario base para que el usuario sepa por qué no aparecen
+    st.warning("⚠️ No hay datos de Proyección (Escenario Base) para el Modelo/Indicador seleccionado. Las tarjetas de resumen están ocultas.")
+    st.markdown("<br>", unsafe_allow_html=True)
 
 
 # ==============================
-# GRÁFICO (CON FECHAS Y CORRECCIÓN DE ERROR)
+# GRÁFICO 
 # ==============================
 st.subheader("Evolución Histórica y Proyección Detallada")
 
@@ -227,17 +247,15 @@ df_hist_anual = df_hist_sel[df_hist_sel["Fuente"] == "Cierre"]
 
 fig = go.Figure()
 
-# Agregar históricos
-if tipo_visualizacion == "Semestral" and not df_hist_semestral.empty:
-    fig.add_trace(go.Scatter(x=df_hist_semestral["Fecha"], y=df_hist_semestral["Ejecución"], name="Histórico Semestral", line=dict(color='#5c8bf2', width=2.5), marker=dict(size=8, color='#5c8bf2', line=dict(width=1, color='white')), mode='lines+markers', hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'))
+# Agregar históricos (Lógica simplificada por periodicidad)
+df_hist_trace = df_hist_semestral if tipo_visualizacion == "Semestral" else df_hist_anual
+trace_name = "Histórico Semestral" if tipo_visualizacion == "Semestral" else "Histórico Anual"
+
+if not df_hist_trace.empty:
+    fig.add_trace(go.Scatter(x=df_hist_trace["Fecha"], y=df_hist_trace["Ejecución"], name=trace_name, line=dict(color='#5c8bf2', width=2.5), marker=dict(size=8, color='#5c8bf2', line=dict(width=1, color='white')), mode='lines+markers', hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'))
     if mostrar_numeros:
-        text_values = df_hist_semestral["Ejecución"].apply(lambda x: format_number(x, decimal_places))
-        fig.add_trace(go.Scatter(x=df_hist_semestral["Fecha"], y=df_hist_semestral["Ejecución"], mode="text", text=text_values, textposition="top center", textfont=dict(size=10, color='#5c8bf2'), showlegend=False, hoverinfo='skip'))
-elif tipo_visualizacion == "Anual" and not df_hist_anual.empty:
-    fig.add_trace(go.Scatter(x=df_hist_anual["Fecha"], y=df_hist_anual["Ejecución"], name="Histórico Anual", line=dict(color='#5c8bf2', width=2.5), marker=dict(size=8, color='#5c8bf2', line=dict(width=1, color='white')), mode='lines+markers', hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'))
-    if mostrar_numeros:
-        text_values = df_hist_anual["Ejecución"].apply(lambda x: format_number(x, decimal_places))
-        fig.add_trace(go.Scatter(x=df_hist_anual["Fecha"], y=df_hist_anual["Ejecución"], mode="text", text=text_values, textposition="top center", textfont=dict(size=10, color='#5c8bf2'), showlegend=False, hoverinfo='skip'))
+        text_values = df_hist_trace["Ejecución"].apply(lambda x: format_number(x, decimal_places))
+        fig.add_trace(go.Scatter(x=df_hist_trace["Fecha"], y=df_hist_trace["Ejecución"], mode="text", text=text_values, textposition="top center", textfont=dict(size=10, color='#5c8bf2'), showlegend=False, hoverinfo='skip'))
 
 # Agregar proyecciones
 for escenario in escenarios_sel:
@@ -245,22 +263,18 @@ for escenario in escenarios_sel:
     if not df_esc.empty:
         color = colores_escenarios.get(escenario, '#1a73e8')
         
-        if tipo_visualizacion == "Semestral":
-            df_esc_sorted = df_esc.sort_values('Fecha')
-            fig.add_trace(go.Scatter(x=df_esc_sorted["Fecha"], y=df_esc_sorted["Proyección"], name=escenario, line=dict(color=color, width=2.5, dash='dot'), marker=dict(size=8, color=color, line=dict(width=1, color='white')), mode='lines+markers', hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'))
-            if mostrar_numeros:
-                text_values = df_esc_sorted["Proyección"].apply(lambda x: format_number(x, decimal_places))
-                fig.add_trace(go.Scatter(x=df_esc_sorted["Fecha"], y=df_esc_sorted["Proyección"], mode="text", text=text_values, textposition="top center", textfont=dict(size=10, color=color), showlegend=False, hoverinfo='skip'))
-        elif tipo_visualizacion == "Anual":
-             # Filtra solo las proyecciones que representan el cierre del año (Enero del siguiente o el último registro)
-            df_proj_anual = df_esc[df_esc["Fecha"].dt.month == 1]
-            if not df_proj_anual.empty:
-                fig.add_trace(go.Scatter(x=df_proj_anual["Fecha"], y=df_proj_anual["Proyección"], name=f"{escenario} (Anual)", line=dict(color=color, width=2.5, dash='dot'), marker=dict(size=8, color=color, line=dict(width=1, color='white')), mode='lines+markers', hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'))
-                if mostrar_numeros:
-                    text_values = df_proj_anual["Proyección"].apply(lambda x: format_number(x, decimal_places))
-                    fig.add_trace(go.Scatter(x=df_proj_anual["Fecha"], y=df_proj_anual["Proyección"], mode="text", text=text_values, textposition="top center", textfont=dict(size=10, color=color), showlegend=False, hoverinfo='skip'))
+        # Filtra solo fechas que coincidan con la periodicidad para Anual (Enero, asumido como cierre)
+        df_plot = df_esc.sort_values('Fecha')
+        if tipo_visualizacion == "Anual":
+            df_plot = df_esc[df_esc["Fecha"].dt.month == 1].sort_values('Fecha')
 
-# Línea divisoria (CORRECCIÓN FINAL APLICADA: Línea y Anotación Separadas)
+        if not df_plot.empty:
+            fig.add_trace(go.Scatter(x=df_plot["Fecha"], y=df_plot["Proyección"], name=escenario + (" (Anual)" if tipo_visualizacion == "Anual" else ""), line=dict(color=color, width=2.5, dash='dot'), marker=dict(size=8, color=color, line=dict(width=1, color='white')), mode='lines+markers', hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'))
+            if mostrar_numeros:
+                text_values = df_plot["Proyección"].apply(lambda x: format_number(x, decimal_places))
+                fig.add_trace(go.Scatter(x=df_plot["Fecha"], y=df_plot["Proyección"], mode="text", text=text_values, textposition="top center", textfont=dict(size=10, color=color), showlegend=False, hoverinfo='skip'))
+
+# Línea divisoria (Separada para evitar TypeError)
 if mostrar_linea_divisoria and not df_hist_sel.empty and not df_proj_sel.empty:
     last_hist_date = df_hist_sel['Fecha'].max()
     fecha_corte = last_hist_date + pd.Timedelta(days=1)
@@ -274,18 +288,17 @@ if mostrar_linea_divisoria and not df_hist_sel.empty and not df_proj_sel.empty:
         line_color="#e74c3c"
     )
     
-    # 2. Añadir la anotación por separado (EVITA EL TypeError)
+    # 2. Añadir la anotación por separado
     fig.add_annotation(
         x=fecha_corte_str, 
-        y=1,               # Posiciona en la parte superior del gráfico
-        xref="x",          # Usa la escala del Eje X
-        yref="paper",      # Usa la escala del gráfico (0 a 1)
+        y=1,               
+        xref="x",          
+        yref="paper",      
         text="Inicio Proyección",
         showarrow=False,
         xanchor="left",
         yanchor="top",
         font=dict(color="#e74c3c", size=12, weight="bold"),
-        # Ajuste vertical para que el texto no se superponga
         yshift=-10 
     )
 
@@ -368,23 +381,38 @@ fig.update_layout(
 st.plotly_chart(fig, use_container_width=True)
 
 # ==============================
-# TABLA DE DATOS DETALLADOS
+# TABLA DE DATOS DETALLADOS y DESCARGA
 # ==============================
 st.markdown("---")
 with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)"):
+    # Preparación de la tabla
     df_hist_display = df_hist_sel.rename(columns={'Ejecución': 'Histórico'})[['Fecha', 'Indicador', 'Histórico', 'Fuente']]
-    
     df_proj_display = df_proj_sel.pivot_table(index='Fecha', columns='Escenario', values='Proyección').reset_index()
-    
     df_final_display = pd.merge(df_hist_display, df_proj_display, on='Fecha', how='outer')
     df_final_display = df_final_display.sort_values(by='Fecha').reset_index(drop=True)
     
+    # Clonar para la descarga antes de aplicar formato de texto
+    df_download = df_final_display.copy()
+
+    # Aplicar formato de número para visualización
     for col in df_final_display.columns:
         if df_final_display[col].dtype in [np.float64, np.int64]:
             df_final_display[col] = df_final_display[col].apply(lambda x: format_number(x, decimal_places) if pd.notna(x) else '-')
     
+    # Ajustar el formato de la columna Fecha (solo mostrar fecha)
     df_final_display['Fecha'] = df_final_display['Fecha'].dt.strftime('%Y-%m-%d')
-
+    
+    # --- BOTÓN DE DESCARGA (Solución al segundo problema) ---
+    csv_file = convert_df_to_csv(df_download)
+    
+    st.download_button(
+        label="📥 Descargar Información Detallada (CSV)",
+        data=csv_file,
+        file_name=f'{indicador_sel}_{modelo_sel}_Proyecciones.csv',
+        mime='text/csv',
+        key='download_csv_button'
+    )
+    # --- FIN BOTÓN DE DESCARGA ---
 
     st.dataframe(
         df_final_display,
