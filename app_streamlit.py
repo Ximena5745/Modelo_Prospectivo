@@ -640,13 +640,23 @@ for escenario in escenarios_sel:
 # Línea divisoria
 if mostrar_linea_divisoria and not df_hist_sel.empty and not df_proj_sel.empty:
     fecha_division = pd.Timestamp('2025-12-31')
-    fig.add_vline(
-        x=fecha_division, 
-        line_dash="dash", 
-        line_color="#e74c3c", 
-        line_width=3,
-        annotation_text="Histórico / Proyección",
-        annotation_position="top"
+    fig.add_shape(
+        type="line",
+        x0=fecha_division,
+        x1=fecha_division,
+        y0=0,
+        y1=1,
+        yref="paper",
+        line=dict(color="#e74c3c", width=3, dash="dash")
+    )
+    fig.add_annotation(
+        x=fecha_division,
+        y=0.95,
+        yref="paper",
+        text="Histórico / Proyección",
+        showarrow=False,
+        font=dict(color="#e74c3c", size=12, weight="bold"),
+        xanchor="center"
     )
 
 fig.update_layout(
