@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 from pathlib import Path
-import numpy as np # Necesario para manejar NaN
+import numpy as np 
 
 # ==============================
 # CONFIGURACIÓN STREAMLIT
@@ -132,7 +132,7 @@ st.header("Análisis de Proyección de {}".format(indicador_sel))
 st.markdown("---")
 
 # ==============================
-# TARJETAS DE RESUMEN (Validación de cálculo y formato)
+# TARJETAS DE RESUMEN 
 # ==============================
 
 # Se requiere un escenario base para las tarjetas
@@ -180,7 +180,7 @@ df_hist_anual = df_hist_sel[df_hist_sel["Fuente"] == "Cierre"]
 fig.add_trace(go.Scatter(
     x=df_hist_semestral['Fecha'], 
     y=df_hist_semestral['Valor'], 
-    mode='lines+markers' + ('+text' if mostrar_numeros else ''), # Añade texto si está marcado
+    mode='lines+markers' + ('+text' if mostrar_numeros else ''), 
     text=[format_number(v, decimal_places) for v in df_hist_semestral['Valor']] if mostrar_numeros else None,
     textposition="top center",
     name='Histórico Semestral',
@@ -223,11 +223,14 @@ for escenario in df_proj_sel['Escenario'].unique():
     ))
 
 # ----------------------------------
-# 2. LÍNEA DIVISORIA Y CONFIGURACIÓN DEL EJE X
+# 2. LÍNEA DIVISORIA Y CONFIGURACIÓN DEL EJE X (ERROR CORREGIDO AQUÍ)
 # ----------------------------------
 fecha_corte = df_hist_sel['Fecha'].max() + pd.Timedelta(days=1) if not df_hist_sel.empty else pd.to_datetime('2025-01-01')
 
-fig.add_vline(x=fecha_corte, line_width=2, line_dash="dash", line_color="#3498db", annotation_text="Inicio Proyección", annotation_position="top left")
+# FIX: Convertir el Timestamp a string para evitar TypeError en add_vline con anotaciones.
+fecha_corte_str = fecha_corte.strftime('%Y-%m-%d') 
+
+fig.add_vline(x=fecha_corte_str, line_width=2, line_dash="dash", line_color="#3498db", annotation_text="Inicio Proyección", annotation_position="top left")
 
 # Generar marcas y etiquetas de ticks para el eje X
 tickvals = []
@@ -241,12 +244,12 @@ for year in all_years:
         tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
         ticktext.extend([f"{year}-S1", f"{year}-S2"])
     else:
-        tickvals.append(f"{year}-07-01") # Centro del año
+        tickvals.append(f"{year}-07-01") 
         ticktext.append(str(year))
 
 
 # ----------------------------------
-# 3. LAYOUT Y ESTILOS (AJUSTES FINALES Y VALIDACIÓN DE TEXTO)
+# 3. LAYOUT Y ESTILOS (Validación de texto)
 # ----------------------------------
 
 fig.update_layout(
@@ -284,7 +287,6 @@ fig.update_layout(
         tickvals=tickvals, ticktext=ticktext,
         tickfont=dict(size=12, family="Poppins", color="#475569"),
         linecolor='#cbd5e0', linewidth=2, mirror=True, showline=True, automargin=True,
-        # INCLINACIÓN CONDICIONAL: Evita solapamiento de S1/S2
         tickangle=45 if tipo_visualizacion == "Semestral" and len(all_years) > 5 else 0,
         fixedrange=True
     ),
@@ -297,7 +299,7 @@ fig.update_layout(
             standoff=20
         ),
         showgrid=True, gridcolor='rgba(0,0,0,0.05)',
-        tickformat=f",.{int(decimal_places)}f", # Formato de miles y decimales correcto
+        tickformat=f",.{int(decimal_places)}f", 
         tickfont=dict(size=12, family="Poppins", color="#475569"),
         linecolor='#cbd5e0', linewidth=2, mirror=True, showline=True,
         zeroline=False, automargin=True, fixedrange=True
