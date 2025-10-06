@@ -332,19 +332,19 @@ fig.update_layout(
     template="plotly_white",
     plot_bgcolor='#ffffff',
     paper_bgcolor='#ffffff',
-    height=650,
-    font=dict(family="Poppins", size=14, color="#1e293b"),
+    height=750,
+    font=dict(family="Poppins", size=16, color="#1e293b"),
     
     title=dict(
         text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección (Modelo: {modelo_sel})",
         x=0.5, y=0.95, xanchor='center', yanchor='top',
-        font=dict(size=22, color="#0d47a1", family="Poppins", weight="bold")
+        font=dict(size=26, color="#0d47a1", family="Poppins", weight="bold")
     ),
     hovermode='x unified',
     legend=dict(
         orientation="h", yanchor="bottom", y=1.05, xanchor="center", x=0.5,
         bgcolor="rgba(255,255,255,0.95)", bordercolor="#cbd5e0", borderwidth=1.5,
-        font=dict(size=13, family="Poppins", color="#1e293b"),
+        font=dict(size=16, family="Poppins", color="#1e293b"),
         itemsizing='constant', itemclick=False, itemdoubleclick=False
     ),
     margin=dict(l=80, r=60, t=120, b=100),
@@ -353,13 +353,13 @@ fig.update_layout(
     xaxis=dict(
         title=dict(
             text="<b>PERIODO</b>",
-            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            font=dict(size=18, weight=600, family="Poppins", color="#1e293b"),
             standoff=15
         ),
         showgrid=True, gridcolor='rgba(0,0,0,0.05)', gridwidth=1,
         tickvals=tickvals,
         ticktext=ticktext, 
-        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        tickfont=dict(size=14, family="Poppins", color="#475569"),
         linecolor='#cbd5e0', linewidth=2, mirror=True, showline=True, automargin=True,
         # Rotación forzada a 45 grados para vista Semestral
         tickangle=45 if tipo_visualizacion == "Semestral" else 0,
@@ -370,17 +370,17 @@ fig.update_layout(
     yaxis=dict(
         title=dict(
             text=f"<b>{indicador_sel.upper()}</b>",
-            font=dict(size=15, weight=600, family="Poppins", color="#1e293b"),
+            font=dict(size=18, weight=600, family="Poppins", color="#1e293b"),
             standoff=15
         ),
         showgrid=True, gridcolor='rgba(0,0,0,0.05)', gridwidth=1,
         tickformat=f",.{int(decimal_places)}f", 
-        tickfont=dict(size=12, family="Poppins", color="#475569"),
+        tickfont=dict(size=14, family="Poppins", color="#475569"),
         linecolor='#cbd5e0', linewidth=2, mirror=True, showline=True,
         zeroline=False, automargin=True, fixedrange=True
     ),
     hoverlabel=dict(
-        bgcolor="white", font_size=13, font_family="Poppins", bordercolor="#cbd5e0", namelength=-1
+        bgcolor="white", font_size=16, font_family="Poppins", bordercolor="#cbd5e0", namelength=-1
     )
 )
 
