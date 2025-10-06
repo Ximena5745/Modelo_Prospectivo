@@ -378,9 +378,9 @@ fig.update_layout(
     # Título principal (nombre del indicador)
     title=dict(
         text=f"<b>{indicador_sel}</b>",
-        x=0.02,  # Alineado a la izquierda
+        x=0.5,   # Centrado
         y=0.98,  # Cerca del borde superior
-        xanchor='left',
+        xanchor='center',
         yanchor='top',
         font=dict(size=24, color="#0d47a1", family="Poppins", weight="bold")
     ),
@@ -395,16 +395,18 @@ fig.update_layout(
             showarrow=False,
             font=dict(size=18, color="#4a5568", family="Poppins")
         ),
-        # Modelo en esquina superior derecha
+        # Modelo en la parte superior derecha, fuera del área del gráfico
         dict(
             text=f"Modelo: {modelo_sel}",
-            x=0.98,  # Alineado a la derecha
-            y=0.98,  # Cerca del borde superior
+            x=1.02,  # Fuera del área del gráfico (más de 1.0)
+            y=1.0,   # Parte superior
             xref="paper",
             yref="paper",
             showarrow=False,
             font=dict(size=14, color="#718096", family="Poppins", style="italic"),
-            align="right"
+            align="left",
+            xanchor="left",
+            yanchor="top"
         )
     ],
     hovermode='x unified',
@@ -472,13 +474,12 @@ fig.update_layout(
         align="left"
     ),
     # Ajustar el espaciado para las etiquetas
-    margin=dict(t=160, b=140, l=140, r=100, pad=15)
-)
+    margin=dict(t=100, b=100, l=140, r=250, pad=15),  # Aumentado el margen derecho para el modelo
 
 # Mostrar la gráfica
 st.plotly_chart(fig, use_container_width=True)
 
-# ==============================
+{{ ... }}
 # TABLA DE DATOS DETALLADOS y DESCARGA
 # ==============================
 st.markdown("---")
