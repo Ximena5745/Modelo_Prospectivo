@@ -412,6 +412,9 @@ fig.update_layout(
     margin=dict(t=160, b=140, l=140, r=100, pad=15)
 )
 
+# Mostrar la gráfica
+st.plotly_chart(fig, use_container_width=True)
+
 # ==============================
 # TABLA DE DATOS DETALLADOS y DESCARGA
 # ==============================
