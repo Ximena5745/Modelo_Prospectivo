@@ -336,7 +336,7 @@ if mostrar_linea_divisoria and not df_hist_sel.empty and not df_proj_sel.empty:
         showarrow=False,
         xanchor="left",
         yanchor="top",
-        font=dict(color="#e74c3c", size=12, weight="bold"),
+        font=dict(color="#808080", size=12, weight="bold"),
         yshift=-10 
     )
 
