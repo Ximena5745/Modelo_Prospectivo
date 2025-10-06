@@ -254,7 +254,7 @@ df_hist_trace = df_hist_semestral if tipo_visualizacion == "Semestral" else df_h
 trace_name = "Histórico Semestral" if tipo_visualizacion == "Semestral" else "Histórico Anual"
 
 if not df_hist_trace.empty:
-    fig.add_trace(go.Scatter(x=df_hist_trace["Fecha"], y=df_hist_trace["Ejecución"], name=trace_name, line=dict(color='#5c8bf2', width=2.5), marker=dict(size=8, color='#5c8bf2', line=dict(width=1, color='white')), mode='lines+markers', hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'))
+    fig.add_trace(go.Scatter(x=df_hist_trace["Fecha"], y=df_hist_trace["Ejecución"], name=trace_name, line=dict(color='#FF00FF', width=2.5), marker=dict(size=8, color='#FF00FF', line=dict(width=1, color='white')), mode='lines+markers', hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'))
     if mostrar_numeros:
         text_values = df_hist_trace["Ejecución"].apply(lambda x: format_number(x, decimal_places))
         fig.add_trace(go.Scatter(
@@ -265,7 +265,7 @@ if not df_hist_trace.empty:
             textposition="top center", 
             textfont=dict(
                 size=14, 
-                color='#5c8bf2', 
+                color='#FF00FF', 
                 family="Poppins",
                 weight="bold"
             ),
