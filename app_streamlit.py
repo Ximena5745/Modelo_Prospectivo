@@ -203,10 +203,24 @@ decimal_places = 0
 if 'Decimales_Ejecucion' in df_hist_sel.columns and not df_hist_sel.empty:
     decimal_places = int(df_hist_sel['Decimales_Ejecucion'].iloc[0]) if pd.notna(df_hist_sel['Decimales_Ejecucion'].iloc[0]) else 0
 
-colores_escenarios = {
-    'Base': '#1a73e8', 
-    'Pesimista': '#e74c3c',
-    'Optimista': '#2ecc71',
+# Determinar si el indicador tiene sentido negativo (donde menor es mejor)
+indicador_negativo = any(palabra in indicador_sel.lower() for palabra in ['reducción', 'disminución', 'menor', 'bajo', 'disminuir', 'reducir'])
+
+# Determinar colores de los escenarios
+if indicador_negativo:
+    # Invertir colores para indicadores donde menor es mejor
+    colores_escenarios = {
+        'Optimista': '#e74c3c',  # Rojo (peor escenario)
+        'Base': '#1a73e8',       # Azul (neutral)
+        'Pesimista': '#2ecc71'   # Verde (mejor escenario)
+    }
+else:
+    # Colores estándar para indicadores donde mayor es mejor
+    colores_escenarios = {
+        'Optimista': '#2ecc71',  # Verde (mejor escenario)
+        'Base': '#1a73e8',      # Azul (neutral)
+        'Pesimista': '#e74c3c'  # Rojo (peor escenario)
+    }
     'Histórico Semestral': '#5c8bf2',
     'Histórico Anual': '#5c8bf2'
 }
@@ -264,6 +278,19 @@ trace_name = "Histórico Semestral" if tipo_visualizacion == "Semestral" else "H
 
 if not df_hist_trace.empty:
     fig.add_trace(go.Scatter(x=df_hist_trace["Fecha"], y=df_hist_trace["Ejecución"], name=trace_name, line=dict(color='#D4A017', width=2.5), marker=dict(size=8, color='#D4A017', line=dict(width=1, color='white')), mode='lines+markers', hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'))
+    
+    # Añadir anotación para explicar la inversión de colores si es un indicador negativo
+    if 'indicador_negativo' in locals() and indicador_negativo:
+        fig.add_annotation(
+            x=0.98,
+            y=0.92,
+            xref='paper',
+            yref='paper',
+            text="<i>Nota: Los colores están invertidos (menor = mejor)</i>",
+            showarrow=False,
+            font=dict(size=12, color="#666666"),
+            align="right"
+        )
     if mostrar_numeros:
         text_values = df_hist_trace["Ejecución"].apply(lambda x: format_number(x, decimal_places))
         fig.add_trace(go.Scatter(
