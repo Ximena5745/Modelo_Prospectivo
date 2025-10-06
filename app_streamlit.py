@@ -171,7 +171,16 @@ if 'Linea' in df_hist.columns:
 else:
     df_hist_sel = df_hist[df_hist["Indicador"] == indicador_sel]
 
-df_proj_sel = df_proj[(df_proj["Indicador"] == indicador_sel) & (df_proj["Modelo"] == modelo_sel) & (df_proj["Escenario"].isin(escenarios_sel))]
+# Filtrar datos históricos hasta 2030-S2
+df_hist_sel = df_hist_sel[df_hist_sel['Fecha'] <= '2030-12-31']
+
+# Filtrar proyecciones hasta 2030-S2
+df_proj_sel = df_proj[
+    (df_proj["Indicador"] == indicador_sel) & 
+    (df_proj["Modelo"] == modelo_sel) & 
+    (df_proj["Escenario"].isin(escenarios_sel)) &
+    (df_proj['Fecha'] <= '2030-12-31')
+]
 
 # ==============================
 # FUNCIONES AUXILIARES
@@ -346,9 +355,8 @@ tickvals = []
 ticktext = []
 years = []
 
-if not df_hist_sel.empty: years.extend(df_hist_sel['Fecha'].dt.year.unique())
-if not df_proj_sel.empty: years.extend(df_proj_sel['Fecha'].dt.year.unique())
-all_years = sorted(list(set(years)))
+# Limitar años hasta 2030
+all_years = list(range(min(df_hist_sel['Fecha'].dt.year.min() if not df_hist_sel.empty else 2020, 2020), 2031))
 
 for year in all_years:
     if tipo_visualizacion == "Semestral":
