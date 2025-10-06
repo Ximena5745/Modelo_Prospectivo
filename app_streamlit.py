@@ -363,7 +363,8 @@ fig.update_layout(
         font=dict(size=22, family="Poppins", color="#1e293b", weight=500),
         itemsizing='constant', itemclick=False, itemdoubleclick=False
     ),
-    margin=dict(l=120, r=100, t=160, b=140),
+    # Ajustar el espaciado para las etiquetas
+    margin=dict(t=160, b=140, l=140, r=100, pad=15),
     
     # ETIQUETAS EJE X: Formato YYYY-S# y Rotación
     xaxis=dict(
@@ -409,10 +410,8 @@ fig.update_layout(
         align="left"
     ),
     # Ajustar el espaciado para las etiquetas
-    margin=dict(t=100, b=100, l=120, r=60, pad=10)
+    margin=dict(t=100, b=100, l=120, r=60)
 )
-
-st.plotly_chart(fig, use_container_width=True)
 
 # ==============================
 # TABLA DE DATOS DETALLADOS y DESCARGA
