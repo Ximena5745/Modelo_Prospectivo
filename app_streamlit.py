@@ -332,37 +332,38 @@ fig.update_layout(
     template="plotly_white",
     plot_bgcolor='#ffffff',
     paper_bgcolor='#ffffff',
-    height=800,
-    font=dict(family="Poppins", size=18, color="#1e293b"),
+    height=900,
+    font=dict(family="Poppins", size=22, color="#1e293b"),
     
     title=dict(
         text=f"<b>{indicador_sel}</b> - Evolución Histórica y Proyección (Modelo: {modelo_sel})",
         x=0.5, y=0.95, xanchor='center', yanchor='top',
-        font=dict(size=28, color="#0d47a1", family="Poppins", weight="bold")
+        font=dict(size=32, color="#0d47a1", family="Poppins", weight="bold")
     ),
     hovermode='x unified',
     legend=dict(
-        orientation="h", yanchor="bottom", y=1.05, xanchor="center", x=0.5,
+        orientation="h", yanchor="bottom", y=1.08, xanchor="center", x=0.5,
         bgcolor="rgba(255,255,255,0.95)", bordercolor="#cbd5e0", borderwidth=1.5,
-        font=dict(size=18, family="Poppins", color="#1e293b"),
+        font=dict(size=22, family="Poppins", color="#1e293b", weight=500),
         itemsizing='constant', itemclick=False, itemdoubleclick=False
     ),
-    margin=dict(l=100, r=80, t=140, b=120),
+    margin=dict(l=120, r=100, t=160, b=140),
     
     # ETIQUETAS EJE X: Formato YYYY-S# y Rotación
     xaxis=dict(
         title=dict(
             text="<b>PERIODO</b>",
-            font=dict(size=20, weight=600, family="Poppins", color="#1e293b"),
-            standoff=15
+            font=dict(size=24, weight=600, family="Poppins", color="#1e293b"),
+            standoff=20
         ),
         showgrid=True, gridcolor='rgba(0,0,0,0.05)', gridwidth=1,
         tickvals=tickvals,
         ticktext=ticktext, 
-        tickfont=dict(size=16, family="Poppins", color="#475569"),
+        tickfont=dict(size=20, family="Poppins", color="#1e293b", weight=500),
         linecolor='#cbd5e0', linewidth=2, mirror=True, showline=True, automargin=True,
         # Rotación forzada a 45 grados para vista Semestral
         tickangle=45 if tipo_visualizacion == "Semestral" else 0,
+        title_standoff=25,
         fixedrange=True
     ),
     
@@ -370,17 +371,22 @@ fig.update_layout(
     yaxis=dict(
         title=dict(
             text=f"<b>{indicador_sel.upper()}</b>",
-            font=dict(size=20, weight=600, family="Poppins", color="#1e293b"),
-            standoff=15
+            font=dict(size=24, weight=600, family="Poppins", color="#1e293b"),
+            standoff=20
         ),
         showgrid=True, gridcolor='rgba(0,0,0,0.05)', gridwidth=1,
-        tickformat=f",.{int(decimal_places)}f", 
-        tickfont=dict(size=16, family="Poppins", color="#475569"),
+        tickformat=f",.{int(decimal_places)}f",
+        title_standoff=25,
+        showline=True,
+        linewidth=2,
+        linecolor='#cbd5e0',
+        mirror=True,
+        tickfont=dict(size=20, family="Poppins", color="#1e293b", weight=500),
         linecolor='#cbd5e0', linewidth=2, mirror=True, showline=True,
         zeroline=False, automargin=True, fixedrange=True
     ),
     hoverlabel=dict(
-        bgcolor="white", font_size=18, font_family="Poppins", bordercolor="#cbd5e0", namelength=-1
+        bgcolor="white", font_size=22, font_family="Poppins", bordercolor="#cbd5e0", namelength=-1
     )
 )
 
