@@ -278,7 +278,23 @@ for escenario in escenarios_sel:
             fig.add_trace(go.Scatter(x=df_plot["Fecha"], y=df_plot["Proyección"], name=escenario + (" (Anual)" if tipo_visualizacion == "Anual" else ""), line=dict(color=color, width=2.5, dash='dot'), marker=dict(size=8, color=color, line=dict(width=1, color='white')), mode='lines+markers', hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'))
             if mostrar_numeros:
                 text_values = df_plot["Proyección"].apply(lambda x: format_number(x, decimal_places))
-                fig.add_trace(go.Scatter(x=df_plot["Fecha"], y=df_plot["Proyección"], mode="text", text=text_values, textposition="top center", textfont=dict(size=10, color=color), showlegend=False, hoverinfo='skip'))
+                fig.add_trace(go.Scatter(
+                    x=df_plot["Fecha"], 
+                    y=df_plot["Proyección"], 
+                    mode="text", 
+                    text=text_values, 
+                    textposition="top center", 
+                    textfont=dict(
+                        size=14, 
+                        color=color, 
+                        family="Poppins",
+                        weight="bold"
+                    ),
+                    showlegend=False, 
+                    hoverinfo='skip',
+                    texttemplate='%{text}',
+                    cliponaxis=False
+                ))
 
 # Línea divisoria (Separada para evitar TypeError)
 if mostrar_linea_divisoria and not df_hist_sel.empty and not df_proj_sel.empty:
@@ -385,8 +401,15 @@ fig.update_layout(
         zeroline=False, automargin=True
     ),
     hoverlabel=dict(
-        bgcolor="white", font_size=22, font_family="Poppins", bordercolor="#cbd5e0", namelength=-1
-    )
+        bgcolor="white", 
+        font_size=22, 
+        font_family="Poppins", 
+        bordercolor="#cbd5e0", 
+        namelength=-1,
+        align="left"
+    ),
+    # Ajustar el espaciado para las etiquetas
+    margin=dict(t=100, b=100, l=120, r=60, pad=10)
 )
 
 st.plotly_chart(fig, use_container_width=True)
