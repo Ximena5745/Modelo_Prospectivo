@@ -382,13 +382,12 @@ fig.update_layout(
         linecolor='#cbd5e0',
         mirror=True,
         tickfont=dict(size=20, family="Poppins", color="#1e293b", weight=500),
-        linecolor='#cbd5e0', linewidth=2, mirror=True, showline=True,
-        zeroline=False, automargin=True, fixedrange=True
+        zeroline=False, automargin=True
     ),
     hoverlabel=dict(
         bgcolor="white", font_size=22, font_family="Poppins", bordercolor="#cbd5e0", namelength=-1
     )
-)
+{{ ... }}
 
 st.plotly_chart(fig, use_container_width=True)
 
