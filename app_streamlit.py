@@ -387,7 +387,7 @@ fig.update_layout(
     hoverlabel=dict(
         bgcolor="white", font_size=22, font_family="Poppins", bordercolor="#cbd5e0", namelength=-1
     )
-{{ ... }}
+)
 
 st.plotly_chart(fig, use_container_width=True)
 
