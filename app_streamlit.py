@@ -364,7 +364,6 @@ fig.update_layout(
         itemsizing='constant', itemclick=False, itemdoubleclick=False
     ),
     # Ajustar el espaciado para las etiquetas
-    margin=dict(t=160, b=140, l=140, r=100, pad=15),
     
     # ETIQUETAS EJE X: Formato YYYY-S# y Rotación
     xaxis=dict(
@@ -410,7 +409,7 @@ fig.update_layout(
         align="left"
     ),
     # Ajustar el espaciado para las etiquetas
-    margin=dict(t=100, b=100, l=120, r=60)
+    margin=dict(t=160, b=140, l=140, r=100, pad=15)
 )
 
 # ==============================
