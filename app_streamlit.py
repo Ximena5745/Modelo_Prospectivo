@@ -460,11 +460,8 @@ fig.update_layout(
         linecolor='#cbd5e0',
         linewidth=2,
         mirror=True,
-        linewidth=2,
-        linecolor='#cbd5e0',
-        mirror=True,
-        tickfont=dict(size=20, family="Poppins", color="#1e293b", weight=500),
-        zeroline=False, automargin=True
+        zeroline=False, 
+        automargin=True
     ),
     hoverlabel=dict(
         bgcolor="white", 
