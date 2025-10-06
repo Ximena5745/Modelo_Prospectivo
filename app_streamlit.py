@@ -321,9 +321,9 @@ if mostrar_linea_divisoria and not df_hist_sel.empty and not df_proj_sel.empty:
     # 1. Añadir la línea vertical (SOLO LA LÍNEA)
     fig.add_vline(
         x=fecha_corte_str, 
-        line_width=3, 
+        line_width=2, 
         line_dash="dash", 
-        line_color="#e74c3c"
+        line_color="#808080"
     )
     
     # 2. Añadir la anotación por separado
