@@ -219,11 +219,10 @@ else:
     colores_escenarios = {
         'Optimista': '#2ecc71',  # Verde (mejor escenario)
         'Base': '#1a73e8',      # Azul (neutral)
-        'Pesimista': '#e74c3c'  # Rojo (peor escenario)
+        'Pesimista': '#e74c3c',  # Rojo (peor escenario)
+        'Histórico Semestral': '#5c8bf2',
+        'Histórico Anual': '#5c8bf2'
     }
-    'Histórico Semestral': '#5c8bf2',
-    'Histórico Anual': '#5c8bf2'
-}
 
 # ==============================
 # TARJETAS DE RESUMEN
