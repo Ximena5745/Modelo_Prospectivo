@@ -203,22 +203,37 @@ decimal_places = 0
 if 'Decimales_Ejecucion' in df_hist_sel.columns and not df_hist_sel.empty:
     decimal_places = int(df_hist_sel['Decimales_Ejecucion'].iloc[0]) if pd.notna(df_hist_sel['Decimales_Ejecucion'].iloc[0]) else 0
 
-# Determinar si el indicador tiene sentido negativo (donde menor es mejor)
-indicador_negativo = any(palabra in indicador_sel.lower() for palabra in ['reducción', 'disminución', 'menor', 'bajo', 'disminuir', 'reducir'])
+# Determinar si el indicador tiene sentido negativo usando la columna 'Sentido' del dataset
+if 'Sentido' in df_hist_sel.columns and not df_hist_sel.empty:
+    # Verificar si el indicador tiene sentido negativo según la columna 'Sentido'
+    sentido = df_hist_sel['Sentido'].iloc[0] if not df_hist_sel.empty else 'Positivo'
+    indicador_negativo = str(sentido).strip().lower() == 'negativo'
+else:
+    # Si no existe la columna 'Sentido', asumir que es positivo por defecto
+    indicador_negativo = False
+    print("Advertencia: No se encontró la columna 'Sentido' en los datos históricos")
 
-# Determinar colores de los escenarios
+# Para depuración: mostrar el sentido del indicador
+print(f"Indicador: {indicador_sel}")
+print(f"Sentido del indicador: {'Negativo' if indicador_negativo else 'Positivo'}")
+
+# Determinar colores de los escenarios basados en el sentido del indicador
 if indicador_negativo:
-    # Invertir colores para indicadores donde menor es mejor
+    print("Usando colores para indicador con sentido negativo (menor es mejor)")
+    # Colores invertidos para indicadores donde menor es mejor
     colores_escenarios = {
         'Optimista': '#e74c3c',  # Rojo (peor escenario)
         'Base': '#1a73e8',       # Azul (neutral)
-        'Pesimista': '#2ecc71'   # Verde (mejor escenario)
+        'Pesimista': '#2ecc71',  # Verde (mejor escenario)
+        'Histórico Semestral': '#5c8bf2',
+        'Histórico Anual': '#5c8bf2'
     }
 else:
+    print("Usando colores estándar para indicador con sentido positivo (mayor es mejor)")
     # Colores estándar para indicadores donde mayor es mejor
     colores_escenarios = {
         'Optimista': '#2ecc71',  # Verde (mejor escenario)
-        'Base': '#1a73e8',      # Azul (neutral)
+        'Base': '#1a73e8',       # Azul (neutral)
         'Pesimista': '#e74c3c',  # Rojo (peor escenario)
         'Histórico Semestral': '#5c8bf2',
         'Histórico Anual': '#5c8bf2'
