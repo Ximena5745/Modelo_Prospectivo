@@ -474,7 +474,8 @@ fig.update_layout(
         align="left"
     ),
     # Ajustar el espaciado para las etiquetas
-    margin=dict(t=100, b=100, l=140, r=250, pad=15),  # Aumentado el margen derecho para el modelo
+    margin=dict(t=100, b=100, l=140, r=250, pad=15)  # Aumentado el margen derecho para el modelo
+)  # Cierre de update_layout
 
 # Mostrar la gráfica
 st.plotly_chart(fig, use_container_width=True)
