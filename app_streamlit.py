@@ -540,7 +540,6 @@ fig.update_layout(
 # Mostrar la gráfica
 st.plotly_chart(fig, use_container_width=True)
 
-{{ ... }}
 # TABLA DE DATOS DETALLADOS y DESCARGA
 # ==============================
 st.markdown("---")
