@@ -397,13 +397,30 @@ ticktext = []
 years = []
 
 # Limitar años hasta 2030
-all_years = list(range(min(df_hist_sel['Fecha'].dt.year.min() if not df_hist_sel.empty else 2020, 2020), 2031))
-
-for year in all_years:
-    if tipo_visualizacion == "Semestral":
+if tipo_visualizacion == "Semestral":
+    # Para vista semestral, usamos los años de los datos históricos
+    start_year = df_hist_sel['Fecha'].dt.year.min() if not df_hist_sel.empty else 2020
+    all_years = list(range(max(start_year, 2020), 2031))
+    
+    for year in all_years:
         tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
-        ticktext.extend([f"{year}-S1", f"{year}-S2"]) 
-    elif tipo_visualizacion == "Anual":
+        ticktext.extend([f"{year}-S1", f"{year}-S2"])
+elif tipo_visualizacion == "Anual":
+    # Forzar a mostrar todos los años del 2022 al 2030 en la vista anual
+    all_years = list(range(2022, 2031))
+    
+    # Asegurarse de que tenemos al menos un año de datos históricos
+    if not df_hist_sel.empty:
+        min_hist_year = df_hist_sel['Fecha'].dt.year.min()
+        if min_hist_year < 2022:
+            all_years = list(range(min_hist_year, 2031))
+    
+    # Asegurar que siempre mostramos hasta 2030
+    if 2030 not in all_years:
+        all_years = list(range(all_years[0], 2031))
+    
+    # Generar las marcas de tiempo para cada año
+    for year in all_years:
         tickvals.append(f"{year}-07-01") 
         ticktext.append(str(year))
 
@@ -483,7 +500,9 @@ fig.update_layout(
         # Ajustar márgenes para etiquetas rotadas
         ticklabeloverflow='allow',
         ticklabelposition='outside',
-        ticklabelstep=1 if tipo_visualizacion == "Anual" else 2
+        ticklabelstep=1,  # Mostrar todas las etiquetas
+        range=[f"{min(all_years)-0.5}-01-01", "2030-12-31"],  # Asegurar que se muestre hasta 2030
+        autorange=False
     ),
     
     # ETIQUETAS EJE Y
