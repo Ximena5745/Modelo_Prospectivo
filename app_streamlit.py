@@ -500,9 +500,8 @@ fig.update_layout(
         # Ajustar márgenes para etiquetas rotadas
         ticklabeloverflow='allow',
         ticklabelposition='outside',
-        ticklabelstep=1,  # Mostrar todas las etiquetas
-        range=[f"{min(all_years)-0.5}-01-01", "2030-12-31"],  # Asegurar que se muestre hasta 2030
-        autorange=False
+        ticklabelstep=1 if tipo_visualizacion == "Anual" else 2,
+        range=["2021-12-31", "2030-12-31"]
     ),
     
     # ETIQUETAS EJE Y
