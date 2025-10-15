@@ -334,11 +334,17 @@ for escenario in escenarios_sel:
         df_plot = df_esc.sort_values('Fecha')
         
         if tipo_visualizacion == "Anual":
-            # CORRECCIÓN APLICADA: Tomar la última proyección disponible en cada año (la más representativa del cierre anual)
-            # 1. Encuentra el índice de la fecha máxima para cada año proyectado
-            idx = df_esc.groupby(df_esc['Fecha'].dt.year)['Fecha'].idxmax()
-            # 2. Usa esos índices para seleccionar solo los puntos de cierre anual
-            df_plot = df_esc.loc[idx].sort_values('Fecha')
+            # Para la vista anual, agrupar por año y tomar el último valor de cada año
+            # Luego ajustamos la fecha al 30 de junio de cada año para centrar los puntos
+            df_plot = df_esc.copy()
+            df_plot['Año'] = df_plot['Fecha'].dt.year
+            df_plot = df_plot.sort_values('Fecha')
+            
+            # Tomar el último registro de cada año
+            df_plot = df_plot.groupby('Año').last().reset_index()
+            
+            # Ajustar las fechas al 30 de junio de cada año para centrar los puntos
+            df_plot['Fecha'] = pd.to_datetime(df_plot['Año'].astype(str) + '-06-30')
         
         if not df_plot.empty:
             fig.add_trace(go.Scatter(x=df_plot["Fecha"], y=df_plot["Proyección"], name=escenario + (" (Anual)" if tipo_visualizacion == "Anual" else ""), line=dict(color=color, width=2.5, dash='dot'), marker=dict(size=8, color=color, line=dict(width=1, color='white')), mode='lines+markers', hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'))
@@ -419,9 +425,9 @@ elif tipo_visualizacion == "Anual":
     if 2030 not in all_years:
         all_years = list(range(all_years[0], 2031))
     
-    # Generar las marcas de tiempo para cada año
+    # Generar las marcas de tiempo para cada año (centradas en el año)
     for year in all_years:
-        tickvals.append(f"{year}-07-01") 
+        tickvals.append(f"{year}-06-30")  # Punto medio del año
         ticktext.append(str(year))
 
 
@@ -501,7 +507,7 @@ fig.update_layout(
         ticklabeloverflow='allow',
         ticklabelposition='outside',
         ticklabelstep=1 if tipo_visualizacion == "Anual" else 2,
-        range=["2021-12-31", "2030-12-31"]
+        range=["2021-07-01", "2030-12-31"]
     ),
     
     # ETIQUETAS EJE Y
