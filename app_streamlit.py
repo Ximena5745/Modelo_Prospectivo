@@ -409,6 +409,7 @@ if tipo_visualizacion == "Semestral":
     all_years = list(range(max(start_year, 2020), 2031))
     
     for year in all_years:
+        # Ajustar las fechas para que el primer semestre sea de enero a junio (S1) y el segundo de julio a diciembre (S2)
         tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
         ticktext.extend([f"{year}-S1", f"{year}-S2"])
 elif tipo_visualizacion == "Anual":
