@@ -179,7 +179,13 @@ df_proj_sel = df_proj[
     (df_proj["Indicador"] == indicador_sel) & 
     (df_proj["Modelo"] == modelo_sel) & 
     (df_proj["Escenario"].isin(escenarios_sel))
-]
+].copy()  # Usar copy() para evitar SettingWithCopyWarning
+
+# Asegurarse de que las fechas sean datetime
+df_proj_sel['Fecha'] = pd.to_datetime(df_proj_sel['Fecha'])
+
+# Ordenar por fecha para asegurar el orden correcto
+df_proj_sel = df_proj_sel.sort_values('Fecha')
 
 # ==============================
 # FUNCIONES AUXILIARES
@@ -417,19 +423,68 @@ else:
 if tipo_visualizacion == "Semestral":
     # Para vista semestral, generamos etiquetas S1 (ene-jun) y S2 (jul-dic)
     for year in all_years:
-        # S1: enero a junio
-        tickvals.append(f"{year}-03-31")  # Punto medio del primer semestre
+        # S1: enero a junio (usamos 15 de marzo para el punto medio)
+        tickvals.append(f"{year}-03-15")
         ticktext.append(f"{year}-S1")
         
-        # S2: julio a diciembre
-        tickvals.append(f"{year}-09-30")  # Punto medio del segundo semestre
+        # S2: julio a diciembre (usamos 15 de septiembre para el punto medio)
+        tickvals.append(f"{year}-09-15")
         ticktext.append(f"{year}-S2")
+        
+    # Asegurarse de que los datos históricos tengan las fechas correctas
+    if not df_hist_sel.empty:
+        df_hist_sel = df_hist_sel.copy()
+        df_hist_sel['Fecha'] = df_hist_sel['Fecha'].apply(
+            lambda x: f"{x.year}-03-15" if x.month <= 6 else f"{x.year}-09-15"
+        )
+        df_hist_sel['Fecha'] = pd.to_datetime(df_hist_sel['Fecha'])
+    
+    # Ajustar fechas de proyecciones para que coincidan con las etiquetas
+    if not df_proj_sel.empty:
+        df_proj_sel = df_proj_sel.copy()
+        # Para las proyecciones, aseguramos que se muestren todos los puntos
+        # sin modificar las fechas originales para mantener la precisión
+        df_proj_sel['Fecha'] = pd.to_datetime(df_proj_sel['Fecha'])
+        
+        # Asegurarse de que haya al menos un punto por año para cada escenario
+        years = range(2025, 2031)
+        scenarios = df_proj_sel['Escenario'].unique()
+        for year in years:
+            for scenario in scenarios:
+                # Verificar si ya hay datos para este año y escenario
+                mask = (df_proj_sel['Fecha'].dt.year == year) & (df_proj_sel['Escenario'] == scenario)
+                if not df_proj_sel[mask].empty:
+                    # Si ya hay datos, asegurarse de que estén en el formato correcto
+                    df_proj_sel.loc[mask, 'Fecha'] = df_proj_sel.loc[mask, 'Fecha'].apply(
+                        lambda x: f"{x.year}-03-15" if x.month <= 6 else f"{x.year}-09-15"
+                    )
+        
+        # Convertir a datetime después de todos los ajustes
+        df_proj_sel['Fecha'] = pd.to_datetime(df_proj_sel['Fecha'])
+        
+        # Eliminar duplicados que puedan haberse creado
+        df_proj_sel = df_proj_sel.drop_duplicates(subset=['Fecha', 'Escenario', 'Indicador', 'Modelo'])
         
 elif tipo_visualizacion == "Anual":
     # Para vista anual, mostramos el año centrado
     for year in all_years:
         tickvals.append(f"{year}-06-30")  # Punto medio del año
         ticktext.append(str(year))
+        
+    # Ajustar fechas para la vista anual
+    if not df_hist_sel.empty:
+        df_hist_sel = df_hist_sel.copy()
+        df_hist_sel['Fecha'] = df_hist_sel['Fecha'].apply(
+            lambda x: f"{x.year}-06-30"
+        )
+        df_hist_sel['Fecha'] = pd.to_datetime(df_hist_sel['Fecha'])
+    
+    if not df_proj_sel.empty:
+        df_proj_sel = df_proj_sel.copy()
+        df_proj_sel['Fecha'] = df_proj_sel['Fecha'].apply(
+            lambda x: f"{x.year}-06-30"
+        )
+        df_proj_sel['Fecha'] = pd.to_datetime(df_proj_sel['Fecha'])
 
 
 # Actualizar el layout del gráfico
