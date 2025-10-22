@@ -646,6 +646,74 @@ fig.update_layout(
 # Mostrar la gráfica
 st.plotly_chart(fig, use_container_width=True)
 
+# ==============================
+# COMPARATIVO DE ESCENARIOS (2026 vs 2030)
+# ==============================
+if not df_proj_sel.empty and len(escenarios_sel) > 0:
+    st.markdown("### Comparativo de Escenarios (vs Último 2025)")
+
+    # Preparar columnas dinámicas según escenarios seleccionados
+    num_cols = max(1, len(escenarios_sel))
+    cols = st.columns(num_cols)
+
+    # Baseline: último histórico de 2025; si no hay, usar último de 2024; si tampoco hay, último <= 2025
+    base_2025 = np.nan
+    if not df_hist_sel.empty:
+        hist_2025 = df_hist_sel[df_hist_sel['Fecha'].dt.year == 2025]
+        if not hist_2025.empty:
+            base_2025 = hist_2025.sort_values('Fecha').iloc[-1]['Ejecución']
+        else:
+            hist_2024 = df_hist_sel[df_hist_sel['Fecha'].dt.year == 2024]
+            if not hist_2024.empty:
+                base_2025 = hist_2024.sort_values('Fecha').iloc[-1]['Ejecución']
+            else:
+                hist_before = df_hist_sel[df_hist_sel['Fecha'] <= pd.to_datetime('2025-12-31')]
+                if not hist_before.empty:
+                    base_2025 = hist_before.sort_values('Fecha').iloc[-1]['Ejecución']
+
+    for i, escenario in enumerate(escenarios_sel):
+        esc_color = colores_escenarios.get(escenario, '#1a73e8')
+        df_e = df_proj_sel[df_proj_sel['Escenario'] == escenario]
+
+        # Obtener valores por año (último registro del año si hay varios)
+        def get_year_value(df, year):
+            dfx = df[df['Fecha'].dt.year == year]
+            if dfx.empty:
+                return np.nan
+            return dfx.sort_values('Fecha').iloc[-1]['Proyección']
+
+        v26 = get_year_value(df_e, 2026)
+        v30 = get_year_value(df_e, 2030)
+
+        # Calcular variación porcentual vs último 2025
+        pct26 = np.nan
+        pct30 = np.nan
+        if pd.notna(base_2025) and base_2025 != 0:
+            if pd.notna(v26):
+                pct26 = (v26 - base_2025) / abs(base_2025) * 100.0
+            if pd.notna(v30):
+                pct30 = (v30 - base_2025) / abs(base_2025) * 100.0
+
+        with cols[i]:
+            # Tarjeta por escenario
+            st.markdown(
+                f"""
+                <div class="metric-card" style="border-left-color: {esc_color};">
+                    <div class="metric-label">Base · Último 2025</div>
+                    <div class="metric-value" style="color: #1e293b;">{format_number(base_2025, decimal_places) if pd.notna(base_2025) else 'N/A'}</div>
+                    <div class="metric-label" style="margin-top:0.75rem;">{escenario} · 2026</div>
+                    <div class="metric-value" style="color: {esc_color};">{format_number(v26, decimal_places) if pd.notna(v26) else 'N/A'}</div>
+                    <div class="metric-label" style="margin-top:0.25rem;">Δ% vs 2025</div>
+                    <div class="metric-value" style="color: {'#2ecc71' if (pd.notna(pct26) and pct26>=0) else '#e74c3c'};">{(f"{pct26:,.2f}%" if pd.notna(pct26) else 'N/A')}</div>
+                    <div class="metric-label" style="margin-top:0.75rem;">{escenario} · 2030</div>
+                    <div class="metric-value" style="color: {esc_color};">{format_number(v30, decimal_places) if pd.notna(v30) else 'N/A'}</div>
+                    <div class="metric-label" style="margin-top:0.25rem;">Δ% vs 2025</div>
+                    <div class="metric-value" style="color: {'#2ecc71' if (pd.notna(pct30) and pct30>=0) else '#e74c3c'};">{(f"{pct30:,.2f}%" if pd.notna(pct30) else 'N/A')}</div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
 # TABLA DE DATOS DETALLADOS y DESCARGA
 # ==============================
 st.markdown("---")
