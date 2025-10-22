@@ -185,7 +185,27 @@ df_proj_sel = df_proj[
 df_proj_sel['Fecha'] = pd.to_datetime(df_proj_sel['Fecha'])
 
 # Ordenar por fecha para asegurar el orden correcto
-df_proj_sel = df_proj_sel.sort_values('Fecha')
+df_proj_sel = df_proj_sel.sort_values(['Fecha', 'Escenario'])
+
+# Asegurarse de que tengamos datos hasta 2030
+if not df_proj_sel.empty:
+    max_year = df_proj_sel['Fecha'].dt.year.max()
+    if max_year < 2030:
+        # Agregar datos hasta 2030 si es necesario
+        years_to_add = range(max_year + 1, 2031)
+        new_rows = []
+        for year in years_to_add:
+            for escenario in escenarios_sel:
+                # Tomar el último valor disponible para este escenario
+                last_value = df_proj_sel[df_proj_sel['Escenario'] == escenario].iloc[-1] if not df_proj_sel[df_proj_sel['Escenario'] == escenario].empty else None
+                if last_value is not None:
+                    new_row = last_value.copy()
+                    new_row['Fecha'] = pd.to_datetime(f"{year}-12-31")  # Fin de año
+                    new_rows.append(new_row)
+        
+        if new_rows:
+            df_proj_sel = pd.concat([df_proj_sel, pd.DataFrame(new_rows)], ignore_index=True)
+            df_proj_sel = df_proj_sel.sort_values(['Fecha', 'Escenario'])
 
 # ==============================
 # FUNCIONES AUXILIARES
@@ -431,7 +451,7 @@ if tipo_visualizacion == "Semestral":
         tickvals.append(f"{year}-09-15")
         ticktext.append(f"{year}-S2")
         
-    # Asegurarse de que los datos históricos tengan las fechas correctas
+        # Asegurarse de que los datos históricos tengan las fechas correctas
     if not df_hist_sel.empty:
         df_hist_sel = df_hist_sel.copy()
         df_hist_sel['Fecha'] = df_hist_sel['Fecha'].apply(
@@ -442,28 +462,47 @@ if tipo_visualizacion == "Semestral":
     # Ajustar fechas de proyecciones para que coincidan con las etiquetas
     if not df_proj_sel.empty:
         df_proj_sel = df_proj_sel.copy()
-        # Para las proyecciones, aseguramos que se muestren todos los puntos
-        # sin modificar las fechas originales para mantener la precisión
-        df_proj_sel['Fecha'] = pd.to_datetime(df_proj_sel['Fecha'])
         
-        # Asegurarse de que haya al menos un punto por año para cada escenario
-        years = range(2025, 2031)
-        scenarios = df_proj_sel['Escenario'].unique()
-        for year in years:
-            for scenario in scenarios:
-                # Verificar si ya hay datos para este año y escenario
-                mask = (df_proj_sel['Fecha'].dt.year == year) & (df_proj_sel['Escenario'] == scenario)
-                if not df_proj_sel[mask].empty:
-                    # Si ya hay datos, asegurarse de que estén en el formato correcto
-                    df_proj_sel.loc[mask, 'Fecha'] = df_proj_sel.loc[mask, 'Fecha'].apply(
-                        lambda x: f"{x.year}-03-15" if x.month <= 6 else f"{x.year}-09-15"
-                    )
+        # Para cada escenario, asegurarse de que haya puntos en cada año
+        all_years = range(2025, 2031)  # Años objetivo para proyecciones
+        all_dates = []
         
-        # Convertir a datetime después de todos los ajustes
-        df_proj_sel['Fecha'] = pd.to_datetime(df_proj_sel['Fecha'])
+        for escenario in escenarios_sel:
+            # Filtrar datos para este escenario
+            esc_data = df_proj_sel[df_proj_sel['Escenario'] == escenario].copy()
+            
+            # Si no hay datos para este escenario, continuar
+            if esc_data.empty:
+                continue
+                
+            # Asegurar que haya al menos un punto por año
+            for year in all_years:
+                year_data = esc_data[esc_data['Fecha'].dt.year == year]
+                
+                if year_data.empty:
+                    # Si no hay datos para este año, usar el último valor disponible
+                    last_value = esc_data[esc_data['Fecha'].dt.year < year]
+                    if not last_value.empty:
+                        last_value = last_value.iloc[-1].copy()
+                        last_value['Fecha'] = pd.to_datetime(f"{year}-06-30")  # Punto medio del año
+                        all_dates.append(last_value)
+                else:
+                    # Si hay datos, asegurar que estén en el formato correcto
+                    for _, row in year_data.iterrows():
+                        new_date = pd.to_datetime(f"{row['Fecha'].year}-03-15" if row['Fecha'].month <= 6 else f"{row['Fecha'].year}-09-15")
+                        row['Fecha'] = new_date
+                        all_dates.append(row)
         
-        # Eliminar duplicados que puedan haberse creado
-        df_proj_sel = df_proj_sel.drop_duplicates(subset=['Fecha', 'Escenario', 'Indicador', 'Modelo'])
+        # Crear nuevo DataFrame con todas las fechas
+        if all_dates:
+            df_proj_sel = pd.DataFrame(all_dates)
+            
+            # Eliminar duplicados manteniendo el último valor para cada fecha y escenario
+            df_proj_sel = df_proj_sel.sort_values('Fecha')
+            df_proj_sel = df_proj_sel.drop_duplicates(
+                subset=['Fecha', 'Escenario', 'Indicador', 'Modelo'], 
+                keep='last'
+            )
         
 elif tipo_visualizacion == "Anual":
     # Para vista anual, mostramos el año centrado
