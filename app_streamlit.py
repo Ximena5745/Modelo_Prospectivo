@@ -155,6 +155,11 @@ if not df_proj_raw.empty:
         if pd.notna(row.get('Escenario_Optimista')): df_proj_list.append({**base_data, 'Escenario': 'Optimista', 'Proyección': row['Escenario_Optimista']})
 
 df_proj = pd.DataFrame(df_proj_list) if df_proj_list else pd.DataFrame()
+# Garantizar columnas esperadas aunque esté vacío
+expected_proj_cols = ['Indicador', 'Periodicidad', 'Fecha', 'Modelo', 'Escenario', 'Proyección']
+for c in expected_proj_cols:
+    if c not in df_proj.columns:
+        df_proj[c] = pd.Series(dtype='object')
 
 # ==============================
 # SIDEBAR
@@ -178,8 +183,11 @@ with st.sidebar:
     
     indicador_sel = st.selectbox("📊 Indicador", indicadores)
     
-    # Modelos ML 
-    modelos = sorted(df_proj["Modelo"].unique()) if not df_proj.empty else []
+    # Modelos ML (seguro ante DataFrame vacío o sin columna)
+    if isinstance(df_proj, pd.DataFrame) and 'Modelo' in df_proj.columns and not df_proj.empty:
+        modelos = sorted(pd.Series(df_proj['Modelo']).dropna().astype(str).unique())
+    else:
+        modelos = []
     modelo_display_names = {'ARIMA': '📊 ARIMA', 'Random_Forest': '🌳 Random Forest', 'SVR': '🎯 SVR', 'Linear_Regression': '📈 Regresión Lineal', 'Prophet': '🔮 Prophet', 'Crecimiento_Historico': '📜 Histórico'}
     modelo_options = [modelo_display_names.get(m, m) for m in modelos]
     modelo_display_sel = st.selectbox("🧠 Modelo ML", modelo_options)
@@ -196,9 +204,13 @@ with st.sidebar:
     escenario_icons = {'Base': '⚖️', 'Pesimista': '📉', 'Optimista': '📈'}
     for escenario in escenarios_disponibles:
         icon = escenario_icons.get(escenario, '🌍')
-        default_value = escenario in ['Base', 'Optimista']
+        # Seleccionar TODOS por defecto para asegurar visualización
+        default_value = True
         if st.checkbox(f"{icon} {escenario}", value=default_value, key=f"esc_{escenario}"):
             escenarios_sel.append(escenario)
+    # Si el usuario desmarca todo, usar todos por defecto para no dejar la gráfica vacía
+    if not escenarios_sel:
+        escenarios_sel = escenarios_disponibles[:]
     
     st.markdown("---")
     st.markdown("**📊 Visualización:**")
@@ -339,6 +351,11 @@ fig = go.Figure()
 
 # Agregar históricos (Lógica simplificada por periodicidad)
 df_hist_trace = df_hist_semestral if tipo_visualizacion == "Semestral" else df_hist_anual
+# Fallback: si no hay datos en la periodicidad elegida, usar cualquier histórico disponible
+if df_hist_trace.empty:
+    df_hist_trace = df_hist_anual if not df_hist_anual.empty else df_hist_semestral
+if df_hist_trace.empty:
+    df_hist_trace = df_hist_sel
 trace_name = "Histórico Semestral" if tipo_visualizacion == "Semestral" else "Histórico Anual"
 
 if not df_hist_trace.empty:
