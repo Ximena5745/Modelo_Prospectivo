@@ -171,15 +171,14 @@ if 'Linea' in df_hist.columns:
 else:
     df_hist_sel = df_hist[df_hist["Indicador"] == indicador_sel]
 
-# Filtrar datos históricos hasta 2030-S2
-df_hist_sel = df_hist_sel[df_hist_sel['Fecha'] <= '2030-12-31']
+# No filtrar los datos históricos por fecha para mantener todos los datos disponibles
+# Filtrar solo por indicador y línea estratégica
 
-# Filtrar proyecciones hasta 2030-S2
+# Filtrar proyecciones sin restricción de fecha para asegurar que se muestren todas las disponibles
 df_proj_sel = df_proj[
     (df_proj["Indicador"] == indicador_sel) & 
     (df_proj["Modelo"] == modelo_sel) & 
-    (df_proj["Escenario"].isin(escenarios_sel)) &
-    (df_proj['Fecha'] <= '2030-12-31')
+    (df_proj["Escenario"].isin(escenarios_sel))
 ]
 
 # ==============================
@@ -402,31 +401,32 @@ tickvals = []
 ticktext = []
 years = []
 
-# Limitar años hasta 2030
-if tipo_visualizacion == "Semestral":
-    # Para vista semestral, usamos los años de los datos históricos
-    start_year = df_hist_sel['Fecha'].dt.year.min() if not df_hist_sel.empty else 2020
-    all_years = list(range(max(start_year, 2020), 2031))
-    
-    for year in all_years:
-        # Ajustar las fechas para que el primer semestre sea de enero a junio (S1) y el segundo de julio a diciembre (S2)
-        tickvals.extend([f"{year}-01-01", f"{year}-07-01"])
-        ticktext.extend([f"{year}-S1", f"{year}-S2"])
-elif tipo_visualizacion == "Anual":
-    # Forzar a mostrar todos los años del 2022 al 2030 en la vista anual
+# Obtener el rango de años de los datos históricos y de proyección
+hist_years = sorted(df_hist_sel['Fecha'].dt.year.unique()) if not df_hist_sel.empty else []
+proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique()) if not df_proj_sel.empty else []
+all_years = sorted(set(hist_years + proj_years))
+
+# Asegurar que tenemos al menos desde 2022 hasta 2030
+if all_years:
+    min_year = min(min(all_years), 2022)
+    max_year = max(max(all_years), 2030)
+    all_years = list(range(min_year, max_year + 1))
+else:
     all_years = list(range(2022, 2031))
-    
-    # Asegurarse de que tenemos al menos un año de datos históricos
-    if not df_hist_sel.empty:
-        min_hist_year = df_hist_sel['Fecha'].dt.year.min()
-        if min_hist_year < 2022:
-            all_years = list(range(min_hist_year, 2031))
-    
-    # Asegurar que siempre mostramos hasta 2030
-    if 2030 not in all_years:
-        all_years = list(range(all_years[0], 2031))
-    
-    # Generar las marcas de tiempo para cada año (centradas en el año)
+
+if tipo_visualizacion == "Semestral":
+    # Para vista semestral, generamos etiquetas S1 (ene-jun) y S2 (jul-dic)
+    for year in all_years:
+        # S1: enero a junio
+        tickvals.append(f"{year}-03-31")  # Punto medio del primer semestre
+        ticktext.append(f"{year}-S1")
+        
+        # S2: julio a diciembre
+        tickvals.append(f"{year}-09-30")  # Punto medio del segundo semestre
+        ticktext.append(f"{year}-S2")
+        
+elif tipo_visualizacion == "Anual":
+    # Para vista anual, mostramos el año centrado
     for year in all_years:
         tickvals.append(f"{year}-06-30")  # Punto medio del año
         ticktext.append(str(year))
