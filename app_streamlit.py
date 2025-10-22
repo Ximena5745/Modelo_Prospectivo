@@ -69,35 +69,81 @@ st.markdown("""
 # LECTURA DE DATOS (Con simulación de fallback)
 # ==============================
 BASE_DIR = Path(__file__).parent
+RUTA_DATASET = BASE_DIR / "Data" / "Dataset_Unificado.xlsx"
+RUTA_PROYECCIONES = BASE_DIR / "Data" / "Proyecciones_Multimodelo.xlsx"
+
+# Validar existencia de archivos y leer con manejo de errores explícito
+if not RUTA_DATASET.exists():
+    st.error(f"No se encontró el archivo histórico: {RUTA_DATASET}")
+    st.stop()
+if not RUTA_PROYECCIONES.exists():
+    st.error(f"No se encontró el archivo de proyecciones: {RUTA_PROYECCIONES}")
+    st.stop()
+
 try:
-    RUTA_DATASET = str(BASE_DIR / "Data" / "Dataset_Unificado.xlsx")
-    RUTA_PROYECCIONES = str(BASE_DIR / "Data" / "Proyecciones_Multimodelo.xlsx")
+    df_hist = pd.read_excel(str(RUTA_DATASET))
+    # Normalizar columna de fecha histórica
+    if 'Fecha' not in df_hist.columns:
+        posibles_fechas = [c for c in df_hist.columns if str(c).strip().lower().replace(' ', '_') in [
+            'fecha', 'periodo', 'periodo_fecha']]
+        if posibles_fechas:
+            df_hist = df_hist.rename(columns={posibles_fechas[0]: 'Fecha'})
+    df_hist["Fecha"] = pd.to_datetime(df_hist["Fecha"], errors='coerce')
 
-    df_hist = pd.read_excel(RUTA_DATASET)
-    df_hist["Fecha"] = pd.to_datetime(df_hist["Fecha"])
+    # Leer todas las hojas del archivo de proyecciones y concatenar
+    _sheets = pd.read_excel(str(RUTA_PROYECCIONES), sheet_name=None)
+    if isinstance(_sheets, dict):
+        df_proj_raw = pd.concat(_sheets.values(), ignore_index=True)
+    else:
+        df_proj_raw = _sheets
+    # Normalización de nombres de columnas (case-insensitive y con/ sin acentos)
+    colmap = {str(c): str(c).strip().lower().replace(' ', '_').replace('ó', 'o').replace('é', 'e').replace('á', 'a').replace('í','i').replace('ú','u') for c in df_proj_raw.columns}
+    df_proj_raw.columns = list(colmap.values())
 
-    df_proj_raw = pd.read_excel(RUTA_PROYECCIONES)
-    df_proj_raw["Fecha_Proyeccion"] = pd.to_datetime(df_proj_raw["Fecha_Proyeccion"])
-except: 
-    # --- SIMULACIÓN DE DATOS (Fallback si no encuentra los archivos) ---
-    df_hist = pd.DataFrame({
-        'Fecha': pd.to_datetime(['2022-01-01', '2022-07-01', '2023-01-01', '2023-07-01', '2024-01-01', '2024-07-01']),
-        'Indicador': ['Ingresos'] * 6,
-        'Linea': ['Expansión'] * 6,
-        'Ejecución': [15000, 16000, 17500, 19000, 21000, 22500],
-        'Fuente': ['Cierre', 'Semestral', 'Cierre', 'Semestral', 'Cierre', 'Semestral'],
-        'Decimales_Ejecucion': [0] * 6
-    })
-    df_proj_raw = pd.DataFrame({
-        'Indicador': ['Ingresos'] * 6,
-        'Modelo': ['ARIMA'] * 6,
-        'Fecha_Proyeccion': pd.to_datetime(['2025-01-01', '2025-07-01', '2026-01-01', '2026-07-01', '2027-01-01', '2030-01-01']),
-        'Escenario_Base': [24000, 25500, 27000, 29000, 31000, 35000],
-        'Escenario_Pesimista': [23000, 24000, 25000, 26500, 28000, 32000],
-        'Escenario_Optimista': [25000, 27000, 29000, 31500, 34000, 39000]
-    })
-    st.info("Usando datos de simulación. Asegúrese de que sus archivos están en la carpeta 'Data'.")
-    # --- FIN SIMULACIÓN ---
+    # Mapear a nombres esperados
+    rename_rules = {}
+    # fecha proyeccion
+    for cand in ['fecha_proyeccion', 'fecha_proyecccion', 'fecha', 'fecha_proyeccion_']:
+        if cand in df_proj_raw.columns:
+            rename_rules[cand] = 'Fecha_Proyeccion'
+            break
+    # indicador
+    for cand in ['indicador']:
+        if cand in df_proj_raw.columns:
+            rename_rules[cand] = 'Indicador'
+            break
+    # modelo
+    for cand in ['modelo', 'metodo', 'modelo_ml']:
+        if cand in df_proj_raw.columns:
+            rename_rules[cand] = 'Modelo'
+            break
+    # periodicidad
+    for cand in ['periodicidad']:
+        if cand in df_proj_raw.columns:
+            rename_rules[cand] = 'Periodicidad'
+            break
+    # escenarios
+    if 'escenario_base' in df_proj_raw.columns: rename_rules['escenario_base'] = 'Escenario_Base'
+    if 'escenario_pesimista' in df_proj_raw.columns: rename_rules['escenario_pesimista'] = 'Escenario_Pesimista'
+    if 'escenario_optimista' in df_proj_raw.columns: rename_rules['escenario_optimista'] = 'Escenario_Optimista'
+
+    if rename_rules:
+        df_proj_raw = df_proj_raw.rename(columns=rename_rules)
+
+    # Validar columnas requeridas
+    required = {'Indicador', 'Modelo', 'Fecha_Proyeccion', 'Escenario_Base', 'Escenario_Pesimista', 'Escenario_Optimista'}
+    missing = [c for c in required if c not in df_proj_raw.columns]
+    if missing:
+        st.error(f"Faltan columnas requeridas en Proyecciones_Multimodelo.xlsx: {missing}. Verifique nombres.")
+        st.stop()
+
+    df_proj_raw["Fecha_Proyeccion"] = pd.to_datetime(df_proj_raw["Fecha_Proyeccion"], errors='coerce')
+    if df_proj_raw["Fecha_Proyeccion"].isna().all():
+        st.error("No se pudieron parsear las fechas en 'Fecha_Proyeccion'. Revise el formato de la columna en Proyecciones_Multimodelo.xlsx")
+        st.stop()
+except Exception as e:
+    st.exception(e)
+    st.stop()
 
 
 df_proj_list = []
