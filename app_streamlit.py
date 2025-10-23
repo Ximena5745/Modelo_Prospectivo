@@ -183,20 +183,42 @@ with st.sidebar:
     
     indicador_sel = st.selectbox("📊 Indicador", indicadores)
     
-    # Modelos ML (seguro ante DataFrame vacío o sin columna)
-    if isinstance(df_proj, pd.DataFrame) and 'Modelo' in df_proj.columns and not df_proj.empty:
-        modelos = sorted(pd.Series(df_proj['Modelo']).dropna().astype(str).unique())
+    # Modelos ML: mostrar solo los que tengan datos para el indicador seleccionado
+    modelos = []
+    if isinstance(df_proj, pd.DataFrame) and not df_proj.empty and {'Modelo','Indicador'}.issubset(df_proj.columns):
+        modelos = sorted(
+            df_proj[df_proj['Indicador'] == indicador_sel]['Modelo']
+            .dropna().astype(str).unique()
+        )
+    # Mapas de nombres bonitos (se amplía automáticamente con fallback al nombre original)
+    modelo_display_names = {
+        'ARIMA': '📊 ARIMA',
+        'ETS': '📈 ETS',
+        'Holt_Winters': '📉 Holt-Winters',
+        'Random_Forest': '🌳 Random Forest',
+        'SVR': '🎯 SVR',
+        'Linear_Regression': '📈 Regresión Lineal',
+        'Regresion_Lineal': '📈 Regresión Lineal',
+        'Prophet': '🔮 Prophet',
+        'Tendencia_Historica': '📜 Tendencia Histórica',
+        'Crecimiento_Historico': '📜 Crecimiento Histórico',
+        'Ensemble_Ponderado': '🤝 Ensemble Ponderado',
+        'Promedio_Modelos': '➗ Promedio de Modelos'
+    }
+    if modelos:
+        modelo_options = [modelo_display_names.get(m, m) for m in modelos]
+        modelo_display_sel = st.selectbox("🧠 Modelo ML", modelo_options)
+        # Resolver a la clave original si el usuario eligió un alias bonito
+        inv_map = {v: k for k, v in modelo_display_names.items()}
+        modelo_sel = inv_map.get(modelo_display_sel, modelo_display_sel)
     else:
-        modelos = []
-    modelo_display_names = {'ARIMA': '📊 ARIMA', 'Random_Forest': '🌳 Random Forest', 'SVR': '🎯 SVR', 'Linear_Regression': '📈 Regresión Lineal', 'Prophet': '🔮 Prophet', 'Crecimiento_Historico': '📜 Histórico'}
-    modelo_options = [modelo_display_names.get(m, m) for m in modelos]
-    modelo_display_sel = st.selectbox("🧠 Modelo ML", modelo_options)
-    modelo_sel = next((k for k, v in modelo_display_names.items() if v == modelo_display_sel), modelo_display_sel)
+        st.warning("No hay proyecciones disponibles para este indicador en el archivo de proyecciones.")
+        modelo_sel = ""
     
     # Escenarios 
     escenarios_disponibles = ['Base', 'Pesimista', 'Optimista']
-    if not df_proj.empty and modelo_sel in df_proj["Modelo"].unique():
-        escenarios_modelo = df_proj[df_proj["Modelo"] == modelo_sel]["Escenario"].unique()
+    if modelo_sel and not df_proj.empty and modelo_sel in df_proj["Modelo"].unique():
+        escenarios_modelo = df_proj[(df_proj["Modelo"] == modelo_sel) & (df_proj["Indicador"] == indicador_sel)]["Escenario"].unique()
         escenarios_disponibles = [e for e in escenarios_disponibles if e in escenarios_modelo]
     
     st.markdown("**🌍 Escenarios:**")
