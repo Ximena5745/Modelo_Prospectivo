@@ -123,9 +123,14 @@ try:
             rename_rules[cand] = 'Periodicidad'
             break
     # escenarios
+    # Compatibilidad con estructura anterior
     if 'escenario_base' in df_proj_raw.columns: rename_rules['escenario_base'] = 'Escenario_Base'
     if 'escenario_pesimista' in df_proj_raw.columns: rename_rules['escenario_pesimista'] = 'Escenario_Pesimista'
     if 'escenario_optimista' in df_proj_raw.columns: rename_rules['escenario_optimista'] = 'Escenario_Optimista'
+    # Nueva estructura: Proyeccion, IC_Inferior, IC_Superior
+    if 'proyeccion' in df_proj_raw.columns: rename_rules['proyeccion'] = 'Escenario_Base'
+    if 'ic_inferior' in df_proj_raw.columns: rename_rules['ic_inferior'] = 'Escenario_Pesimista'
+    if 'ic_superior' in df_proj_raw.columns: rename_rules['ic_superior'] = 'Escenario_Optimista'
 
     if rename_rules:
         df_proj_raw = df_proj_raw.rename(columns=rename_rules)
