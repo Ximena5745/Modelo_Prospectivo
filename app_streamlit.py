@@ -396,8 +396,18 @@ else:
 # ==============================
 st.subheader("Evolución Histórica y Proyección Detallada")
 
-df_hist_semestral = df_hist_sel[df_hist_sel["Fuente"] == "Semestral"]
-df_hist_anual = df_hist_sel[df_hist_sel["Fuente"] == "Cierre"]
+df_hist_semestral = df_hist_sel[df_hist_sel["Fuente"] == "Semestral"].copy()
+df_hist_anual = df_hist_sel[df_hist_sel["Fuente"] == "Cierre"].copy()
+
+# Ajustar fechas históricas al punto medio del período
+if tipo_visualizacion == "Semestral" and not df_hist_semestral.empty:
+    df_hist_semestral['Fecha'] = df_hist_semestral['Fecha'].apply(
+        lambda x: pd.Timestamp(year=x.year, month=3, day=15) if x.month <= 6 else pd.Timestamp(year=x.year, month=9, day=15)
+    )
+if tipo_visualizacion == "Anual" and not df_hist_anual.empty:
+    df_hist_anual['Fecha'] = df_hist_anual['Fecha'].apply(
+        lambda x: pd.Timestamp(year=x.year, month=6, day=30)
+    )
 
 fig = go.Figure()
 
@@ -407,7 +417,16 @@ df_hist_trace = df_hist_semestral if tipo_visualizacion == "Semestral" else df_h
 if df_hist_trace.empty:
     df_hist_trace = df_hist_anual if not df_hist_anual.empty else df_hist_semestral
 if df_hist_trace.empty:
-    df_hist_trace = df_hist_sel
+    df_hist_trace = df_hist_sel.copy()
+    # Ajustar fechas del fallback
+    if tipo_visualizacion == "Semestral":
+        df_hist_trace['Fecha'] = df_hist_trace['Fecha'].apply(
+            lambda x: pd.Timestamp(year=x.year, month=3, day=15) if x.month <= 6 else pd.Timestamp(year=x.year, month=9, day=15)
+        )
+    else:
+        df_hist_trace['Fecha'] = df_hist_trace['Fecha'].apply(
+            lambda x: pd.Timestamp(year=x.year, month=6, day=30)
+        )
 trace_name = "Histórico Semestral" if tipo_visualizacion == "Semestral" else "Histórico Anual"
 
 if not df_hist_trace.empty:
@@ -451,20 +470,21 @@ for escenario in escenarios_sel:
     if not df_esc.empty:
         color = colores_escenarios.get(escenario, '#1a73e8')
         
-        df_plot = df_esc.sort_values('Fecha')
+        df_plot = df_esc.copy()
         
-        if tipo_visualizacion == "Anual":
-            # Para la vista anual, agrupar por año y tomar el último valor de cada año
-            # Luego ajustamos la fecha al 30 de junio de cada año para centrar los puntos
-            df_plot = df_esc.copy()
+        # Ajustar fechas de proyección al punto medio del período
+        if tipo_visualizacion == "Semestral":
+            df_plot['Fecha'] = df_plot['Fecha'].apply(
+                lambda x: pd.Timestamp(year=x.year, month=3, day=15) if x.month <= 6 else pd.Timestamp(year=x.year, month=9, day=15)
+            )
+        else:  # Anual
+            # Agrupar por año y tomar el último valor
             df_plot['Año'] = df_plot['Fecha'].dt.year
-            df_plot = df_plot.sort_values('Fecha')
-            
-            # Tomar el último registro de cada año
-            df_plot = df_plot.groupby('Año').last().reset_index()
-            
-            # Ajustar las fechas al 30 de junio de cada año para centrar los puntos
-            df_plot['Fecha'] = pd.to_datetime(df_plot['Año'].astype(str) + '-06-30')
+            df_plot = df_plot.sort_values('Fecha').groupby('Año').last().reset_index()
+            # Ajustar al punto medio del año
+            df_plot['Fecha'] = df_plot['Año'].apply(lambda y: pd.Timestamp(year=y, month=6, day=30))
+        
+        df_plot = df_plot.sort_values('Fecha')
         
         if not df_plot.empty:
             fig.add_trace(go.Scatter(x=df_plot["Fecha"], y=df_plot["Proyección"], name=escenario + (" (Anual)" if tipo_visualizacion == "Anual" else ""), line=dict(color=color, width=2.5, dash='dot'), marker=dict(size=8, color=color, line=dict(width=1, color='white')), mode='lines+markers', hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'))
@@ -538,50 +558,19 @@ else:
 if tipo_visualizacion == "Semestral":
     # Para vista semestral, generamos etiquetas S1 (ene-jun) y S2 (jul-dic)
     for year in all_years:
-        # S1: enero a junio (usamos 15 de marzo para el punto medio)
+        # S1: enero a junio (punto medio 15 de marzo)
         tickvals.append(f"{year}-03-15")
         ticktext.append(f"{year}-S1")
         
-        # S2: julio a diciembre (usamos 15 de septiembre para el punto medio)
+        # S2: julio a diciembre (punto medio 15 de septiembre)
         tickvals.append(f"{year}-09-15")
         ticktext.append(f"{year}-S2")
-        
-        # Asegurarse de que los datos históricos tengan las fechas correctas
-    if not df_hist_sel.empty:
-        df_hist_sel = df_hist_sel.copy()
-        df_hist_sel['Fecha'] = df_hist_sel['Fecha'].apply(
-            lambda x: f"{x.year}-03-15" if x.month <= 6 else f"{x.year}-09-15"
-        )
-        df_hist_sel['Fecha'] = pd.to_datetime(df_hist_sel['Fecha'])
-    
-    # Ajustar fechas de proyecciones para que coincidan con las etiquetas
-    if not df_proj_sel.empty:
-        df_proj_sel = df_proj_sel.copy()
-        df_proj_sel['Fecha'] = df_proj_sel['Fecha'].apply(
-            lambda x: f"{x.year}-03-15" if x.month <= 6 else f"{x.year}-09-15"
-        )
-        df_proj_sel['Fecha'] = pd.to_datetime(df_proj_sel['Fecha'])
         
 elif tipo_visualizacion == "Anual":
     # Para vista anual, mostramos el año centrado
     for year in all_years:
         tickvals.append(f"{year}-06-30")  # Punto medio del año
         ticktext.append(str(year))
-        
-    # Ajustar fechas para la vista anual
-    if not df_hist_sel.empty:
-        df_hist_sel = df_hist_sel.copy()
-        df_hist_sel['Fecha'] = df_hist_sel['Fecha'].apply(
-            lambda x: f"{x.year}-06-30"
-        )
-        df_hist_sel['Fecha'] = pd.to_datetime(df_hist_sel['Fecha'])
-    
-    if not df_proj_sel.empty:
-        df_proj_sel = df_proj_sel.copy()
-        df_proj_sel['Fecha'] = df_proj_sel['Fecha'].apply(
-            lambda x: f"{x.year}-06-30"
-        )
-        df_proj_sel['Fecha'] = pd.to_datetime(df_proj_sel['Fecha'])
 
 
 # Bandas de fondo alternadas por período
