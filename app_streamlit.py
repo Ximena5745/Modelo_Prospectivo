@@ -335,11 +335,11 @@ print(f"Sentido del indicador: {'Negativo' if indicador_negativo else 'Positivo'
 # Determinar colores de los escenarios basados en el sentido del indicador
 if indicador_negativo:
     print("Usando colores para indicador con sentido negativo (menor es mejor)")
-    # Colores invertidos para indicadores donde menor es mejor
+    # Para indicadores negativos: Optimista (valores bajos) = Verde, Pesimista (valores altos) = Rojo
     colores_escenarios = {
-        'Optimista': '#e74c3c',  # Rojo (peor escenario)
+        'Optimista': '#2ecc71',  # Verde (mejor escenario: valores más bajos)
         'Base': '#1a73e8',       # Azul (neutral)
-        'Pesimista': '#2ecc71',  # Verde (mejor escenario)
+        'Pesimista': '#e74c3c',  # Rojo (peor escenario: valores más altos)
         'Histórico Semestral': '#5c8bf2',
         'Histórico Anual': '#5c8bf2'
     }
