@@ -289,6 +289,31 @@ def format_number(value, decimals):
     except:
         return str(value)
 
+# --- Utilidades para etiquetas y rangos de período ---
+def periodo_label(fecha, tipo: str) -> str:
+    """Genera etiqueta de rango para un período.
+    Semestral: 'YYYY-01 a YYYY-06' o 'YYYY-07 a YYYY-12'
+    Anual: 'YYYY-01 a YYYY-12'
+    """
+    if pd.isna(fecha):
+        return ''
+    f = pd.to_datetime(fecha)
+    y = int(f.year)
+    if tipo == "Semestral":
+        return f"{y}-01 a {y}-06" if f.month <= 6 else f"{y}-07 a {y}-12"
+    return f"{y}-01 a {y}-12"
+
+def periodos_rango_por_ano(year: int, tipo: str):
+    """Devuelve lista de tuplas (x0, x1) para bandas de fondo por año."""
+    if tipo == "Semestral":
+        return [
+            (pd.Timestamp(year=year, month=1, day=1), pd.Timestamp(year=year, month=6, day=30)),
+            (pd.Timestamp(year=year, month=7, day=1), pd.Timestamp(year=year, month=12, day=31)),
+        ]
+    return [
+        (pd.Timestamp(year=year, month=1, day=1), pd.Timestamp(year=year, month=12, day=31)),
+    ]
+
 decimal_places = 0
 if 'Decimales_Ejecucion' in df_hist_sel.columns and not df_hist_sel.empty:
     decimal_places = int(df_hist_sel['Decimales_Ejecucion'].iloc[0]) if pd.notna(df_hist_sel['Decimales_Ejecucion'].iloc[0]) else 0
