@@ -411,7 +411,7 @@ if df_hist_trace.empty:
 trace_name = "Histórico Semestral" if tipo_visualizacion == "Semestral" else "Histórico Anual"
 
 if not df_hist_trace.empty:
-    fig.add_trace(go.Scatter(x=df_hist_trace["Fecha"], y=df_hist_trace["Ejecución"], name=trace_name, line=dict(color='#D4A017', width=2.5), marker=dict(size=12, color='#D4A017', line=dict(width=1, color='white')), mode='lines+markers', hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'))
+    fig.add_trace(go.Scatter(x=df_hist_trace["Fecha"], y=df_hist_trace["Ejecución"], name=trace_name, line=dict(color='#D4A017', width=2.5), marker=dict(size=8, color='#D4A017', line=dict(width=1, color='white')), mode='lines+markers', hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'))
     
     # Añadir anotación para explicar la inversión de colores si es un indicador negativo
     if 'indicador_negativo' in locals() and indicador_negativo:
@@ -444,18 +444,6 @@ if not df_hist_trace.empty:
             texttemplate='%{text}',
             cliponaxis=False
         ))
-        # Etiqueta directa del período debajo del punto
-        fig.add_trace(go.Scatter(
-            x=df_hist_trace["Fecha"],
-            y=df_hist_trace["Ejecución"],
-            mode="text",
-            text=df_hist_trace["Fecha"].apply(lambda d: periodo_label(pd.to_datetime(d), tipo_visualizacion)),
-            textposition="bottom center",
-            textfont=dict(size=12, color='#6b7280', family="Poppins"),
-            showlegend=False,
-            hoverinfo='skip',
-            cliponaxis=False
-        ))
 
 # Agregar proyecciones
 for escenario in escenarios_sel:
@@ -479,7 +467,7 @@ for escenario in escenarios_sel:
             df_plot['Fecha'] = pd.to_datetime(df_plot['Año'].astype(str) + '-06-30')
         
         if not df_plot.empty:
-            fig.add_trace(go.Scatter(x=df_plot["Fecha"], y=df_plot["Proyección"], name=escenario + (" (Anual)" if tipo_visualizacion == "Anual" else ""), line=dict(color=color, width=2.5, dash='dot'), marker=dict(size=12, color=color, line=dict(width=1, color='white')), mode='lines+markers', hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'))
+            fig.add_trace(go.Scatter(x=df_plot["Fecha"], y=df_plot["Proyección"], name=escenario + (" (Anual)" if tipo_visualizacion == "Anual" else ""), line=dict(color=color, width=2.5, dash='dot'), marker=dict(size=8, color=color, line=dict(width=1, color='white')), mode='lines+markers', hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'))
             if mostrar_numeros:
                 text_values = df_plot["Proyección"].apply(lambda x: format_number(x, decimal_places))
                 fig.add_trace(go.Scatter(
@@ -499,20 +487,34 @@ for escenario in escenarios_sel:
                     texttemplate='%{text}',
                     cliponaxis=False
                 ))
-                # Etiqueta directa del período debajo del punto
-                fig.add_trace(go.Scatter(
-                    x=df_plot["Fecha"],
-                    y=df_plot["Proyección"],
-                    mode="text",
-                    text=df_plot["Fecha"].apply(lambda d: periodo_label(pd.to_datetime(d), tipo_visualizacion)),
-                    textposition="bottom center",
-                    textfont=dict(size=12, color='#6b7280', family="Poppins"),
-                    showlegend=False,
-                    hoverinfo='skip',
-                    cliponaxis=False
-                ))
 
-# Línea divisoria se calcula después de ajustar ejes y periodos
+# Línea divisoria (Separada para evitar TypeError)
+if mostrar_linea_divisoria and not df_hist_sel.empty and not df_proj_sel.empty:
+    last_hist_date = df_hist_sel['Fecha'].max()
+    fecha_corte = last_hist_date + pd.Timedelta(days=1)
+    fecha_corte_str = fecha_corte.strftime('%Y-%m-%d')
+
+    # 1. Añadir la línea vertical (SOLO LA LÍNEA)
+    fig.add_vline(
+        x=fecha_corte_str, 
+        line_width=2, 
+        line_dash="dash", 
+        line_color="#808080"
+    )
+    
+    # 2. Añadir la anotación por separado
+    fig.add_annotation(
+        x=fecha_corte_str, 
+        y=1,               
+        xref="x",          
+        yref="paper",      
+        text="Inicio Proyección",
+        showarrow=False,
+        xanchor="left",
+        yanchor="top",
+        font=dict(color="#808080", size=12, weight="bold"),
+        yshift=-10 
+    )
 
 
 # Configuración del formato de fechas para el eje X (YYYY-S#)
@@ -534,15 +536,15 @@ else:
     all_years = list(range(2022, 2031))
 
 if tipo_visualizacion == "Semestral":
-    # Para vista semestral, generamos etiquetas como rangos "YYYY-01 a YYYY-06" y "YYYY-07 a YYYY-12"
+    # Para vista semestral, generamos etiquetas S1 (ene-jun) y S2 (jul-dic)
     for year in all_years:
-        # S1: ene-jun (punto medio 15 de marzo)
+        # S1: enero a junio (usamos 15 de marzo para el punto medio)
         tickvals.append(f"{year}-03-15")
-        ticktext.append(f"{year}-01 a {year}-06")
+        ticktext.append(f"{year}-S1")
         
-        # S2: jul-dic (punto medio 15 de septiembre)
+        # S2: julio a diciembre (usamos 15 de septiembre para el punto medio)
         tickvals.append(f"{year}-09-15")
-        ticktext.append(f"{year}-07 a {year}-12")
+        ticktext.append(f"{year}-S2")
         
         # Asegurarse de que los datos históricos tengan las fechas correctas
     if not df_hist_sel.empty:
@@ -561,10 +563,10 @@ if tipo_visualizacion == "Semestral":
         df_proj_sel['Fecha'] = pd.to_datetime(df_proj_sel['Fecha'])
         
 elif tipo_visualizacion == "Anual":
-    # Para vista anual, mostramos el rango completo del año
+    # Para vista anual, mostramos el año centrado
     for year in all_years:
         tickvals.append(f"{year}-06-30")  # Punto medio del año
-        ticktext.append(f"{year}-01 a {year}-12")
+        ticktext.append(str(year))
         
     # Ajustar fechas para la vista anual
     if not df_hist_sel.empty:
@@ -582,7 +584,7 @@ elif tipo_visualizacion == "Anual":
         df_proj_sel['Fecha'] = pd.to_datetime(df_proj_sel['Fecha'])
 
 
-# Bandas de fondo alternadas por período y línea divisoria en punto medio
+# Bandas de fondo alternadas por período
 shapes = []
 period_index = 0
 for y in all_years:
@@ -593,15 +595,6 @@ for y in all_years:
                 fillcolor='rgba(0,0,0,0.03)', line=dict(width=0), layer='below'
             ))
         period_index += 1
-
-# Calcular línea divisoria en el punto medio entre último histórico y primera proyección
-if mostrar_linea_divisoria and not df_hist_sel.empty and not df_proj_sel.empty:
-    last_hist = pd.to_datetime(df_hist_sel['Fecha']).max()
-    first_proj = pd.to_datetime(df_proj_sel['Fecha']).min()
-    if pd.notna(last_hist) and pd.notna(first_proj) and first_proj > last_hist:
-        mid = last_hist + (first_proj - last_hist) / 2
-        fig.add_vline(x=mid, line_width=2, line_dash='dash', line_color='#808080')
-        fig.add_annotation(x=mid, y=1, xref='x', yref='paper', text='Inicio Proyección', showarrow=False, xanchor='left', yanchor='top', font=dict(color='#808080', size=12, weight='bold'), yshift=-10)
 
 # Actualizar el layout del gráfico
 fig.update_layout(
