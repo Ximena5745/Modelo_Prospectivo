@@ -167,7 +167,7 @@ for c in expected_proj_cols:
         df_proj[c] = pd.Series(dtype='object')
 
 # ==============================
-# SIDEBAR
+# SIDEBARS
 # ==============================
 with st.sidebar:
     st.markdown('<div style="text-align: center; margin-bottom: 1.5rem;"><h2>⚙️ CONTROLES</h2></div>', unsafe_allow_html=True)
