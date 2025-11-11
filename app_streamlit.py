@@ -585,9 +585,9 @@ for escenario in escenarios_sel:
                 ))
 
 # Línea divisoria (Separada para evitar TypeError)
-if mostrar_linea_divisoria and not df_hist_sel.empty and not df_proj_sel.empty:
-    last_hist_date = df_hist_sel['Fecha'].max()
-    fecha_corte = last_hist_date + pd.Timedelta(days=1)
+if mostrar_linea_divisoria:
+    # Posicionar la línea exactamente entre 2025-S2 y 2026-S1 (31 de diciembre de 2025)
+    fecha_corte = pd.Timestamp(year=2025, month=12, day=31)
     fecha_corte_str = fecha_corte.strftime('%Y-%m-%d')
 
     # 1. Añadir la línea vertical (SOLO LA LÍNEA)
