@@ -174,64 +174,62 @@ for c in expected_proj_cols:
 # ==============================
 ORDEN_INDICADORES = {
     "Calidad": [
-        "Programas acreditados",
-        "Relación Estudiantes Docentes TC",
-        "Relación estudiantes docentes",
-        "Productos de investigación",
+        "Programas acreditables acreditados Sede Bogotá",
+        "Relación Estudiante-Docente Tiempo completo",
+        "Relación estudiante docente Tiempo Completo Equivalente",
+        "Productos de investigación, innovación y creación",
         "Estudiantes vinculados a investigación",
-        "Número de registros calificados",
-        "Número de programas con acreditación",
-        "% de profesores con doctorado"
+        "Número de programas nuevos con registro calificado aprobado",
+        "Número de renovaciones de registro calificado",
+        "% de profesores (Contrato Indefinido- Fijo) impactados plan de desarrollo docente"
     ],
     "Educación_para_toda_la_vida": [
-        "Ingresos totales",
-        "Total Ingresos",
-        "Total Ingresos Educación Continua",
-        "Otros Ingresos"
+        "Ingresos totales de educación para la vida",
+        "Total Ingresos B2B",
+        "Total Ingresos B2G",
+        "Otros ingresos (Cursos -Opciones de grado)"
     ],
     "Expansión": [
         "Total Población",
-        "Total estudiantes",
-        "Total Matriculados",
+        "Total estudiantes nuevos",
+        "Total Matriculados antiguos",
         "Estudiantes Pregrado",
         "Estudiantes Posgrado",
-        "Estudiantes Posgrado Especialización",
-        "Estudiantes Posgrado Maestría",
+        "Estudiantes Presencial",
+        "Estudiantes Virtual",
         "Brand equity",
-        "Conocimiento",
-        "Lanzamiento de programas",
-        "Índice de satisfacción estudiantes"
+        "Conocimiento espontaneo",
+        "Lanzamiento de nuevos programas virtual"
     ],
     "Experiencia": [
-        "Permanencia",
+        "Índice de satisfacción del estudiante (SSI)",
+        "Permanencia Intersemestral",
         "NPS Estudiantes",
-        "NPS Egresados",
-        "Porcentaje de Egresados"
+        "Porcentaje de cumplimiento del Acuerdo de Nivel de Servicio (ANS)"
     ],
     "Sostenibilidad": [
-        "Cumplimiento presupuesto de ingresos",
-        "Cumplimiento presupuesto de gastos",
+        "Cumplimiento de Ingresos",
+        "Cumplimiento EBIDTA",
         "Caja",
         "Utilidad Neta",
-        "Estudiantes con apoyo financiero",
+        "Estudiantes con Becas",
         "Índice de Inclusión",
-        "Impacto de acciones sostenibles",
-        "GreenMetric - Puntaje",
-        "Compensación",
-        "Nivel de empleo",
-        "Participación en voluntariado",
+        "Impacto de actividades de Responsabilidad y proyección",
+        "GreenMetric - Nacional",
+        "Compensación de Gases de Efecto Invernadero",
+        "Nivel de empleabilidad del graduado",
+        "Participación de POLI- voluntariados (Estudiantes- Colaboradores)",
         "CAPEX",
-        "Nivel de Cumplimiento PIGA"
+        "Nivel de Cumplimiento Opex"
     ],
     "Transformación_Organizacional": [
-        "Disponibilidad",
+        "Disponibilidad de servicios tecnológicos",
         "Great Place to Work",
-        "Resultado de la Encuesta",
+        "Resultado de la evaluación 360 (evaluación por competencias)",
         "Índice de rotación",
-        "Nivel de efecto",
-        "Cumplimiento del plan",
-        "Nivel de Satisfacción"
-    ]
+        "Nivel de efectividad de las capacitaciones",
+        "Cumplimiento de diagnóstico necesidades de capacitación por área",
+        "Nivel de Satisfacción Servicios Prestados - Comunicaciones Internas"    ]
 }
 
 with st.sidebar:
