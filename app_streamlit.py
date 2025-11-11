@@ -182,9 +182,23 @@ with st.sidebar:
         df_hist_filtrado = df_hist[df_hist["Linea"] == display_name]
         if df_hist_filtrado.empty: df_hist_filtrado = df_hist[df_hist["Linea"].str.replace('_', ' ') == linea_sel]
         if df_hist_filtrado.empty: df_hist_filtrado = df_hist
-        indicadores = sorted(df_hist_filtrado["Indicador"].unique())
+        
+        # Ordenar indicadores por la columna 'Orden Lista de' si existe
+        if 'Orden Lista de' in df_hist_filtrado.columns:
+            # Obtener indicadores únicos con su orden
+            df_orden = df_hist_filtrado[['Indicador', 'Orden Lista de']].drop_duplicates()
+            df_orden = df_orden.sort_values('Orden Lista de')
+            indicadores = df_orden['Indicador'].tolist()
+        else:
+            indicadores = sorted(df_hist_filtrado["Indicador"].unique())
     else:
-        indicadores = sorted(df_hist["Indicador"].unique())
+        # Si no hay columna Linea, intentar ordenar por 'Orden Lista de'
+        if 'Orden Lista de' in df_hist.columns:
+            df_orden = df_hist[['Indicador', 'Orden Lista de']].drop_duplicates()
+            df_orden = df_orden.sort_values('Orden Lista de')
+            indicadores = df_orden['Indicador'].tolist()
+        else:
+            indicadores = sorted(df_hist["Indicador"].unique())
     
     indicador_sel = st.selectbox("📊 Indicador", indicadores)
     
