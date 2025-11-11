@@ -169,6 +169,71 @@ for c in expected_proj_cols:
 # ==============================
 # SIDEBAR
 # ==============================
+# ==============================
+# ORDEN MANUAL DE INDICADORES POR LÍNEA ESTRATÉGICA
+# ==============================
+ORDEN_INDICADORES = {
+    "Calidad": [
+        "Programas acreditados",
+        "Relación Estudiantes Docentes TC",
+        "Relación estudiantes docentes",
+        "Productos de investigación",
+        "Estudiantes vinculados a investigación",
+        "Número de registros calificados",
+        "Número de programas con acreditación",
+        "% de profesores con doctorado"
+    ],
+    "Educación_para_toda_la_vida": [
+        "Ingresos totales",
+        "Total Ingresos",
+        "Total Ingresos Educación Continua",
+        "Otros Ingresos"
+    ],
+    "Expansión": [
+        "Total Población",
+        "Total estudiantes",
+        "Total Matriculados",
+        "Estudiantes Pregrado",
+        "Estudiantes Posgrado",
+        "Estudiantes Posgrado Especialización",
+        "Estudiantes Posgrado Maestría",
+        "Brand equity",
+        "Conocimiento",
+        "Lanzamiento de programas",
+        "Índice de satisfacción estudiantes"
+    ],
+    "Experiencia": [
+        "Permanencia",
+        "NPS Estudiantes",
+        "NPS Egresados",
+        "Porcentaje de Egresados"
+    ],
+    "Sostenibilidad": [
+        "Cumplimiento presupuesto de ingresos",
+        "Cumplimiento presupuesto de gastos",
+        "Caja",
+        "Utilidad Neta",
+        "Estudiantes con apoyo financiero",
+        "Índice de Inclusión",
+        "Impacto de acciones sostenibles",
+        "GreenMetric - Puntaje",
+        "Compensación",
+        "Nivel de empleo",
+        "Participación en voluntariado",
+        "CAPEX",
+        "Nivel de Cumplimiento PIGA"
+    ],
+    "Transformación_Organizacional": [
+        "Disponibilidad",
+        "Great Place to Work",
+        "Resultado de la Encuesta",
+        "Índice de rotación",
+        "Nivel de efecto",
+        "Cumplimiento del plan",
+        "Nivel de Satisfacción"
+    ]
+}
+
 with st.sidebar:
     st.markdown('<div style="text-align: center; margin-bottom: 1.5rem;"><h2>⚙️ CONTROLES</h2></div>', unsafe_allow_html=True)
     
@@ -183,22 +248,21 @@ with st.sidebar:
         if df_hist_filtrado.empty: df_hist_filtrado = df_hist[df_hist["Linea"].str.replace('_', ' ') == linea_sel]
         if df_hist_filtrado.empty: df_hist_filtrado = df_hist
         
-        # Ordenar indicadores por la columna 'Orden Lista de' si existe
-        if 'Orden Lista de' in df_hist_filtrado.columns:
-            # Obtener indicadores únicos con su orden
-            df_orden = df_hist_filtrado[['Indicador', 'Orden Lista de']].drop_duplicates()
-            df_orden = df_orden.sort_values('Orden Lista de')
-            indicadores = df_orden['Indicador'].tolist()
+        # Obtener indicadores disponibles en los datos
+        indicadores_disponibles = set(df_hist_filtrado["Indicador"].unique())
+        
+        # Usar el orden manual si está definido para esta línea
+        orden_manual = ORDEN_INDICADORES.get(display_name, [])
+        if orden_manual:
+            # Filtrar solo los indicadores que existen en los datos y mantener el orden
+            indicadores = [ind for ind in orden_manual if ind in indicadores_disponibles]
+            # Agregar cualquier indicador que esté en los datos pero no en el orden manual
+            indicadores_faltantes = sorted(indicadores_disponibles - set(indicadores))
+            indicadores.extend(indicadores_faltantes)
         else:
-            indicadores = sorted(df_hist_filtrado["Indicador"].unique())
+            indicadores = sorted(indicadores_disponibles)
     else:
-        # Si no hay columna Linea, intentar ordenar por 'Orden Lista de'
-        if 'Orden Lista de' in df_hist.columns:
-            df_orden = df_hist[['Indicador', 'Orden Lista de']].drop_duplicates()
-            df_orden = df_orden.sort_values('Orden Lista de')
-            indicadores = df_orden['Indicador'].tolist()
-        else:
-            indicadores = sorted(df_hist["Indicador"].unique())
+        indicadores = sorted(df_hist["Indicador"].unique())
     
     indicador_sel = st.selectbox("📊 Indicador", indicadores)
     
