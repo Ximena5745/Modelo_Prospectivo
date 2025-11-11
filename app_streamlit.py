@@ -598,7 +598,7 @@ if mostrar_linea_divisoria:
         line_color="#808080"
     )
     
-    # 2. Añadir la anotación por separado
+    # 2. Añadir la anotación por separado.
     fig.add_annotation(
         x=fecha_corte_str, 
         y=1,               
