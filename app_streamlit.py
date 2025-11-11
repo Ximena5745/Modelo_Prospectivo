@@ -446,7 +446,7 @@ if not df_base.empty:
     
     variacion_periodo = valor_2030 - valor_2026 if pd.notna(valor_2030) and pd.notna(valor_2026) else 0
 
-    st.markdown(f'<div style="font-weight:800; color:{colores_escenarios.get("Base", "#1a73e8")}; font-size:1.1rem; margin: 0 0 .5rem 0; letter-spacing:.3px;">ESCENARIO BASE</div>', unsafe_allow_html=True)
+    st.markdown(f'<div style="background:{colores_escenarios.get("Base", "#1a73e8")}; color:#ffffff; font-weight:800; font-size:1.15rem; padding:.6rem .9rem; border-radius:10px; margin: 0 0 .75rem 0; letter-spacing:.3px;">⚖️ ESCENARIO BASE</div>', unsafe_allow_html=True)
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
@@ -830,7 +830,7 @@ if not df_proj_sel.empty and len(escenarios_sel) > 0:
             st.markdown(
                 f"""
                 <div class=\"metric-card\" style=\"border-left-color: {esc_color};\">
-                    <div style=\"font-weight:800; color:{esc_color}; font-size:1.05rem; margin-bottom:0.5rem; letter-spacing:.3px;\">{escenario.upper()}</div>
+                    <div style=\"background:{esc_color}; color:#ffffff; font-weight:800; font-size:1.1rem; padding:.45rem .7rem; border-radius:8px; margin-bottom:.75rem; letter-spacing:.3px;\">{escenario.upper()}</div>
                     <div class=\"metric-label\">Base · Último 2025</div>
                     <div class=\"metric-value\" style=\"color: #1e293b;\">{format_number(base_2025, decimal_places) if pd.notna(base_2025) else 'N/A'}</div>
                     <div class=\"metric-label\" style=\"margin-top:0.75rem;\">{escenario} · 2026</div>
