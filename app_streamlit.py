@@ -446,6 +446,7 @@ if not df_base.empty:
     
     variacion_periodo = valor_2030 - valor_2026 if pd.notna(valor_2030) and pd.notna(valor_2026) else 0
 
+    st.markdown(f'<div style="font-weight:800; color:{colores_escenarios.get("Base", "#1a73e8")}; font-size:1.1rem; margin: 0 0 .5rem 0; letter-spacing:.3px;">ESCENARIO BASE</div>', unsafe_allow_html=True)
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
@@ -828,17 +829,18 @@ if not df_proj_sel.empty and len(escenarios_sel) > 0:
             # Tarjeta por escenario
             st.markdown(
                 f"""
-                <div class="metric-card" style="border-left-color: {esc_color};">
-                    <div class="metric-label">Base · Último 2025</div>
-                    <div class="metric-value" style="color: #1e293b;">{format_number(base_2025, decimal_places) if pd.notna(base_2025) else 'N/A'}</div>
-                    <div class="metric-label" style="margin-top:0.75rem;">{escenario} · 2026</div>
-                    <div class="metric-value" style="color: {esc_color};">{format_number(v26, decimal_places) if pd.notna(v26) else 'N/A'}</div>
-                    <div class="metric-label" style="margin-top:0.25rem;">Δ% vs 2025</div>
-                    <div class="metric-value" style="color: {'#2ecc71' if (pd.notna(pct26) and pct26>=0) else '#e74c3c'};">{(f"{pct26:,.2f}%" if pd.notna(pct26) else 'N/A')}</div>
-                    <div class="metric-label" style="margin-top:0.75rem;">{escenario} · 2030</div>
-                    <div class="metric-value" style="color: {esc_color};">{format_number(v30, decimal_places) if pd.notna(v30) else 'N/A'}</div>
-                    <div class="metric-label" style="margin-top:0.25rem;">Δ% vs 2025</div>
-                    <div class="metric-value" style="color: {'#2ecc71' if (pd.notna(pct30) and pct30>=0) else '#e74c3c'};">{(f"{pct30:,.2f}%" if pd.notna(pct30) else 'N/A')}</div>
+                <div class=\"metric-card\" style=\"border-left-color: {esc_color};\">
+                    <div style=\"font-weight:800; color:{esc_color}; font-size:1.05rem; margin-bottom:0.5rem; letter-spacing:.3px;\">{escenario.upper()}</div>
+                    <div class=\"metric-label\">Base · Último 2025</div>
+                    <div class=\"metric-value\" style=\"color: #1e293b;\">{format_number(base_2025, decimal_places) if pd.notna(base_2025) else 'N/A'}</div>
+                    <div class=\"metric-label\" style=\"margin-top:0.75rem;\">{escenario} · 2026</div>
+                    <div class=\"metric-value\" style=\"color: {esc_color};\">{format_number(v26, decimal_places) if pd.notna(v26) else 'N/A'}</div>
+                    <div class=\"metric-label\" style=\"margin-top:0.25rem;\">Δ% vs 2025</div>
+                    <div class=\"metric-value\" style=\"color: {'#2ecc71' if (pd.notna(pct26) and pct26>=0) else '#e74c3c'};\">{(f\"{pct26:,.2f}%\" if pd.notna(pct26) else 'N/A')}</div>
+                    <div class=\"metric-label\" style=\"margin-top:0.75rem;\">{escenario} · 2030</div>
+                    <div class=\"metric-value\" style=\"color: {esc_color};\">{format_number(v30, decimal_places) if pd.notna(v30) else 'N/A'}</div>
+                    <div class=\"metric-label\" style=\"margin-top:0.25rem;\">Δ% vs 2025</div>
+                    <div class=\"metric-value\" style=\"color: {'#2ecc71' if (pd.notna(pct30) and pct30>=0) else '#e74c3c'};\">{(f\"{pct30:,.2f}%\" if pd.notna(pct30) else 'N/A')}</div>
                 </div>
                 """,
                 unsafe_allow_html=True
