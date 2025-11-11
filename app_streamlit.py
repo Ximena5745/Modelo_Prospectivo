@@ -836,11 +836,11 @@ if not df_proj_sel.empty and len(escenarios_sel) > 0:
                     <div class=\"metric-label\" style=\"margin-top:0.75rem;\">{escenario} · 2026</div>
                     <div class=\"metric-value\" style=\"color: {esc_color};\">{format_number(v26, decimal_places) if pd.notna(v26) else 'N/A'}</div>
                     <div class=\"metric-label\" style=\"margin-top:0.25rem;\">Δ% vs 2025</div>
-                    <div class=\"metric-value\" style=\"color: {'#2ecc71' if (pd.notna(pct26) and pct26>=0) else '#e74c3c'};\">{(f\"{pct26:,.2f}%\" if pd.notna(pct26) else 'N/A')}</div>
+                    <div class=\"metric-value\" style=\"color: {'#2ecc71' if (pd.notna(pct26) and pct26>=0) else '#e74c3c'};\">{(f"{pct26:,.2f}%" if pd.notna(pct26) else 'N/A')}</div>
                     <div class=\"metric-label\" style=\"margin-top:0.75rem;\">{escenario} · 2030</div>
                     <div class=\"metric-value\" style=\"color: {esc_color};\">{format_number(v30, decimal_places) if pd.notna(v30) else 'N/A'}</div>
                     <div class=\"metric-label\" style=\"margin-top:0.25rem;\">Δ% vs 2025</div>
-                    <div class=\"metric-value\" style=\"color: {'#2ecc71' if (pd.notna(pct30) and pct30>=0) else '#e74c3c'};\">{(f\"{pct30:,.2f}%\" if pd.notna(pct30) else 'N/A')}</div>
+                    <div class=\"metric-value\" style=\"color: {'#2ecc71' if (pd.notna(pct30) and pct30>=0) else '#e74c3c'};\">{(f"{pct30:,.2f}%" if pd.notna(pct30) else 'N/A')}</div>
                 </div>
                 """,
                 unsafe_allow_html=True
