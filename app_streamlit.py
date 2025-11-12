@@ -365,6 +365,32 @@ def format_number(value, decimals):
     except:
         return str(value)
 
+# Función auxiliar: último valor del semestre más reciente del año objetivo (por defecto 2025)
+# Usa únicamente registros con Fuente = 'Semestral' y hace fallback al año anterior si no existe el año objetivo.
+# Si no hay datos <= año objetivo, retorna NaN.
+def ultimo_semestre_val(df_hist_source: pd.DataFrame, target_year: int = 2025):
+    try:
+        if df_hist_source is None or df_hist_source.empty:
+            return np.nan
+        dfh = df_hist_source.copy()
+        if 'Fuente' in dfh.columns:
+            dfh = dfh[dfh['Fuente'] == 'Semestral']
+        # Intentar con el año objetivo
+        dfx = dfh[dfh['Fecha'].dt.year == target_year]
+        if not dfx.empty:
+            return dfx.sort_values('Fecha').iloc[-1]['Ejecución']
+        # Fallback: año anterior
+        dfx_prev = dfh[dfh['Fecha'].dt.year == (target_year - 1)]
+        if not dfx_prev.empty:
+            return dfx_prev.sort_values('Fecha').iloc[-1]['Ejecución']
+        # Fallback: último registro con fecha <= fin del año objetivo
+        dfx_lte = dfh[dfh['Fecha'] <= pd.to_datetime(f'{target_year}-12-31')]
+        if not dfx_lte.empty:
+            return dfx_lte.sort_values('Fecha').iloc[-1]['Ejecución']
+        return np.nan
+    except Exception:
+        return np.nan
+
 # --- Utilidades para etiquetas y rangos de período ---
 def periodo_label(fecha, tipo: str) -> str:
     """Genera etiqueta de rango para un período.
@@ -442,7 +468,9 @@ if not df_base.empty:
     # Obtener el valor de proyección para 2026 y 2030 (el último registro de ese año)
     valor_2026 = df_base[df_base['Fecha'].dt.year == 2026]['Proyección'].max()
     valor_2030 = df_base[df_base['Fecha'].dt.year == 2030]['Proyección'].max()
-    ultimo_historico = df_hist_sel['Ejecución'].max() if not df_hist_sel.empty else np.nan
+    # Último histórico debe ser el último semestre disponible de 2025 (o fallback al año previo),
+    # evitando sumar semestres o tomar cierres anuales.
+    ultimo_historico = ultimo_semestre_val(df_hist_sel, target_year=2025)
     
     variacion_periodo = valor_2030 - valor_2026 if pd.notna(valor_2030) and pd.notna(valor_2026) else 0
 
@@ -787,20 +815,9 @@ if not df_proj_sel.empty and len(escenarios_sel) > 0:
     num_cols = max(1, len(escenarios_sel))
     cols = st.columns(num_cols)
 
-    # Baseline: último histórico de 2025; si no hay, usar último de 2024; si tampoco hay, último <= 2025
-    base_2025 = np.nan
-    if not df_hist_sel.empty:
-        hist_2025 = df_hist_sel[df_hist_sel['Fecha'].dt.year == 2025]
-        if not hist_2025.empty:
-            base_2025 = hist_2025.sort_values('Fecha').iloc[-1]['Ejecución']
-        else:
-            hist_2024 = df_hist_sel[df_hist_sel['Fecha'].dt.year == 2024]
-            if not hist_2024.empty:
-                base_2025 = hist_2024.sort_values('Fecha').iloc[-1]['Ejecución']
-            else:
-                hist_before = df_hist_sel[df_hist_sel['Fecha'] <= pd.to_datetime('2025-12-31')]
-                if not hist_before.empty:
-                    base_2025 = hist_before.sort_values('Fecha').iloc[-1]['Ejecución']
+    # Baseline: último histórico del semestre más reciente de 2025 (o fallback al año previo),
+    # siempre usando la fuente semestral.
+    base_2025 = ultimo_semestre_val(df_hist_sel, target_year=2025)
 
     for i, escenario in enumerate(escenarios_sel):
         esc_color = colores_escenarios.get(escenario, '#1a73e8')
