@@ -367,7 +367,7 @@ def format_number(value, decimals):
 
 # Función auxiliar: último valor del semestre más reciente del año objetivo (por defecto 2025)
 # Usa únicamente registros con Fuente = 'Semestral' y hace fallback al año anterior si no existe el año objetivo.
-# Si no hay datos <= año objetivo, retorna NaN.
+# Si no hay datos <= año objetivo, retorna NaN .
 def ultimo_semestre_val(df_hist_source: pd.DataFrame, target_year: int = 2025):
     try:
         if df_hist_source is None or df_hist_source.empty:
