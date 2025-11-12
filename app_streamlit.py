@@ -26,6 +26,8 @@ st.markdown("""
         .stApp { background-color: #f8fafc; }
         .main .block-container { padding: 2rem 3rem; max-width: 1800px; }
         h1 { color: #0d47a1; font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.5px; }
+        .app-title { color: #0d47a1 !important; }
+        .app-subtitle { color: #475569 !important; }
         h2 { color: #1a73e8; font-size: 1.75rem; font-weight: 600; margin: 2rem 0 1rem 0; padding-bottom: 0.5rem; border-bottom: 3px solid #e3f2fd; }
         h3 { color: #1557b0; font-size: 1.25rem; font-weight: 600; margin: 1.5rem 0 0.75rem 0; }
         /* Estilos del Sidebar */
@@ -54,14 +56,15 @@ st.markdown("""
             margin-bottom: 1rem;
             box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3) !important;
         }
+        /* colores específicos definidos por clase; no usar regla combinada */
     </style>
 """, unsafe_allow_html=True)
 
 st.markdown("""
 <div style="text-align: center; margin: 1.5rem 0 2.5rem 0;">
-    <h1 style="margin: 0 0 0.5rem 0; color: #0d47a1 !important; font-size: 2.75rem; font-weight: 800; letter-spacing: -0.5px;">MODELO DE PROSPECTIVA POLI</h1>
+    <h1 class="app-title" style="margin: 0 0 0.5rem 0; font-size: 2.75rem; font-weight: 800; letter-spacing: -0.5px; color: #0d47a1 !important;">Plataforma Prospectiva de Indicadores Institucionales</h1>
     <div style="height: 5px; width: 240px; background: linear-gradient(90deg, #1a73e8, #2ecc71); margin: 0 auto 1rem; border-radius: 3px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div>
-    <p style="color: #475569; font-size: 1.2rem; margin: 0.5rem 0 0 0; font-weight: 500; letter-spacing: 0.3px;">Plataforma de análisis y proyección de indicadores estratégicos 2026-2030</p>
+    <p class="app-subtitle" style="font-size: 1.2rem; margin: 0.5rem 0 0 0; font-weight: 500; letter-spacing: 0.3px; color: #475569 !important;">Análisis y proyección de indicadores estratégicos 2026-2030</p>
 </div>
 """, unsafe_allow_html=True)
 
