@@ -6,7 +6,7 @@ import numpy as np
 import os 
 
 # ==============================
-# CONFIGURACIÓN STREAMLIT
+# CONFIGURACIÓN_STREAMLIT
 # ==============================
 st.set_page_config(
     page_title="Modelo Prospectivo Poli 2026-2030",
