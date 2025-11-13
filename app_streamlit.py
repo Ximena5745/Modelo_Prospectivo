@@ -1016,13 +1016,13 @@ fig.update_layout(
         ticklabeloverflow='allow',
         ticklabelposition='outside',
         ticklabelstep=1 if tipo_visualizacion == "Anual" else 2,
-        range=["2021-07-01", "2030-12-31"]
+        range=[df_hist_trace['Fecha'].min().strftime('%Y-%m-%d') if not df_hist_trace.empty else "2017-01-01", df_proj_sel['Fecha'].max().strftime('%Y-%m-%d') if not df_proj_sel.empty else "2030-12-31"]
     ),
     
     # ETIQUETAS EJE Y
     yaxis=dict(
         title=dict(
-            text=f"<b>{indicador_sel.upper()}</b>",
+{{ ... }}
             font=dict(size=20, weight=600, family="Poppins", color="#1e293b"),
             standoff=15
         ),
