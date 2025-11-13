@@ -1022,7 +1022,7 @@ fig.update_layout(
     # ETIQUETAS EJE Y
     yaxis=dict(
         title=dict(
-{{ ... }}
+            text=f"<b>{indicador_sel.upper()}</b>",
             font=dict(size=20, weight=600, family="Poppins", color="#1e293b"),
             standoff=15
         ),
