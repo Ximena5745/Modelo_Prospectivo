@@ -1011,13 +1011,12 @@ fig.update_layout(
         automargin=True,
         tickangle=45 if tipo_visualizacion == "Semestral" else 0,
         title_standoff=20,
-        fixedrange=False,
-        rangeslider=dict(visible=True, thickness=0.05),
+        fixedrange=True,
         # Ajustar márgenes para etiquetas rotadas
         ticklabeloverflow='allow',
         ticklabelposition='outside',
         ticklabelstep=1 if tipo_visualizacion == "Anual" else 2,
-        range=["2022-03-15", df_proj_sel['Fecha'].max().strftime('%Y-%m-%d') if not df_proj_sel.empty else "2030-12-31"]
+        range=[df_hist_trace['Fecha'].min().strftime('%Y-%m-%d') if not df_hist_trace.empty else "2017-01-01", df_proj_sel['Fecha'].max().strftime('%Y-%m-%d') if not df_proj_sel.empty else "2030-12-31"]
     ),
     
     # ETIQUETAS EJE Y
