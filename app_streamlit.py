@@ -355,6 +355,15 @@ if st.session_state['mostrar_modelos']:
     # Cargar imágenes de la carpeta Slides PRIMERO
     SLIDES_DIR = BASE_DIR / "Slides"
     
+    # Función para ordenamiento natural (para que 1, 2, 10 queden ordenados correctamente)
+    import re
+    def natural_sort_key(text):
+        """
+        Clave de ordenamiento natural para manejar números dentro de strings
+        Ejemplo: ['file1', 'file10', 'file2'] -> ['file1', 'file2', 'file10']
+        """
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
     if SLIDES_DIR.exists():
         # Buscar todos los archivos de imagen en la carpeta
         image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
@@ -363,8 +372,8 @@ if st.session_state['mostrar_modelos']:
         for ext in image_extensions:
             image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
         
-        # Ordenar alfabéticamente
-        image_files.sort()
+        # Ordenar usando ordenamiento natural para manejar números correctamente
+        image_files.sort(key=natural_sort_key)
         
         if image_files:
             # Inicializar el índice del slide si no existe
@@ -377,44 +386,85 @@ if st.session_state['mostrar_modelos']:
             if st.session_state.slide_index < 0:
                 st.session_state.slide_index = 0
             
-            # Crear una vista completa para las imágenes
-            st.markdown("---")
+            # CSS para modal flotante con fondo oscuro semi-transparente
             st.markdown("""
-            <div style="text-align: center; margin: 2rem 0;">
-                <h1 style="color: #0d47a1; font-size: 2.5rem; font-weight: 700;">📊 Modelos de Machine Learning</h1>
-                <div style="height: 5px; width: 240px; background: linear-gradient(90deg, #1a73e8, #2ecc71); margin: 0 auto 1rem; border-radius: 3px;"></div>
-                <p style="font-size: 1.1rem; color: #475569;">Visualización de los modelos utilizados en las proyecciones</p>
+            <style>
+                .modal-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.85);
+                    z-index: 9998;
+                    backdrop-filter: blur(5px);
+                }
+                .modal-content {
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 90%;
+                    max-width: 1200px;
+                    max-height: 90vh;
+                    background: white;
+                    border-radius: 20px;
+                    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+                    z-index: 9999;
+                    overflow-y: auto;
+                    padding: 2rem;
+                }
+                @media (max-width: 768px) {
+                    .modal-content {
+                        width: 95%;
+                        padding: 1rem;
+                    }
+                }
+            </style>
+            <div class="modal-overlay"></div>
+            """, unsafe_allow_html=True)
+            
+            # Contenedor del modal
+            st.markdown('<div class="modal-content">', unsafe_allow_html=True)
+            
+            # Título del modal
+            st.markdown("""
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h1 style="color: #0d47a1; font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #1a73e8, #2ecc71); margin: 0 auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: #475569; margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
             </div>
             """, unsafe_allow_html=True)
             
-            # Botón para cerrar la vista de modelos
+            # Botón para cerrar centrado
             col1, col2, col3 = st.columns([1, 1, 1])
             with col2:
-                if st.button("❌ Cerrar Modelos", use_container_width=True, key="btn_cerrar_modelos"):
+                if st.button("❌ Cerrar", use_container_width=True, key="btn_cerrar_modelos"):
                     st.session_state['mostrar_modelos'] = False
                     st.rerun()
             
-            st.markdown("---")
+            st.markdown("<hr style='margin: 1.5rem 0; border: none; border-top: 2px solid #e3f2fd;'>", unsafe_allow_html=True)
             
-            st.markdown(f"<p style='text-align: center; color: #64748b; font-size: 0.9rem; margin-bottom: 2rem;'>Se encontraron {len(image_files)} slides disponibles</p>", unsafe_allow_html=True)
+            # Información de slides disponibles
+            st.markdown(f"<p style='text-align: center; color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem;'>📁 {len(image_files)} slides disponibles</p>", unsafe_allow_html=True)
             
             # Mostrar la imagen actual
             current_image_path = image_files[st.session_state.slide_index]
             image_name = Path(current_image_path).stem
             
             st.markdown(f"""
-            <div style="text-align: center; margin: 1.5rem 0;">
-                <h3 style="color: #1a73e8; font-weight: 600;">Slide {st.session_state.slide_index + 1} de {len(image_files)}</h3>
-                <p style="color: #64748b; font-size: 0.9rem; font-style: italic;">{image_name}</p>
+            <div style="text-align: center; margin: 1rem 0;">
+                <h3 style="color: #1a73e8; font-weight: 600; font-size: 1.3rem;">Slide {st.session_state.slide_index + 1} de {len(image_files)}</h3>
+                <p style="color: #64748b; font-size: 0.85rem; font-style: italic;">{image_name}</p>
             </div>
             """, unsafe_allow_html=True)
             
             try:
                 image = Image.open(current_image_path)
                 
-                # Crear un contenedor con borde para la imagen
+                # Contenedor con borde para la imagen
                 st.markdown("""
-                <div style="border: 2px solid #e3f2fd; border-radius: 12px; padding: 1rem; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+                <div style="border: 3px solid #1a73e8; border-radius: 12px; padding: 0.5rem; background: #f8fafc; box-shadow: 0 4px 12px rgba(26, 115, 232, 0.15); margin: 1rem 0;">
                 """, unsafe_allow_html=True)
                 
                 st.image(image, use_container_width=True)
@@ -424,8 +474,9 @@ if st.session_state['mostrar_modelos']:
             except Exception as e:
                 st.error(f"❌ Error al cargar la imagen: {e}")
             
-            # Botones de navegación
+            # Botones de navegación con diseño mejorado
             st.markdown("<br>", unsafe_allow_html=True)
+            
             col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
             
             with col1:
@@ -441,7 +492,7 @@ if st.session_state['mostrar_modelos']:
             with col3:
                 st.markdown(f"""
                 <div style="text-align: center; padding: 0.75rem; background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%); 
-                color: white; border-radius: 8px; font-weight: 600;">
+                color: white; border-radius: 8px; font-weight: 700; font-size: 1rem; box-shadow: 0 2px 8px rgba(26, 115, 232, 0.3);">
                     {st.session_state.slide_index + 1} / {len(image_files)}
                 </div>
                 """, unsafe_allow_html=True)
@@ -456,8 +507,9 @@ if st.session_state['mostrar_modelos']:
                     st.session_state.slide_index = len(image_files) - 1
                     st.rerun()
             
-            # Miniaturas (thumbnails) opcionales
-            st.markdown("---")
+            # Miniaturas (thumbnails) en expander
+            st.markdown("<hr style='margin: 1.5rem 0; border: none; border-top: 2px solid #e3f2fd;'>", unsafe_allow_html=True)
+            
             with st.expander("🖼️ Ver todas las miniaturas", expanded=False):
                 st.markdown("<br>", unsafe_allow_html=True)
                 
@@ -474,34 +526,111 @@ if st.session_state['mostrar_modelos']:
                                 
                                 # Highlight si es el slide actual
                                 border_color = "#1a73e8" if img_idx == st.session_state.slide_index else "#e2e8f0"
-                                border_width = "3px" if img_idx == st.session_state.slide_index else "1px"
+                                border_width = "4px" if img_idx == st.session_state.slide_index else "2px"
+                                bg_color = "#e3f2fd" if img_idx == st.session_state.slide_index else "white"
                                 
                                 st.markdown(f"""
-                                <div style="border: {border_width} solid {border_color}; border-radius: 8px; padding: 0.5rem; margin-bottom: 0.5rem;">
+                                <div style="border: {border_width} solid {border_color}; border-radius: 8px; padding: 0.5rem; margin-bottom: 0.5rem; background: {bg_color}; transition: all 0.3s ease;">
                                 """, unsafe_allow_html=True)
                                 
                                 st.image(img, use_container_width=True)
                                 
                                 st.markdown("</div>", unsafe_allow_html=True)
                                 
-                                if st.button(f"📌 Slide {img_idx + 1}", key=f"thumb_{img_idx}", use_container_width=True):
+                                button_style = "🎯" if img_idx == st.session_state.slide_index else "📌"
+                                if st.button(f"{button_style} Slide {img_idx + 1}", key=f"thumb_{img_idx}", use_container_width=True):
                                     st.session_state.slide_index = img_idx
                                     st.rerun()
                                 
-                                st.markdown(f"<p style='text-align: center; font-size: 0.75rem; color: #64748b;'>{img_name[:20]}...</p>", unsafe_allow_html=True)
+                                st.markdown(f"<p style='text-align: center; font-size: 0.7rem; color: #64748b; margin-top: 0.25rem;'>{img_name[:25]}...</p>", unsafe_allow_html=True)
                                 
                             except Exception as e:
-                                st.error(f"Error en miniatura {img_idx + 1}")
+                                st.error(f"Error: {img_idx + 1}")
                 
                 st.markdown("<br>", unsafe_allow_html=True)
+            
+            # Cerrar contenedor del modal
+            st.markdown('</div>', unsafe_allow_html=True)
+            
         else:
+            # Modal de advertencia si no hay imágenes
+            st.markdown("""
+            <style>
+                .modal-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.85);
+                    z-index: 9998;
+                }
+                .modal-warning {
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 80%;
+                    max-width: 600px;
+                    background: white;
+                    border-radius: 15px;
+                    padding: 2rem;
+                    z-index: 9999;
+                    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+                }
+            </style>
+            <div class="modal-overlay"></div>
+            <div class="modal-warning">
+            """, unsafe_allow_html=True)
+            
             st.warning("⚠️ No se encontraron imágenes en la carpeta Slides")
             st.info("💡 Asegúrate de colocar archivos de imagen (PNG, JPG, JPEG, GIF, WEBP) en la carpeta 'Slides'")
+            
+            if st.button("Cerrar", key="btn_cerrar_warning"):
+                st.session_state['mostrar_modelos'] = False
+                st.rerun()
+            
+            st.markdown("</div>", unsafe_allow_html=True)
     else:
+        # Modal de error si no existe la carpeta
+        st.markdown("""
+        <style>
+            .modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.85);
+                z-index: 9998;
+            }
+            .modal-error {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 80%;
+                max-width: 600px;
+                background: white;
+                border-radius: 15px;
+                padding: 2rem;
+                z-index: 9999;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            }
+        </style>
+        <div class="modal-overlay"></div>
+        <div class="modal-error">
+        """, unsafe_allow_html=True)
+        
         st.error(f"❌ No se encontró la carpeta: {SLIDES_DIR}")
         st.info(f"💡 Crea la carpeta 'Slides' en la ruta: {BASE_DIR}")
+        
+        if st.button("Cerrar", key="btn_cerrar_error"):
+            st.session_state['mostrar_modelos'] = False
+            st.rerun()
+        
+        st.markdown("</div>", unsafe_allow_html=True)
     
-    st.markdown("---")
     st.stop()  # Detener la ejecución del resto de la app
 
 # ==============================
