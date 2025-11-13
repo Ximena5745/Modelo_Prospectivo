@@ -247,13 +247,6 @@ if 'mostrar_modelos' not in st.session_state:
 with st.sidebar:
     st.markdown('<div style="text-align: center; margin-bottom: 1.5rem;"><h2>⚙️ CONTROLES</h2></div>', unsafe_allow_html=True)
     
-    # NUEVO: Botón para ver modelos
-    st.markdown("---")
-    if st.button("📊 MODELOS", use_container_width=True, key="btn_modelos"):
-        st.session_state['mostrar_modelos'] = True
-        st.rerun()
-    st.markdown("---")
-    
     lineas_estrategicas = {
         "Expansión": ("Expansión", "#1a73e8"), 
         "Transformación Organizacional": ("Transformación_Organizacional", "#1557b0"), 
@@ -348,31 +341,18 @@ with st.sidebar:
     mostrar_linea_divisoria = st.checkbox("Línea divisoria", value=True)
     st.markdown("---")
     if st.button("🔄 REFRESCAR"): st.rerun()
+    
+    # NUEVO: Botón para ver modelos AL FINAL
+    st.markdown("---")
+    if st.button("📊 MODELOS", use_container_width=True, key="btn_modelos"):
+        st.session_state['mostrar_modelos'] = True
+        st.rerun()
 
 # ==============================
 # VISTA DE MODELOS (MODAL)
 # ==============================
 if st.session_state['mostrar_modelos']:
-    # Crear una vista completa para las imágenes
-    st.markdown("---")
-    st.markdown("""
-    <div style="text-align: center; margin: 2rem 0;">
-        <h1 style="color: #0d47a1; font-size: 2.5rem; font-weight: 700;">📊 Modelos de Machine Learning</h1>
-        <div style="height: 5px; width: 240px; background: linear-gradient(90deg, #1a73e8, #2ecc71); margin: 0 auto 1rem; border-radius: 3px;"></div>
-        <p style="font-size: 1.1rem; color: #475569;">Visualización de los modelos utilizados en las proyecciones</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Botón para cerrar la vista de modelos
-    col1, col2, col3 = st.columns([1, 1, 1])
-    with col2:
-        if st.button("❌ Cerrar Modelos", use_container_width=True, key="btn_cerrar_modelos"):
-            st.session_state['mostrar_modelos'] = False
-            st.rerun()
-    
-    st.markdown("---")
-    
-    # Cargar imágenes de la carpeta Slides
+    # Cargar imágenes de la carpeta Slides PRIMERO
     SLIDES_DIR = BASE_DIR / "Slides"
     
     if SLIDES_DIR.exists():
@@ -387,24 +367,36 @@ if st.session_state['mostrar_modelos']:
         image_files.sort()
         
         if image_files:
-            st.markdown(f"<p style='text-align: center; color: #64748b; font-size: 0.9rem; margin-bottom: 2rem;'>Se encontraron {len(image_files)} slides disponibles</p>", unsafe_allow_html=True)
-            
             # Inicializar el índice del slide si no existe
             if 'slide_index' not in st.session_state:
                 st.session_state.slide_index = 0
             
-            # Selector de navegación con slider
-            current_slide = st.slider(
-                "Navegar por slides",
-                min_value=1,
-                max_value=len(image_files),
-                value=st.session_state.slide_index + 1,
-                key="slide_selector",
-                help="Usa el slider o los botones de navegación para cambiar de slide"
-            )
+            # Validar que el índice esté dentro del rango
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
             
-            # Actualizar el índice basado en el slider
-            st.session_state.slide_index = current_slide - 1
+            # Crear una vista completa para las imágenes
+            st.markdown("---")
+            st.markdown("""
+            <div style="text-align: center; margin: 2rem 0;">
+                <h1 style="color: #0d47a1; font-size: 2.5rem; font-weight: 700;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 5px; width: 240px; background: linear-gradient(90deg, #1a73e8, #2ecc71); margin: 0 auto 1rem; border-radius: 3px;"></div>
+                <p style="font-size: 1.1rem; color: #475569;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Botón para cerrar la vista de modelos
+            col1, col2, col3 = st.columns([1, 1, 1])
+            with col2:
+                if st.button("❌ Cerrar Modelos", use_container_width=True, key="btn_cerrar_modelos"):
+                    st.session_state['mostrar_modelos'] = False
+                    st.rerun()
+            
+            st.markdown("---")
+            
+            st.markdown(f"<p style='text-align: center; color: #64748b; font-size: 0.9rem; margin-bottom: 2rem;'>Se encontraron {len(image_files)} slides disponibles</p>", unsafe_allow_html=True)
             
             # Mostrar la imagen actual
             current_image_path = image_files[st.session_state.slide_index]
@@ -412,7 +404,7 @@ if st.session_state['mostrar_modelos']:
             
             st.markdown(f"""
             <div style="text-align: center; margin: 1.5rem 0;">
-                <h3 style="color: #1a73e8; font-weight: 600;">Slide {current_slide} de {len(image_files)}</h3>
+                <h3 style="color: #1a73e8; font-weight: 600;">Slide {st.session_state.slide_index + 1} de {len(image_files)}</h3>
                 <p style="color: #64748b; font-size: 0.9rem; font-style: italic;">{image_name}</p>
             </div>
             """, unsafe_allow_html=True)
@@ -437,30 +429,30 @@ if st.session_state['mostrar_modelos']:
             col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
             
             with col1:
-                if st.button("⏮️ Primera", use_container_width=True, disabled=(st.session_state.slide_index == 0)):
+                if st.button("⏮️ Primera", use_container_width=True, disabled=(st.session_state.slide_index == 0), key="btn_primera"):
                     st.session_state.slide_index = 0
                     st.rerun()
             
             with col2:
-                if st.button("⬅️ Anterior", use_container_width=True, disabled=(st.session_state.slide_index == 0)):
-                    st.session_state.slide_index -= 1
+                if st.button("⬅️ Anterior", use_container_width=True, disabled=(st.session_state.slide_index == 0), key="btn_anterior"):
+                    st.session_state.slide_index = max(0, st.session_state.slide_index - 1)
                     st.rerun()
             
             with col3:
                 st.markdown(f"""
                 <div style="text-align: center; padding: 0.75rem; background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%); 
                 color: white; border-radius: 8px; font-weight: 600;">
-                    {current_slide} / {len(image_files)}
+                    {st.session_state.slide_index + 1} / {len(image_files)}
                 </div>
                 """, unsafe_allow_html=True)
             
             with col4:
-                if st.button("Siguiente ➡️", use_container_width=True, disabled=(st.session_state.slide_index == len(image_files) - 1)):
-                    st.session_state.slide_index += 1
+                if st.button("Siguiente ➡️", use_container_width=True, disabled=(st.session_state.slide_index == len(image_files) - 1), key="btn_siguiente"):
+                    st.session_state.slide_index = min(len(image_files) - 1, st.session_state.slide_index + 1)
                     st.rerun()
             
             with col5:
-                if st.button("Última ⏭️", use_container_width=True, disabled=(st.session_state.slide_index == len(image_files) - 1)):
+                if st.button("Última ⏭️", use_container_width=True, disabled=(st.session_state.slide_index == len(image_files) - 1), key="btn_ultima"):
                     st.session_state.slide_index = len(image_files) - 1
                     st.rerun()
             
