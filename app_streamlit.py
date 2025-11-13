@@ -3,7 +3,9 @@ import pandas as pd
 import plotly.graph_objects as go
 from pathlib import Path
 import numpy as np 
-import os 
+import os
+from PIL import Image
+import glob
 
 # ==============================
 # CONFIGURACIÓN_STREAMLIT
@@ -170,9 +172,6 @@ for c in expected_proj_cols:
         df_proj[c] = pd.Series(dtype='object')
 
 # ==============================
-# SIDEBAR
-# ==============================
-# ==============================
 # ORDEN MANUAL DE INDICADORES POR LÍNEA ESTRATÉGICA
 # ==============================
 ORDEN_INDICADORES = {
@@ -232,13 +231,37 @@ ORDEN_INDICADORES = {
         "Índice de rotación",
         "Nivel de efectividad de las capacitaciones",
         "Cumplimiento de diagnóstico necesidades de capacitación por área",
-        "Nivel de Satisfacción Servicios Prestados - Comunicaciones Internas"    ]
+        "Nivel de Satisfacción Servicios Prestados - Comunicaciones Internas"
+    ]
 }
 
+# ==============================
+# INICIALIZAR SESSION STATE
+# ==============================
+if 'mostrar_modelos' not in st.session_state:
+    st.session_state['mostrar_modelos'] = False
+
+# ==============================
+# SIDEBAR
+# ==============================
 with st.sidebar:
     st.markdown('<div style="text-align: center; margin-bottom: 1.5rem;"><h2>⚙️ CONTROLES</h2></div>', unsafe_allow_html=True)
     
-    lineas_estrategicas = {"Expansión": ("Expansión", "#1a73e8"), "Transformación Organizacional": ("Transformación_Organizacional", "#1557b0"), "Calidad": ("Calidad", "#0d47a1"), "Experiencia": ("Experiencia", "#1976d2"), "Sostenibilidad": ("Sostenibilidad", "#2196f3"), "Educación para la vida": ("Educación_para_toda_la_vida", "#1565c0")}
+    # NUEVO: Botón para ver modelos
+    st.markdown("---")
+    if st.button("📊 MODELOS", use_container_width=True, key="btn_modelos"):
+        st.session_state['mostrar_modelos'] = True
+        st.rerun()
+    st.markdown("---")
+    
+    lineas_estrategicas = {
+        "Expansión": ("Expansión", "#1a73e8"), 
+        "Transformación Organizacional": ("Transformación_Organizacional", "#1557b0"), 
+        "Calidad": ("Calidad", "#0d47a1"), 
+        "Experiencia": ("Experiencia", "#1976d2"), 
+        "Sostenibilidad": ("Sostenibilidad", "#2196f3"), 
+        "Educación para la vida": ("Educación_para_toda_la_vida", "#1565c0")
+    }
     
     linea_sel = st.selectbox("🎯 Línea Estratégica", list(lineas_estrategicas.keys()))
     display_name, color_linea = lineas_estrategicas[linea_sel]
@@ -325,6 +348,169 @@ with st.sidebar:
     mostrar_linea_divisoria = st.checkbox("Línea divisoria", value=True)
     st.markdown("---")
     if st.button("🔄 REFRESCAR"): st.rerun()
+
+# ==============================
+# VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    # Crear una vista completa para las imágenes
+    st.markdown("---")
+    st.markdown("""
+    <div style="text-align: center; margin: 2rem 0;">
+        <h1 style="color: #0d47a1; font-size: 2.5rem; font-weight: 700;">📊 Modelos de Machine Learning</h1>
+        <div style="height: 5px; width: 240px; background: linear-gradient(90deg, #1a73e8, #2ecc71); margin: 0 auto 1rem; border-radius: 3px;"></div>
+        <p style="font-size: 1.1rem; color: #475569;">Visualización de los modelos utilizados en las proyecciones</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Botón para cerrar la vista de modelos
+    col1, col2, col3 = st.columns([1, 1, 1])
+    with col2:
+        if st.button("❌ Cerrar Modelos", use_container_width=True, key="btn_cerrar_modelos"):
+            st.session_state['mostrar_modelos'] = False
+            st.rerun()
+    
+    st.markdown("---")
+    
+    # Cargar imágenes de la carpeta Slides
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    if SLIDES_DIR.exists():
+        # Buscar todos los archivos de imagen en la carpeta
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        # Ordenar alfabéticamente
+        image_files.sort()
+        
+        if image_files:
+            st.markdown(f"<p style='text-align: center; color: #64748b; font-size: 0.9rem; margin-bottom: 2rem;'>Se encontraron {len(image_files)} slides disponibles</p>", unsafe_allow_html=True)
+            
+            # Inicializar el índice del slide si no existe
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            # Selector de navegación con slider
+            current_slide = st.slider(
+                "Navegar por slides",
+                min_value=1,
+                max_value=len(image_files),
+                value=st.session_state.slide_index + 1,
+                key="slide_selector",
+                help="Usa el slider o los botones de navegación para cambiar de slide"
+            )
+            
+            # Actualizar el índice basado en el slider
+            st.session_state.slide_index = current_slide - 1
+            
+            # Mostrar la imagen actual
+            current_image_path = image_files[st.session_state.slide_index]
+            image_name = Path(current_image_path).stem
+            
+            st.markdown(f"""
+            <div style="text-align: center; margin: 1.5rem 0;">
+                <h3 style="color: #1a73e8; font-weight: 600;">Slide {current_slide} de {len(image_files)}</h3>
+                <p style="color: #64748b; font-size: 0.9rem; font-style: italic;">{image_name}</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            try:
+                image = Image.open(current_image_path)
+                
+                # Crear un contenedor con borde para la imagen
+                st.markdown("""
+                <div style="border: 2px solid #e3f2fd; border-radius: 12px; padding: 1rem; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+                """, unsafe_allow_html=True)
+                
+                st.image(image, use_container_width=True)
+                
+                st.markdown("</div>", unsafe_allow_html=True)
+                
+            except Exception as e:
+                st.error(f"❌ Error al cargar la imagen: {e}")
+            
+            # Botones de navegación
+            st.markdown("<br>", unsafe_allow_html=True)
+            col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
+            
+            with col1:
+                if st.button("⏮️ Primera", use_container_width=True, disabled=(st.session_state.slide_index == 0)):
+                    st.session_state.slide_index = 0
+                    st.rerun()
+            
+            with col2:
+                if st.button("⬅️ Anterior", use_container_width=True, disabled=(st.session_state.slide_index == 0)):
+                    st.session_state.slide_index -= 1
+                    st.rerun()
+            
+            with col3:
+                st.markdown(f"""
+                <div style="text-align: center; padding: 0.75rem; background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%); 
+                color: white; border-radius: 8px; font-weight: 600;">
+                    {current_slide} / {len(image_files)}
+                </div>
+                """, unsafe_allow_html=True)
+            
+            with col4:
+                if st.button("Siguiente ➡️", use_container_width=True, disabled=(st.session_state.slide_index == len(image_files) - 1)):
+                    st.session_state.slide_index += 1
+                    st.rerun()
+            
+            with col5:
+                if st.button("Última ⏭️", use_container_width=True, disabled=(st.session_state.slide_index == len(image_files) - 1)):
+                    st.session_state.slide_index = len(image_files) - 1
+                    st.rerun()
+            
+            # Miniaturas (thumbnails) opcionales
+            st.markdown("---")
+            with st.expander("🖼️ Ver todas las miniaturas", expanded=False):
+                st.markdown("<br>", unsafe_allow_html=True)
+                
+                # Organizar en filas de 4 columnas
+                num_cols = 4
+                for idx in range(0, len(image_files), num_cols):
+                    cols = st.columns(num_cols)
+                    for col_idx, img_idx in enumerate(range(idx, min(idx + num_cols, len(image_files)))):
+                        with cols[col_idx]:
+                            try:
+                                img_path = image_files[img_idx]
+                                img = Image.open(img_path)
+                                img_name = Path(img_path).stem
+                                
+                                # Highlight si es el slide actual
+                                border_color = "#1a73e8" if img_idx == st.session_state.slide_index else "#e2e8f0"
+                                border_width = "3px" if img_idx == st.session_state.slide_index else "1px"
+                                
+                                st.markdown(f"""
+                                <div style="border: {border_width} solid {border_color}; border-radius: 8px; padding: 0.5rem; margin-bottom: 0.5rem;">
+                                """, unsafe_allow_html=True)
+                                
+                                st.image(img, use_container_width=True)
+                                
+                                st.markdown("</div>", unsafe_allow_html=True)
+                                
+                                if st.button(f"📌 Slide {img_idx + 1}", key=f"thumb_{img_idx}", use_container_width=True):
+                                    st.session_state.slide_index = img_idx
+                                    st.rerun()
+                                
+                                st.markdown(f"<p style='text-align: center; font-size: 0.75rem; color: #64748b;'>{img_name[:20]}...</p>", unsafe_allow_html=True)
+                                
+                            except Exception as e:
+                                st.error(f"Error en miniatura {img_idx + 1}")
+                
+                st.markdown("<br>", unsafe_allow_html=True)
+        else:
+            st.warning("⚠️ No se encontraron imágenes en la carpeta Slides")
+            st.info("💡 Asegúrate de colocar archivos de imagen (PNG, JPG, JPEG, GIF, WEBP) en la carpeta 'Slides'")
+    else:
+        st.error(f"❌ No se encontró la carpeta: {SLIDES_DIR}")
+        st.info(f"💡 Crea la carpeta 'Slides' en la ruta: {BASE_DIR}")
+    
+    st.markdown("---")
+    st.stop()  # Detener la ejecución del resto de la app
 
 # ==============================
 # FILTRAR DATOS
@@ -431,15 +617,9 @@ if 'Sentido' in df_hist_sel.columns and not df_hist_sel.empty:
 else:
     # Si no existe la columna 'Sentido', asumir que es positivo por defecto
     indicador_negativo = False
-    print("Advertencia: No se encontró la columna 'Sentido' en los datos históricos")
-
-# Para depuración: mostrar el sentido del indicador
-print(f"Indicador: {indicador_sel}")
-print(f"Sentido del indicador: {'Negativo' if indicador_negativo else 'Positivo'}")
 
 # Determinar colores de los escenarios basados en el sentido del indicador
 if indicador_negativo:
-    print("Usando colores para indicador con sentido negativo (menor es mejor)")
     # Para indicadores negativos: Optimista (valores bajos) = Verde, Pesimista (valores altos) = Rojo
     colores_escenarios = {
         'Optimista': '#2ecc71',  # Verde (mejor escenario: valores más bajos)
@@ -449,7 +629,6 @@ if indicador_negativo:
         'Histórico Anual': '#5c8bf2'
     }
 else:
-    print("Usando colores estándar para indicador con sentido positivo (mayor es mejor)")
     # Colores estándar para indicadores donde mayor es mejor
     colores_escenarios = {
         'Optimista': '#2ecc71',  # Verde (mejor escenario)
