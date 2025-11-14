@@ -60,53 +60,115 @@ st.markdown("""
         }
         /* colores específicos definidos por clase; no usar regla combinada */
         
-        /* Dropdown menu styling with brand blue theme */
+        /* =======================
+           DROPDOWN STYLING
+           ======================= */
+        .stSelectbox {
+            margin-bottom: 1rem;
+        }
+        
+        /* Base dropdown */
         .stSelectbox [data-baseweb="select"] > div {
             background-color: #ffffff !important;
             color: #1e293b !important;
-            border: 1px solid #0d47a1 !important;  
+            border: 1px solid #0d47a1 !important;
             border-radius: 8px !important;
             transition: all 0.2s ease !important;
+            min-height: 42px !important;
+            padding: 8px 12px !important;
+            font-size: 1rem !important;
         }
+        
+        /* Hover state */
         .stSelectbox [data-baseweb="select"] > div:hover {
-            background-color: #f0f7ff !important;  
+            background-color: #f0f7ff !important;
             border-color: #0d47a1 !important;
-            box-shadow: 0 0 0 2px rgba(13, 71, 161, 0.2) !important;
+            box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.15) !important;
         }
+        
+        /* Focus state */
+        .stSelectbox [data-baseweb="select"] > div:focus-within {
+            border-color: #0d47a1 !important;
+            box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.25) !important;
+            outline: none !important;
+        }
+        
+        /* Dropdown menu */
         .stSelectbox [role="listbox"] {
             background-color: #ffffff !important;
-            border: 1px solid #0d47a1 !important;  
+            border: 1px solid #0d47a1 !important;
             border-radius: 8px !important;
-            box-shadow: 0 4px 12px rgba(13, 71, 161, 0.15) !important;
-            margin-top: 6px !important;
-            padding: 6px 0 !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+            margin-top: 8px !important;
+            padding: 4px 0 !important;
+            z-index: 1001 !important;
+            max-height: 300px !important;
+            overflow-y: auto !important;
         }
+        
+        /* Dropdown options */
         .stSelectbox [role="option"] {
             color: #1e293b !important;
+            background-color: transparent !important;
             padding: 10px 16px !important;
             font-size: 0.95rem !important;
             transition: all 0.15s ease !important;
+            margin: 2px 4px !important;
+            border-radius: 4px !important;
         }
+        
+        /* Hover state for options */
         .stSelectbox [role="option"]:hover {
-            background-color: #e3f2ff !important;  
-            color: #0d47a1 !important;  
+            background-color: #e3f2ff !important;
+            color: #0d47a1 !important;
             font-weight: 500 !important;
         }
+        
+        /* Selected option */
         .stSelectbox [aria-selected="true"] {
-            background-color: #0d47a1 !important;  
-            color: white !important;  
+            background-color: #0d47a1 !important;
+            color: white !important;
             font-weight: 500 !important;
         }
-        /* Style for dropdown arrow */
+        
+        /* Dropdown arrow */
         .stSelectbox [data-baseweb="select"] > div::after {
-            border-color: #0d47a1 transparent transparent !important;  
+            border-color: #0d47a1 transparent transparent !important;
             border-width: 6px 6px 0 !important;
             margin-top: -3px !important;
+            transition: transform 0.2s ease !important;
         }
+        
+        /* Open state arrow */
         .stSelectbox [data-baseweb="select"] > div[aria-expanded="true"]::after {
-            border-color: transparent transparent #0d47a1 !important;  
+            border-color: transparent transparent #0d47a1 !important;
             border-width: 0 6px 6px !important;
             margin-top: -3px !important;
+        }
+        
+        /* Fix for dark mode */
+        @media (prefers-color-scheme: dark) {
+            .stSelectbox [data-baseweb="select"] > div,
+            .stSelectbox [data-baseweb="select"] > div:hover,
+            .stSelectbox [role="listbox"] {
+                background-color: #ffffff !important;
+                color: #1e293b !important;
+            }
+            
+            .stSelectbox [role="option"] {
+                color: #1e293b !important;
+                background-color: transparent !important;
+            }
+            
+            .stSelectbox [role="option"]:hover {
+                background-color: #e3f2ff !important;
+                color: #0d47a1 !important;
+            }
+            
+            .stSelectbox [aria-selected="true"] {
+                background-color: #0d47a1 !important;
+                color: white !important;
+            }
         }
         /* Ensure logo is properly displayed */
         .stApp header img {
