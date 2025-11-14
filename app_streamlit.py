@@ -1170,16 +1170,23 @@ if not df_hist_trace.empty:
         df_etiquetas = df_hist_trace.iloc[indices_mostrar].copy()
         text_values = df_etiquetas["Ejecución"].apply(lambda x: format_number(x, decimal_places))
         
+        # 🔥 POSICIONAMIENTO INTELIGENTE: alternar arriba/abajo para evitar superposición
+        text_positions = []
+        for i in range(len(df_etiquetas)):
+            # Alternar entre "top center" y "bottom center" 
+            text_positions.append("top center" if i % 2 == 0 else "middle right")
+        
         fig.add_trace(go.Scatter(
             x=df_etiquetas["Fecha"], 
             y=df_etiquetas["Ejecución"], 
             mode="text", 
             text=text_values, 
-            textposition="top center", 
+            textposition=text_positions,  # 🔥 POSICIONES ALTERNADAS
             textfont=dict(
                 size=config_etiquetas['size'], 
                 color='#D4A017', 
-                family="Poppins"
+                family="Poppins",
+                weight=700  # 🔥 FUENTE BOLD (700 = bold fuerte)
             ),
             showlegend=False, 
             hoverinfo='skip', 
@@ -1226,16 +1233,23 @@ for escenario in escenarios_sel:
                 df_etiquetas_proy = df_plot.iloc[indices_mostrar].copy()
                 
                 text_values = df_etiquetas_proy["Proyección"].apply(lambda x: format_number(x, decimal_places))
+                
+                # 🔥 POSICIONAMIENTO INTELIGENTE: alternar para evitar superposición
+                text_positions = []
+                for i in range(len(df_etiquetas_proy)):
+                    text_positions.append("top center" if i % 2 == 0 else "middle left")
+                
                 fig.add_trace(go.Scatter(
                     x=df_etiquetas_proy["Fecha"], 
                     y=df_etiquetas_proy["Proyección"], 
                     mode="text", 
                     text=text_values, 
-                    textposition="top center", 
+                    textposition=text_positions,  # 🔥 POSICIONES ALTERNADAS
                     textfont=dict(
                         size=config_proy['size'], 
                         color=color, 
-                        family="Poppins"
+                        family="Poppins",
+                        weight=700  # 🔥 FUENTE BOLD
                     ),
                     showlegend=False, 
                     hoverinfo='skip', 
@@ -1293,7 +1307,7 @@ fig.update_layout(
     template="plotly_white",
     plot_bgcolor='#ffffff',
     paper_bgcolor='#ffffff',
-    height=600,
+    height=700,  # 🔥 AUMENTADO de 600 a 700px para optimizar espacio
     font=dict(family="Poppins", size=10, color="#1e293b"),
     title=dict(
         text=f"<b>{indicador_sel}</b>",
@@ -1341,19 +1355,19 @@ fig.update_layout(
         title=dict(
             text=f"<b>{indicador_sel.upper()}</b>",
             font=dict(size=13, weight=600, family="Poppins", color="#1e293b"),
-            standoff=8
+            standoff=10  # 🔥 Aumentado de 8 a 10
         ),
         showgrid=True, gridcolor='rgba(0,0,0,0.05)', gridwidth=1,
         tickformat=f",.{int(decimal_places)}f",
-        tickfont=dict(size=10, family="Poppins", color="#4a5568"),
-        title_standoff=12, showline=True, linecolor='#cbd5e0',
+        tickfont=dict(size=11, family="Poppins", color="#1e293b", weight=600),  # 🔥 Aumentado a 11px y bold
+        title_standoff=15, showline=True, linecolor='#cbd5e0',
         linewidth=2, mirror=True, zeroline=False, automargin=True
     ),
     hoverlabel=dict(
         bgcolor="white", font_size=11, font_family="Poppins", 
         bordercolor="#cbd5e0", namelength=-1, align="left"
     ),
-    margin=dict(t=70, b=70, r=30, l=90, pad=8),
+    margin=dict(t=80, b=90, r=40, l=100, pad=8),  # 🔥 MÁRGENES OPTIMIZADOS para mayor espacio
     shapes=shapes
 )
 
