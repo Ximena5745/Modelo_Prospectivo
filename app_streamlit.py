@@ -563,6 +563,9 @@ ORDEN_INDICADORES = {
 if 'mostrar_modelos' not in st.session_state:
     st.session_state['mostrar_modelos'] = False
 
+if 'mostrar_historia_completa' not in st.session_state:
+    st.session_state['mostrar_historia_completa'] = False
+
 # ==============================
 # SIDEBAR CON COLORES INSTITUCIONALES
 # ==============================
@@ -936,27 +939,31 @@ def calcular_config_etiquetas(num_puntos: int, tipo_visualizacion: str) -> dict:
         dict con: size (tamaño), show (mostrar o no), angle (ángulo), skip (cada cuántos mostrar)
     """
     if tipo_visualizacion == "Semestral":
-        # Para datos semestrales
-        if num_puntos <= 10:
+        # Para datos semestrales - TAMAÑOS AUMENTADOS
+        if num_puntos <= 8:
+            return {'size': 11, 'show': True, 'angle': 0, 'skip': 1}  # Mostrar todos - letra grande
+        elif num_puntos <= 12:
             return {'size': 10, 'show': True, 'angle': 0, 'skip': 1}  # Mostrar todos
         elif num_puntos <= 18:
             return {'size': 9, 'show': True, 'angle': 0, 'skip': 1}   # Mostrar todos
         elif num_puntos <= 25:
-            return {'size': 8, 'show': True, 'angle': -45, 'skip': 1}  # Mostrar todos rotados
+            return {'size': 9, 'show': True, 'angle': 0, 'skip': 2}   # Mostrar 1 de cada 2
         elif num_puntos <= 35:
-            return {'size': 7, 'show': True, 'angle': -45, 'skip': 2}  # Mostrar 1 de cada 2
+            return {'size': 8, 'show': True, 'angle': 0, 'skip': 2}   # Mostrar 1 de cada 2
         else:
             return {'size': 0, 'show': False, 'angle': 0, 'skip': 1}   # NO MOSTRAR - demasiados datos
     else:
-        # Para datos anuales (menos puntos)
+        # Para datos anuales (menos puntos) - TAMAÑOS AUMENTADOS
         if num_puntos <= 5:
+            return {'size': 13, 'show': True, 'angle': 0, 'skip': 1}  # Mostrar todos - letra grande
+        elif num_puntos <= 8:
             return {'size': 12, 'show': True, 'angle': 0, 'skip': 1}  # Mostrar todos
-        elif num_puntos <= 10:
+        elif num_puntos <= 12:
             return {'size': 11, 'show': True, 'angle': 0, 'skip': 1}  # Mostrar todos
         elif num_puntos <= 15:
             return {'size': 10, 'show': True, 'angle': 0, 'skip': 1}  # Mostrar todos
         else:
-            return {'size': 9, 'show': True, 'angle': -30, 'skip': 1}  # Mostrar todos rotados
+            return {'size': 10, 'show': True, 'angle': 0, 'skip': 1}  # Mostrar todos
 
 # ==============================
 # FILTRAR DATOS
@@ -1059,6 +1066,76 @@ if df_hist_trace.empty:
         df_hist_trace['Fecha'] = df_hist_trace['Fecha'].apply(
             lambda x: pd.Timestamp(year=x.year, month=6, day=30)
         )
+
+# 🔥 FILTRAR DATOS DESDE 2021-S2 POR DEFECTO
+fecha_corte_vista = pd.Timestamp(year=2021, month=7, day=1)  # 2021-S2
+df_hist_trace_original = df_hist_trace.copy()
+
+# Verificar si hay datos anteriores a 2021-S2
+tiene_datos_antiguos = not df_hist_trace[df_hist_trace['Fecha'] < fecha_corte_vista].empty
+
+# Aplicar filtro solo si NO se ha activado "mostrar historia completa"
+if not st.session_state['mostrar_historia_completa'] and tiene_datos_antiguos:
+    df_hist_trace = df_hist_trace[df_hist_trace['Fecha'] >= fecha_corte_vista].copy()
+    
+    # 🔥 MOSTRAR BOTÓN "VER MÁS" SI HAY DATOS ANTIGUOS
+    st.markdown("""
+    <style>
+        .btn-ver-mas button {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%) !important;
+            color: white !important;
+            font-weight: 600 !important;
+            border: none !important;
+            padding: 0.5rem 1rem !important;
+            border-radius: 8px !important;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3) !important;
+            transition: all 0.3s ease !important;
+        }
+        .btn-ver-mas button:hover {
+            background: linear-gradient(135deg, #2980b9 0%, #21618c 100%) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4) !important;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    col_btn1, col_btn2, col_btn3 = st.columns([1.2, 1, 3.8])
+    with col_btn1:
+        st.markdown('<div class="btn-ver-mas">', unsafe_allow_html=True)
+        if st.button("📅 Ver historia completa", key="btn_ver_mas", use_container_width=True):
+            st.session_state['mostrar_historia_completa'] = True
+            st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
+else:
+    # Si está mostrando historia completa, mostrar botón para volver a vista reciente
+    if tiene_datos_antiguos and st.session_state['mostrar_historia_completa']:
+        st.markdown("""
+        <style>
+            .btn-ver-menos button {
+                background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%) !important;
+                color: white !important;
+                font-weight: 600 !important;
+                border: none !important;
+                padding: 0.5rem 1rem !important;
+                border-radius: 8px !important;
+                box-shadow: 0 2px 8px rgba(149, 165, 166, 0.3) !important;
+                transition: all 0.3s ease !important;
+            }
+            .btn-ver-menos button:hover {
+                background: linear-gradient(135deg, #7f8c8d 0%, #6c7a7b 100%) !important;
+                transform: translateY(-1px) !important;
+                box-shadow: 0 4px 12px rgba(149, 165, 166, 0.4) !important;
+            }
+        </style>
+        """, unsafe_allow_html=True)
+        
+        col_btn1, col_btn2, col_btn3 = st.columns([1.2, 1, 3.8])
+        with col_btn1:
+            st.markdown('<div class="btn-ver-menos">', unsafe_allow_html=True)
+            if st.button("📅 Vista reciente (2021+)", key="btn_ver_menos", use_container_width=True):
+                st.session_state['mostrar_historia_completa'] = False
+                st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
 
 # 🔥 CALCULAR CONFIGURACIÓN DE ETIQUETAS DINÁMICAMENTE
 num_puntos_historicos = len(df_hist_trace)
@@ -1179,16 +1256,16 @@ if mostrar_linea_divisoria:
 # Configurar ejes
 tickvals = []
 ticktext = []
-hist_years = sorted(df_hist_sel['Fecha'].dt.year.unique()) if not df_hist_sel.empty else []
+hist_years = sorted(df_hist_trace['Fecha'].dt.year.unique()) if not df_hist_trace.empty else []  # 🔥 Usar df_hist_trace filtrado
 proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique()) if not df_proj_sel.empty else []
 all_years = sorted(set(hist_years + proj_years))
 
 if all_years:
-    min_year = min(min(all_years), 2022)
+    min_year = min(all_years) if all_years else 2021  # 🔥 Usar el mínimo real de los datos filtrados
     max_year = max(max(all_years), 2030)
     all_years = list(range(min_year, max_year + 1))
 else:
-    all_years = list(range(2022, 2031))
+    all_years = list(range(2021, 2031))  # 🔥 Default desde 2021
 
 if tipo_visualizacion == "Semestral":
     for year in all_years:
@@ -1253,7 +1330,7 @@ fig.update_layout(
         ticklabeloverflow='allow', ticklabelposition='outside',
         tickmode='auto', nticks=30,
         range=[
-            df_hist_trace['Fecha'].min().strftime('%Y-%m-%d') if not df_hist_trace.empty else "2017-01-01", 
+            df_hist_trace['Fecha'].min().strftime('%Y-%m-%d') if not df_hist_trace.empty else "2021-07-01", 
             df_proj_sel['Fecha'].max().strftime('%Y-%m-%d') if not df_proj_sel.empty else "2030-12-31"
         ]
     ),
