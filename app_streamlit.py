@@ -1170,24 +1170,24 @@ if not df_hist_trace.empty:
         df_etiquetas = df_hist_trace.iloc[indices_mostrar].copy()
         text_values = df_etiquetas["Ejecución"].apply(lambda x: format_number(x, decimal_places))
         
-        # 🔥 CALCULAR OFFSET DINÁMICO BASADO EN RANGO DE DATOS
+        # 🔥 CALCULAR OFFSET AUMENTADO (5% del rango total para mayor separación)
         y_range = df_hist_trace["Ejecución"].max() - df_hist_trace["Ejecución"].min()
-        offset_value = y_range * 0.025  # 2.5% del rango total
+        offset_value = y_range * 0.05  # 🔥 AUMENTADO de 2.5% a 5% para más espacio
         
         # 🔥 APLICAR OFFSET: sumar al valor Y para separar de la línea
         y_values_offset = df_etiquetas["Ejecución"] + offset_value
         
         fig.add_trace(go.Scatter(
             x=df_etiquetas["Fecha"], 
-            y=y_values_offset,  # 🔥 VALORES CON OFFSET
+            y=y_values_offset,  # 🔥 VALORES CON OFFSET AUMENTADO
             mode="text", 
             text=text_values, 
-            textposition="middle center",  # 🔥 CENTRADO porque ya tiene offset
+            textposition="middle center",
             textfont=dict(
                 size=config_etiquetas['size'], 
                 color='#D4A017', 
                 family="Poppins",
-                weight=700  # 🔥 FUENTE BOLD (700 = bold fuerte)
+                weight=700
             ),
             showlegend=False, 
             hoverinfo='skip', 
@@ -1235,10 +1235,27 @@ for escenario in escenarios_sel:
                 
                 text_values = df_etiquetas_proy["Proyección"].apply(lambda x: format_number(x, decimal_places))
                 
-                # 🔥 CALCULAR OFFSET DINÁMICO BASADO EN RANGO DE DATOS
+                # 🔥 CALCULAR OFFSET DIFERENCIADO SEGÚN ESCENARIO Y SENTIDO DEL INDICADOR
                 if not df_plot.empty:
                     y_range_proy = df_plot["Proyección"].max() - df_plot["Proyección"].min()
-                    offset_proy = y_range_proy * 0.025  # 2.5% del rango
+                    
+                    # 🔥 AJUSTAR SEGÚN SENTIDO DEL INDICADOR
+                    if not indicador_negativo:
+                        # SENTIDO POSITIVO: Mayor valor = Mejor (Optimista arriba)
+                        if escenario == "Optimista":
+                            offset_proy = y_range_proy * 0.08  # 8% arriba (línea superior)
+                        elif escenario == "Base":
+                            offset_proy = y_range_proy * 0.05  # 5% arriba (línea media)
+                        else:  # Pesimista
+                            offset_proy = y_range_proy * 0.02  # 2% arriba (línea inferior)
+                    else:
+                        # SENTIDO NEGATIVO: Menor valor = Mejor (Pesimista arriba, Optimista abajo)
+                        if escenario == "Pesimista":
+                            offset_proy = y_range_proy * 0.02  # 2% arriba (línea inferior tiene mejor resultado)
+                        elif escenario == "Base":
+                            offset_proy = y_range_proy * 0.05  # 5% arriba (línea media)
+                        else:  # Optimista
+                            offset_proy = y_range_proy * 0.08  # 8% arriba (línea superior tiene peor resultado)
                 else:
                     offset_proy = 0
                 
@@ -1247,15 +1264,15 @@ for escenario in escenarios_sel:
                 
                 fig.add_trace(go.Scatter(
                     x=df_etiquetas_proy["Fecha"], 
-                    y=y_values_offset_proy,  # 🔥 VALORES CON OFFSET
+                    y=y_values_offset_proy,  # 🔥 VALORES CON OFFSET SEGÚN SENTIDO
                     mode="text", 
                     text=text_values, 
-                    textposition="middle center",  # 🔥 CENTRADO porque ya tiene offset
+                    textposition="middle center",
                     textfont=dict(
                         size=config_proy['size'], 
                         color=color, 
                         family="Poppins",
-                        weight=700  # 🔥 FUENTE BOLD
+                        weight=700
                     ),
                     showlegend=False, 
                     hoverinfo='skip', 
