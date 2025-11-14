@@ -338,10 +338,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# ==============================
-# HEADER CON LOGO
-# ==============================
-if logo_base64:
+64:
     st.markdown(f"""
     <div style="text-align: center; margin: 1rem 0 2rem 0; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
         <img src="data:image/jpeg;base64,{logo_base64}" style="max-width: 250px; height: auto; margin-bottom: 1rem;">
