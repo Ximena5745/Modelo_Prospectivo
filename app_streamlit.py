@@ -91,21 +91,24 @@ st.markdown("""
             padding: 1.5rem 1rem; 
         }
         
-        [data-testid="stSidebar"] * { 
+        [data-testid="stSidebar"] h1, 
+        [data-testid="stSidebar"] h2, 
+        [data-testid="stSidebar"] h3,
+        [data-testid="stSidebar"] p,
+        [data-testid="stSidebar"] label,
+        [data-testid="stSidebar"] .stMarkdown { 
             color: white !important; 
         }
         
         [data-testid="stSidebar"] h1, 
         [data-testid="stSidebar"] h2, 
         [data-testid="stSidebar"] h3 { 
-            color: white !important; 
             border-bottom: 2px solid rgba(255,255,255,0.3); 
             padding-bottom: 0.5rem; 
             margin-bottom: 1rem; 
         }
         
         [data-testid="stSidebar"] label {
-            color: white !important;
             font-weight: 600 !important;
             font-size: 0.95rem !important;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
@@ -149,61 +152,70 @@ st.markdown("""
             text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
         
+        /* Campo del dropdown */
         .stSelectbox > div > div {
-            background-color: white !important;
+            background-color: #f8fafc !important;
             color: #1e293b !important;
-            border: 2px solid #4a90c8 !important;
+            border: 2px solid rgba(255,255,255,0.4) !important;
             border-radius: 8px !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
             font-weight: 500 !important;
         }
         
+        /* Texto seleccionado */
         .stSelectbox > div > div > div {
             color: #1e293b !important;
             font-weight: 500 !important;
         }
         
+        /* Hover state */
         .stSelectbox > div > div:hover {
-            background-color: #f8fafc !important;
-            border-color: #2c5f8d !important;
-            box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2) !important;
+            background-color: #ffffff !important;
+            border-color: rgba(255,255,255,0.6) !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
         }
         
+        /* Focus state */
         .stSelectbox > div > div:focus-within {
-            border-color: #1e3a5f !important;
-            box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.2) !important;
+            border-color: #ffffff !important;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3) !important;
         }
         
+        /* Dropdown expandido - MENÚ DE OPCIONES */
         [data-baseweb="popover"] {
-            background-color: white !important;
-            border: 2px solid #4a90c8 !important;
+            background-color: #ffffff !important;
+            border: 2px solid #cbd5e0 !important;
             border-radius: 8px !important;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2) !important;
             margin-top: 4px !important;
         }
         
+        /* Opciones individuales */
         [data-baseweb="menu"] > ul > li {
-            background-color: white !important;
+            background-color: #ffffff !important;
             color: #1e293b !important;
             padding: 12px 16px !important;
             font-weight: 500 !important;
             transition: all 0.15s ease !important;
         }
         
+        /* Hover en opciones */
         [data-baseweb="menu"] > ul > li:hover {
             background-color: #e3f2fd !important;
             color: #1e3a5f !important;
             font-weight: 600 !important;
         }
         
+        /* Opción seleccionada */
         [data-baseweb="menu"] > ul > li[aria-selected="true"] {
             background-color: #2c5f8d !important;
-            color: white !important;
+            color: #ffffff !important;
             font-weight: 600 !important;
         }
         
+        /* Flecha del dropdown */
         .stSelectbox svg {
-            fill: #2c5f8d !important;
+            fill: #1e293b !important;
         }
         
         /* ==================== CHECKBOXES ==================== */
@@ -217,12 +229,13 @@ st.markdown("""
             font-size: 0.9rem !important;
         }
         
-        .stCheckbox > label > div {
-            background-color: white !important;
-            border: 2px solid #4a90c8 !important;
+        .stCheckbox > label > div[data-testid="stCheckbox"] {
+            background-color: rgba(255,255,255,0.9) !important;
+            border: 2px solid rgba(255,255,255,0.4) !important;
+            border-radius: 4px !important;
         }
         
-        .stCheckbox input:checked + div {
+        .stCheckbox input:checked ~ div {
             background-color: #2ecc71 !important;
             border-color: #27ae60 !important;
         }
@@ -328,23 +341,37 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==============================
-# HEADER CON LOGO
+# HEADER CON LOGO INTEGRADO
 # ==============================
 if logo_base64:
     st.markdown(f"""
-    <div style="text-align: center; margin: 1rem 0 2rem 0; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-        <img src="data:image/jpeg;base64,{logo_base64}" style="max-width: 250px; height: auto; margin-bottom: 1rem;">
-        <h1 class="app-title" style="margin: 0 0 0.5rem 0; font-size: 2.75rem; font-weight: 800; letter-spacing: -0.5px; color: #1e3a5f !important;">Plataforma Prospectiva de Indicadores Institucionales</h1>
-        <div style="height: 5px; width: 240px; background: linear-gradient(90deg, #2c5f8d, #4a90c8, #2ecc71); margin: 0 auto 1rem; border-radius: 3px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div>
-        <p class="app-subtitle" style="font-size: 1.2rem; margin: 0; font-weight: 500; letter-spacing: 0.3px; color: #475569 !important;">Análisis y proyección de indicadores estratégicos 2026-2030</p>
+    <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%); padding: 2.5rem 2rem; border-radius: 0 0 20px 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); margin: -1rem -3rem 2rem -3rem;">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 2rem;">
+            <div style="flex-shrink: 0;">
+                <img src="data:image/jpeg;base64,{logo_base64}" style="width: 180px; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+            </div>
+            <div style="flex-grow: 1; text-align: left;">
+                <h1 style="color: #ffffff !important; font-size: 2.5rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+                    Plataforma Prospectiva de Indicadores Institucionales
+                </h1>
+                <div style="height: 4px; width: 280px; background: linear-gradient(90deg, #2ecc71, #3498db, #f1c40f); border-radius: 3px; margin-bottom: 0.75rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>
+                <p style="color: rgba(255,255,255,0.95) !important; font-size: 1.15rem; margin: 0; font-weight: 500; letter-spacing: 0.3px;">
+                    📊 Análisis y proyección de indicadores estratégicos 2026-2030
+                </p>
+            </div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 else:
     st.markdown("""
-    <div style="text-align: center; margin: 1.5rem 0 2.5rem 0;">
-        <h1 class="app-title" style="margin: 0 0 0.5rem 0; font-size: 2.75rem; font-weight: 800; letter-spacing: -0.5px; color: #1e3a5f !important;">Plataforma Prospectiva de Indicadores Institucionales</h1>
-        <div style="height: 5px; width: 240px; background: linear-gradient(90deg, #2c5f8d, #4a90c8, #2ecc71); margin: 0 auto 1rem; border-radius: 3px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div>
-        <p class="app-subtitle" style="font-size: 1.2rem; margin: 0.5rem 0 0 0; font-weight: 500; letter-spacing: 0.3px; color: #475569 !important;">Análisis y proyección de indicadores estratégicos 2026-2030</p>
+    <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%); padding: 2.5rem 2rem; border-radius: 0 0 20px 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); margin: -1rem -3rem 2rem -3rem; text-align: center;">
+        <h1 style="color: #ffffff !important; font-size: 2.5rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+            Plataforma Prospectiva de Indicadores Institucionales
+        </h1>
+        <div style="height: 4px; width: 280px; background: linear-gradient(90deg, #2ecc71, #3498db, #f1c40f); border-radius: 3px; margin: 0 auto 0.75rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>
+        <p style="color: rgba(255,255,255,0.95) !important; font-size: 1.15rem; margin: 0; font-weight: 500; letter-spacing: 0.3px;">
+            📊 Análisis y proyección de indicadores estratégicos 2026-2030
+        </p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -509,7 +536,11 @@ if 'mostrar_modelos' not in st.session_state:
 # SIDEBAR CON COLORES INSTITUCIONALES
 # ==============================
 with st.sidebar:
-    st.markdown('<div style="text-align: center; margin-bottom: 1.5rem;"><h2>⚙️ CONTROLES</h2></div>', unsafe_allow_html=True)
+    st.markdown("""
+    <div style="text-align: center; margin-bottom: 2rem; padding: 1.5rem 0.5rem; background: rgba(255,255,255,0.1); border-radius: 12px; border: 2px solid rgba(255,255,255,0.2);">
+        <h2 style="color: white; margin: 0; font-size: 1.5rem; font-weight: 700; letter-spacing: 1px;">⚙️ CONTROLES</h2>
+    </div>
+    """, unsafe_allow_html=True)
     
     lineas_estrategicas = {
         "Expansión": ("Expansión", "#2c5f8d"), 
