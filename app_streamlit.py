@@ -88,7 +88,39 @@ st.markdown("""
         /* ==================== SIDEBAR ==================== */
         [data-testid="stSidebar"] { 
             background: linear-gradient(180deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
-            padding: 1.5rem 1rem; 
+            padding: 1.5rem 1rem;
+            overflow-y: auto !important;  /* 🔥 PERMITIR SCROLL VISIBLE */
+            max-height: 100vh !important;  /* 🔥 ALTURA MÁXIMA DE VIEWPORT */
+        }
+        
+        /* 🔥 AJUSTAR CONTENEDOR INTERNO DEL SIDEBAR */
+        [data-testid="stSidebar"] > div:first-child {
+            overflow-y: auto !important;
+            max-height: calc(100vh - 2rem) !important;
+            padding-bottom: 2rem !important;  /* 🔥 ESPACIO AL FINAL */
+        }
+        
+        /* 🔥 SCROLLBAR PERSONALIZADA PARA SIDEBAR */
+        [data-testid="stSidebar"]::-webkit-scrollbar,
+        [data-testid="stSidebar"] > div:first-child::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        [data-testid="stSidebar"]::-webkit-scrollbar-track,
+        [data-testid="stSidebar"] > div:first-child::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
+        
+        [data-testid="stSidebar"]::-webkit-scrollbar-thumb,
+        [data-testid="stSidebar"] > div:first-child::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+        }
+        
+        [data-testid="stSidebar"]::-webkit-scrollbar-thumb:hover,
+        [data-testid="stSidebar"] > div:first-child::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.5);
         }
         
         [data-testid="stSidebar"] h1, 
@@ -140,14 +172,14 @@ st.markdown("""
         
         /* ==================== DROPDOWNS / SELECTBOX ==================== */
         .stSelectbox {
-            margin-bottom: 1.2rem;
+            margin-bottom: 0.8rem;  /* 🔥 REDUCIDO de 1.2rem a 0.8rem */
         }
         
         .stSelectbox label {
             color: white !important;
             font-weight: 600 !important;
-            font-size: 0.95rem !important;
-            margin-bottom: 0.5rem !important;
+            font-size: 0.9rem !important;  /* 🔥 REDUCIDO de 0.95rem */
+            margin-bottom: 0.4rem !important;  /* 🔥 REDUCIDO de 0.5rem */
             display: block !important;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
@@ -220,13 +252,13 @@ st.markdown("""
         
         /* ==================== CHECKBOXES MEJORADOS ==================== */
         .stCheckbox {
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.5rem;  /* 🔥 REDUCIDO de 0.8rem a 0.5rem */
         }
         
         .stCheckbox label {
             color: white !important;
             font-weight: 500 !important;
-            font-size: 0.9rem !important;
+            font-size: 0.85rem !important;  /* 🔥 REDUCIDO de 0.9rem */
         }
         
         /* Eliminar TODOS los fondos de los spans y contenedores */
@@ -571,8 +603,8 @@ if 'mostrar_historia_completa' not in st.session_state:
 # ==============================
 with st.sidebar:
     st.markdown("""
-    <div style="text-align: center; margin-bottom: 2rem; padding: 1.5rem 0.5rem; background: rgba(255,255,255,0.1); border-radius: 12px; border: 2px solid rgba(255,255,255,0.2);">
-        <h2 style="color: white; margin: 0; font-size: 1.5rem; font-weight: 700; letter-spacing: 1px;">⚙️ CONTROLES</h2>
+    <div style="text-align: center; margin-bottom: 1.5rem; padding: 1rem 0.5rem; background: rgba(255,255,255,0.1); border-radius: 12px; border: 2px solid rgba(255,255,255,0.2);">
+        <h2 style="color: white; margin: 0; font-size: 1.3rem; font-weight: 700; letter-spacing: 1px;">⚙️ CONTROLES</h2>
     </div>
     """, unsafe_allow_html=True)
     
@@ -658,17 +690,17 @@ with st.sidebar:
     if not escenarios_sel:
         escenarios_sel = escenarios_disponibles[:]
     
-    st.markdown("---")
+    st.markdown("<hr style='margin: 0.8rem 0; border: 1px solid rgba(255,255,255,0.2);'>", unsafe_allow_html=True)
     st.markdown("**📊 Visualización:**")
     tipo_visualizacion = st.selectbox("Periodo", ["Semestral", "Anual"], label_visibility="collapsed")
     mostrar_numeros = st.checkbox("Mostrar valores", value=True)
     mostrar_linea_divisoria = st.checkbox("Línea divisoria", value=True)
     
-    st.markdown("---")
+    st.markdown("<hr style='margin: 0.8rem 0; border: 1px solid rgba(255,255,255,0.2);'>", unsafe_allow_html=True)
     if st.button("🔄 REFRESCAR"): 
         st.rerun()
     
-    st.markdown("---")
+    st.markdown("<hr style='margin: 0.8rem 0; border: 1px solid rgba(255,255,255,0.2);'>", unsafe_allow_html=True)
     if st.button("📊 MODELOS", use_container_width=True, key="btn_modelos"):
         st.session_state['mostrar_modelos'] = True
         st.rerun()
