@@ -218,7 +218,7 @@ st.markdown("""
             fill: #1e293b !important;
         }
         
-        /* ==================== CHECKBOXES ==================== */
+        /* ==================== CHECKBOXES MEJORADOS ==================== */
         .stCheckbox {
             margin-bottom: 0.8rem;
         }
@@ -229,37 +229,46 @@ st.markdown("""
             font-size: 0.9rem !important;
         }
         
-        /* Eliminar TODOS los fondos de los spans */
+        /* Eliminar TODOS los fondos de los spans y contenedores */
         .stCheckbox label span,
         .stCheckbox label div,
-        .stCheckbox span {
+        .stCheckbox span,
+        .stCheckbox > label,
+        [data-testid="stSidebar"] .stCheckbox > label,
+        [data-testid="stSidebar"] .stCheckbox label span {
             background-color: transparent !important;
             background: transparent !important;
             padding: 0 !important;
         }
         
-        /* Caja del checkbox - blanca vacía por defecto (NO seleccionado) */
-        .stCheckbox > label > div[data-testid="stCheckbox"] {
-            background-color: rgba(255,255,255,0.2) !important;
-            border: 2px solid rgba(255,255,255,0.6) !important;
+        /* Caja del checkbox NO seleccionado - vacía/transparente con borde blanco */
+        .stCheckbox > label > div[data-testid="stCheckbox"],
+        .stCheckbox > label > div > div[role="checkbox"] {
+            background-color: transparent !important;
+            background: transparent !important;
+            border: 2px solid rgba(255,255,255,0.8) !important;
             border-radius: 4px !important;
         }
         
         /* Checkbox SELECCIONADO - fondo azul claro */
-        .stCheckbox input:checked ~ div[data-testid="stCheckbox"] {
+        .stCheckbox input:checked ~ div[data-testid="stCheckbox"],
+        .stCheckbox input:checked ~ div > div[role="checkbox"] {
             background-color: #5DADE2 !important;
-            border-color: #3498db !important;
+            background: #5DADE2 !important;
+            border: 2px solid #3498db !important;
         }
         
-        /* Remover cualquier otro estilo de fondo */
-        [data-testid="stSidebar"] .stCheckbox > label {
-            background: none !important;
-            background-color: transparent !important;
-        }
-        
-        /* Asegurar que el ícono de check sea visible */
-        .stCheckbox input:checked ~ div svg {
+        /* Asegurar que el ícono de check sea visible cuando está seleccionado */
+        .stCheckbox input:checked ~ div svg,
+        .stCheckbox input:checked ~ div > div svg {
             fill: white !important;
+            color: white !important;
+        }
+        
+        /* Ocultar check cuando NO está seleccionado */
+        .stCheckbox input:not(:checked) ~ div svg,
+        .stCheckbox input:not(:checked) ~ div > div svg {
+            display: none !important;
         }
         
         /* ==================== DOWNLOAD BUTTON ==================== */
@@ -913,6 +922,43 @@ def periodos_rango_por_ano(year: int, tipo: str):
     ]
 
 # ==============================
+# FUNCIÓN PARA CALCULAR TAMAÑO DE LETRA DINÁMICO
+# ==============================
+def calcular_tamano_letra(num_puntos: int, tipo_visualizacion: str) -> int:
+    """
+    Calcula el tamaño de letra basado en el número de puntos de datos.
+    
+    Args:
+        num_puntos: Número de puntos de datos históricos
+        tipo_visualizacion: "Semestral" o "Anual"
+    
+    Returns:
+        Tamaño de fuente en píxeles
+    """
+    if tipo_visualizacion == "Semestral":
+        # Para datos semestrales
+        if num_puntos <= 10:
+            return 10  # Pocos datos: letra grande
+        elif num_puntos <= 18:
+            return 9   # 18 registros como en la imagen 1: tamaño normal
+        elif num_puntos <= 25:
+            return 8   # Más de 18: reducir un poco
+        elif num_puntos <= 35:
+            return 7   # Bastantes datos: reducir más
+        else:
+            return 6   # Muchos datos: letra pequeña
+    else:
+        # Para datos anuales (menos puntos)
+        if num_puntos <= 5:
+            return 12  # Muy pocos datos: letra más grande
+        elif num_puntos <= 10:
+            return 11  # Pocos datos: letra grande
+        elif num_puntos <= 15:
+            return 10  # Datos moderados
+        else:
+            return 9   # Más datos: mantener legible pero compacto
+
+# ==============================
 # FILTRAR DATOS
 # ==============================
 if 'Linea' in df_hist.columns:
@@ -982,7 +1028,7 @@ else:
     st.markdown("<br>", unsafe_allow_html=True)
 
 # ==============================
-# GRÁFICO PRINCIPAL
+# GRÁFICO PRINCIPAL CON TAMAÑO DE LETRA DINÁMICO
 # ==============================
 st.subheader("Evolución Histórica y Proyección Detallada")
 
@@ -1014,6 +1060,10 @@ if df_hist_trace.empty:
             lambda x: pd.Timestamp(year=x.year, month=6, day=30)
         )
 
+# 🔥 CALCULAR TAMAÑO DE LETRA DINÁMICO
+num_puntos_historicos = len(df_hist_trace)
+tamano_letra = calcular_tamano_letra(num_puntos_historicos, tipo_visualizacion)
+
 trace_name = "Histórico Semestral" if tipo_visualizacion == "Semestral" else "Histórico Anual"
 
 if not df_hist_trace.empty:
@@ -1039,7 +1089,7 @@ if not df_hist_trace.empty:
         fig.add_trace(go.Scatter(
             x=df_hist_trace["Fecha"], y=df_hist_trace["Ejecución"], mode="text", 
             text=text_values, textposition="top center", 
-            textfont=dict(size=9, color='#D4A017', family="Poppins", weight="bold"),
+            textfont=dict(size=tamano_letra, color='#D4A017', family="Poppins", weight="bold"),  # 🔥 TAMAÑO DINÁMICO
             showlegend=False, hoverinfo='skip', texttemplate='%{text}', cliponaxis=False
         ))
 
@@ -1075,7 +1125,7 @@ for escenario in escenarios_sel:
                 fig.add_trace(go.Scatter(
                     x=df_plot["Fecha"], y=df_plot["Proyección"], mode="text", 
                     text=text_values, textposition="top center", 
-                    textfont=dict(size=9, color=color, family="Poppins", weight="bold"),
+                    textfont=dict(size=tamano_letra, color=color, family="Poppins", weight="bold"),  # 🔥 TAMAÑO DINÁMICO
                     showlegend=False, hoverinfo='skip', texttemplate='%{text}', cliponaxis=False
                 ))
 
