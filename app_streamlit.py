@@ -238,17 +238,17 @@ st.markdown("""
             padding: 0 !important;
         }
         
-        /* Caja del checkbox */
+        /* Caja del checkbox - blanca por defecto */
         .stCheckbox > label > div[data-testid="stCheckbox"] {
             background-color: rgba(255,255,255,0.9) !important;
             border: 2px solid rgba(255,255,255,0.4) !important;
             border-radius: 4px !important;
         }
         
-        /* Checkbox marcado - solo la caja pequeña en verde */
+        /* Checkbox marcado - azul institucional */
         .stCheckbox input:checked ~ div[data-testid="stCheckbox"] {
-            background-color: #2ecc71 !important;
-            border-color: #27ae60 !important;
+            background-color: #3498db !important;
+            border-color: #2980b9 !important;
         }
         
         /* Remover cualquier otro estilo de fondo */
@@ -368,11 +368,11 @@ if logo_base64:
                 <img src="data:image/jpeg;base64,{logo_base64}" style="width: 180px; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
             </div>
             <div style="flex-grow: 1; text-align: left;">
-                <h1 style="color: #F8F9FA !important; font-size: 2.5rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px; text-shadow: 3px 3px 10px rgba(0,0,0,0.7), 0 0 20px rgba(0,0,0,0.5);">
+                <h1 style="color: #FFFFFF !important; font-size: 2.5rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px;">
                     Plataforma Prospectiva de Indicadores Institucionales
                 </h1>
                 <div style="height: 4px; width: 280px; background: linear-gradient(90deg, #2ecc71, #3498db, #f1c40f); border-radius: 3px; margin-bottom: 0.75rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>
-                <p style="color: #F8F9FA !important; font-size: 1.15rem; margin: 0; font-weight: 500; letter-spacing: 0.3px; text-shadow: 2px 2px 6px rgba(0,0,0,0.5);">
+                <p style="color: #FFFFFF !important; font-size: 1.15rem; margin: 0; font-weight: 500; letter-spacing: 0.3px;">
                     📊 Análisis y proyección de indicadores estratégicos 2026-2030
                 </p>
             </div>
@@ -382,11 +382,11 @@ if logo_base64:
 else:
     st.markdown("""
     <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%); padding: 2.5rem 2rem; border-radius: 0 0 20px 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); margin: -1rem -3rem 2rem -3rem; text-align: center;">
-        <h1 style="color: #F8F9FA !important; font-size: 2.5rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px; text-shadow: 3px 3px 10px rgba(0,0,0,0.7), 0 0 20px rgba(0,0,0,0.5);">
+        <h1 style="color: #FFFFFF !important; font-size: 2.5rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px;">
             Plataforma Prospectiva de Indicadores Institucionales
         </h1>
         <div style="height: 4px; width: 280px; background: linear-gradient(90deg, #2ecc71, #3498db, #f1c40f); border-radius: 3px; margin: 0 auto 0.75rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>
-        <p style="color: #F8F9FA !important; font-size: 1.15rem; margin: 0; font-weight: 500; letter-spacing: 0.3px; text-shadow: 2px 2px 6px rgba(0,0,0,0.5);">
+        <p style="color: #FFFFFF !important; font-size: 1.15rem; margin: 0; font-weight: 500; letter-spacing: 0.3px;">
             📊 Análisis y proyección de indicadores estratégicos 2026-2030
         </p>
     </div>
@@ -1016,8 +1016,8 @@ if not df_hist_trace.empty:
         x=df_hist_trace["Fecha"], 
         y=df_hist_trace["Ejecución"], 
         name=trace_name, 
-        line=dict(color='#D4A017', width=3), 
-        marker=dict(size=9, color='#D4A017', line=dict(width=2, color='white')), 
+        line=dict(color='#D4A017', width=2), 
+        marker=dict(size=6, color='#D4A017', line=dict(width=1, color='white')), 
         mode='lines+markers', 
         hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'
     ))
@@ -1026,7 +1026,7 @@ if not df_hist_trace.empty:
         fig.add_annotation(
             x=0.98, y=0.92, xref='paper', yref='paper',
             text="<i>Nota: Los colores están invertidos (menor = mejor)</i>",
-            showarrow=False, font=dict(size=12, color="#666666"), align="right"
+            showarrow=False, font=dict(size=10, color="#666666"), align="right"
         )
     
     if mostrar_numeros:
@@ -1034,7 +1034,7 @@ if not df_hist_trace.empty:
         fig.add_trace(go.Scatter(
             x=df_hist_trace["Fecha"], y=df_hist_trace["Ejecución"], mode="text", 
             text=text_values, textposition="top center", 
-            textfont=dict(size=14, color='#D4A017', family="Poppins", weight="bold"),
+            textfont=dict(size=9, color='#D4A017', family="Poppins", weight="bold"),
             showlegend=False, hoverinfo='skip', texttemplate='%{text}', cliponaxis=False
         ))
 
@@ -1059,8 +1059,8 @@ for escenario in escenarios_sel:
             fig.add_trace(go.Scatter(
                 x=df_plot["Fecha"], y=df_plot["Proyección"], 
                 name=escenario + (" (Anual)" if tipo_visualizacion == "Anual" else ""), 
-                line=dict(color=color, width=3, dash='dot'), 
-                marker=dict(size=9, color=color, line=dict(width=2, color='white')), 
+                line=dict(color=color, width=2, dash='dot'), 
+                marker=dict(size=6, color=color, line=dict(width=1, color='white')), 
                 mode='lines+markers', 
                 hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'
             ))
@@ -1070,7 +1070,7 @@ for escenario in escenarios_sel:
                 fig.add_trace(go.Scatter(
                     x=df_plot["Fecha"], y=df_plot["Proyección"], mode="text", 
                     text=text_values, textposition="top center", 
-                    textfont=dict(size=14, color=color, family="Poppins", weight="bold"),
+                    textfont=dict(size=9, color=color, family="Poppins", weight="bold"),
                     showlegend=False, hoverinfo='skip', texttemplate='%{text}', cliponaxis=False
                 ))
 
@@ -1124,40 +1124,40 @@ fig.update_layout(
     template="plotly_white",
     plot_bgcolor='#ffffff',
     paper_bgcolor='#ffffff',
-    height=900,
-    font=dict(family="Poppins", size=22, color="#1e293b"),
+    height=700,
+    font=dict(family="Poppins", size=11, color="#1e293b"),
     title=dict(
         text=f"<b>{indicador_sel}</b>",
         x=0.5, y=0.98, xanchor='center', yanchor='top',
-        font=dict(size=24, color="#1e3a5f", family="Poppins", weight="bold")
+        font=dict(size=18, color="#1e3a5f", family="Poppins", weight="bold")
     ),
     annotations=[
         dict(
             text="Evolución Histórica y Proyección",
             x=0.02, y=0.93, xref="paper", yref="paper",
             showarrow=False,
-            font=dict(size=18, color="#4a5568", family="Poppins")
+            font=dict(size=14, color="#4a5568", family="Poppins")
         )
     ],
     hovermode='x unified',
     legend=dict(
         orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5,
         bgcolor="rgba(255,255,255,0.95)", bordercolor="#cbd5e0", borderwidth=1.5,
-        font=dict(size=16, family="Poppins", color="#1e293b", weight=500),
+        font=dict(size=12, family="Poppins", color="#1e293b", weight=500),
         itemsizing='constant', itemclick=False, itemdoubleclick=False
     ),
     xaxis=dict(
         title=dict(
             text="<b>PERIODO</b>",
-            font=dict(size=20, weight=600, family="Poppins", color="#1e293b"),
-            standoff=15
+            font=dict(size=14, weight=600, family="Poppins", color="#1e293b"),
+            standoff=10
         ),
         showgrid=True, gridcolor='rgba(0,0,0,0.05)', gridwidth=1,
         tickvals=tickvals, ticktext=ticktext, 
-        tickfont=dict(size=16, family="Poppins", color="#4a5568", weight=500),
+        tickfont=dict(size=9, family="Poppins", color="#4a5568", weight=500),
         linecolor='#cbd5e0', linewidth=2, mirror=True, showline=True, 
         automargin=True, tickangle=45 if tipo_visualizacion == "Semestral" else 0,
-        title_standoff=20, fixedrange=True,
+        title_standoff=15, fixedrange=True,
         ticklabeloverflow='allow', ticklabelposition='outside',
         ticklabelstep=1 if tipo_visualizacion == "Anual" else 2,
         range=[
@@ -1168,20 +1168,20 @@ fig.update_layout(
     yaxis=dict(
         title=dict(
             text=f"<b>{indicador_sel.upper()}</b>",
-            font=dict(size=20, weight=600, family="Poppins", color="#1e293b"),
-            standoff=15
+            font=dict(size=14, weight=600, family="Poppins", color="#1e293b"),
+            standoff=10
         ),
         showgrid=True, gridcolor='rgba(0,0,0,0.05)', gridwidth=1,
         tickformat=f",.{int(decimal_places)}f",
-        tickfont=dict(size=16, family="Poppins", color="#4a5568"),
-        title_standoff=20, showline=True, linecolor='#cbd5e0',
+        tickfont=dict(size=11, family="Poppins", color="#4a5568"),
+        title_standoff=15, showline=True, linecolor='#cbd5e0',
         linewidth=2, mirror=True, zeroline=False, automargin=True
     ),
     hoverlabel=dict(
-        bgcolor="white", font_size=22, font_family="Poppins", 
+        bgcolor="white", font_size=12, font_family="Poppins", 
         bordercolor="#cbd5e0", namelength=-1, align="left"
     ),
-    margin=dict(t=100, b=100, l=140, r=50, pad=15),
+    margin=dict(t=80, b=80, l=100, r=40, pad=10),
     shapes=shapes
 )
 
