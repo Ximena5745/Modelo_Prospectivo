@@ -924,39 +924,39 @@ def periodos_rango_por_ano(year: int, tipo: str):
 # ==============================
 # FUNCIÓN PARA CALCULAR TAMAÑO DE LETRA DINÁMICO
 # ==============================
-def calcular_tamano_letra(num_puntos: int, tipo_visualizacion: str) -> int:
+def calcular_config_etiquetas(num_puntos: int, tipo_visualizacion: str) -> dict:
     """
-    Calcula el tamaño de letra basado en el número de puntos de datos.
+    Calcula la configuración de etiquetas basado en el número de puntos de datos.
     
     Args:
         num_puntos: Número de puntos de datos históricos
         tipo_visualizacion: "Semestral" o "Anual"
     
     Returns:
-        Tamaño de fuente en píxeles
+        dict con: size (tamaño), show (mostrar o no), angle (ángulo), skip (cada cuántos mostrar)
     """
     if tipo_visualizacion == "Semestral":
         # Para datos semestrales
         if num_puntos <= 10:
-            return 10  # Pocos datos: letra grande
+            return {'size': 10, 'show': True, 'angle': 0, 'skip': 1}  # Mostrar todos
         elif num_puntos <= 18:
-            return 9   # 18 registros como en la imagen 1: tamaño normal
+            return {'size': 9, 'show': True, 'angle': 0, 'skip': 1}   # Mostrar todos
         elif num_puntos <= 25:
-            return 8   # Más de 18: reducir un poco
+            return {'size': 8, 'show': True, 'angle': -45, 'skip': 1}  # Mostrar todos rotados
         elif num_puntos <= 35:
-            return 7   # Bastantes datos: reducir más
+            return {'size': 7, 'show': True, 'angle': -45, 'skip': 2}  # Mostrar 1 de cada 2
         else:
-            return 6   # Muchos datos: letra pequeña
+            return {'size': 0, 'show': False, 'angle': 0, 'skip': 1}   # NO MOSTRAR - demasiados datos
     else:
         # Para datos anuales (menos puntos)
         if num_puntos <= 5:
-            return 12  # Muy pocos datos: letra más grande
+            return {'size': 12, 'show': True, 'angle': 0, 'skip': 1}  # Mostrar todos
         elif num_puntos <= 10:
-            return 11  # Pocos datos: letra grande
+            return {'size': 11, 'show': True, 'angle': 0, 'skip': 1}  # Mostrar todos
         elif num_puntos <= 15:
-            return 10  # Datos moderados
+            return {'size': 10, 'show': True, 'angle': 0, 'skip': 1}  # Mostrar todos
         else:
-            return 9   # Más datos: mantener legible pero compacto
+            return {'size': 9, 'show': True, 'angle': -30, 'skip': 1}  # Mostrar todos rotados
 
 # ==============================
 # FILTRAR DATOS
@@ -1060,9 +1060,9 @@ if df_hist_trace.empty:
             lambda x: pd.Timestamp(year=x.year, month=6, day=30)
         )
 
-# 🔥 CALCULAR TAMAÑO DE LETRA DINÁMICO
+# 🔥 CALCULAR CONFIGURACIÓN DE ETIQUETAS DINÁMICAMENTE
 num_puntos_historicos = len(df_hist_trace)
-tamano_letra = calcular_tamano_letra(num_puntos_historicos, tipo_visualizacion)
+config_etiquetas = calcular_config_etiquetas(num_puntos_historicos, tipo_visualizacion)
 
 trace_name = "Histórico Semestral" if tipo_visualizacion == "Semestral" else "Histórico Anual"
 
@@ -1084,13 +1084,32 @@ if not df_hist_trace.empty:
             showarrow=False, font=dict(size=10, color="#666666"), align="right"
         )
     
-    if mostrar_numeros:
-        text_values = df_hist_trace["Ejecución"].apply(lambda x: format_number(x, decimal_places))
+    # 🔥 MOSTRAR NÚMEROS SOLO SI LA CONFIGURACIÓN LO PERMITE
+    if mostrar_numeros and config_etiquetas['show']:
+        # Filtrar puntos según 'skip' (mostrar 1 de cada N)
+        skip = config_etiquetas['skip']
+        indices_mostrar = list(range(0, len(df_hist_trace), skip))
+        
+        df_etiquetas = df_hist_trace.iloc[indices_mostrar].copy()
+        text_values = df_etiquetas["Ejecución"].apply(lambda x: format_number(x, decimal_places))
+        
         fig.add_trace(go.Scatter(
-            x=df_hist_trace["Fecha"], y=df_hist_trace["Ejecución"], mode="text", 
-            text=text_values, textposition="top center", 
-            textfont=dict(size=tamano_letra, color='#D4A017', family="Poppins", weight="bold"),  # 🔥 TAMAÑO DINÁMICO
-            showlegend=False, hoverinfo='skip', texttemplate='%{text}', cliponaxis=False
+            x=df_etiquetas["Fecha"], 
+            y=df_etiquetas["Ejecución"], 
+            mode="text", 
+            text=text_values, 
+            textposition="top center", 
+            textfont=dict(
+                size=config_etiquetas['size'], 
+                color='#D4A017', 
+                family="Poppins", 
+                weight="bold"
+            ),
+            textangle=config_etiquetas['angle'],  # 🔥 ROTACIÓN DINÁMICA
+            showlegend=False, 
+            hoverinfo='skip', 
+            texttemplate='%{text}', 
+            cliponaxis=False
         ))
 
 for escenario in escenarios_sel:
@@ -1120,13 +1139,35 @@ for escenario in escenarios_sel:
                 hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'
             ))
             
-            if mostrar_numeros:
-                text_values = df_plot["Proyección"].apply(lambda x: format_number(x, decimal_places))
+            # 🔥 MOSTRAR NÚMEROS DE PROYECCIÓN SOLO SI LA CONFIGURACIÓN LO PERMITE
+            if mostrar_numeros and config_etiquetas['show']:
+                # Calcular configuración para proyecciones (usualmente menos puntos)
+                num_puntos_proy = len(df_plot)
+                config_proy = calcular_config_etiquetas(num_puntos_proy, tipo_visualizacion)
+                
+                # Filtrar puntos según 'skip'
+                skip = config_proy['skip']
+                indices_mostrar = list(range(0, len(df_plot), skip))
+                df_etiquetas_proy = df_plot.iloc[indices_mostrar].copy()
+                
+                text_values = df_etiquetas_proy["Proyección"].apply(lambda x: format_number(x, decimal_places))
                 fig.add_trace(go.Scatter(
-                    x=df_plot["Fecha"], y=df_plot["Proyección"], mode="text", 
-                    text=text_values, textposition="top center", 
-                    textfont=dict(size=tamano_letra, color=color, family="Poppins", weight="bold"),  # 🔥 TAMAÑO DINÁMICO
-                    showlegend=False, hoverinfo='skip', texttemplate='%{text}', cliponaxis=False
+                    x=df_etiquetas_proy["Fecha"], 
+                    y=df_etiquetas_proy["Proyección"], 
+                    mode="text", 
+                    text=text_values, 
+                    textposition="top center", 
+                    textfont=dict(
+                        size=config_proy['size'], 
+                        color=color, 
+                        family="Poppins", 
+                        weight="bold"
+                    ),
+                    textangle=config_proy['angle'],  # 🔥 ROTACIÓN DINÁMICA
+                    showlegend=False, 
+                    hoverinfo='skip', 
+                    texttemplate='%{text}', 
+                    cliponaxis=False
                 ))
 
 if mostrar_linea_divisoria:
