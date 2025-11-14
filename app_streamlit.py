@@ -59,6 +59,60 @@ st.markdown("""
             box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3) !important;
         }
         /* colores específicos definidos por clase; no usar regla combinada */
+        
+        /* Dropdown menu styling with brand blue theme */
+        .stSelectbox [data-baseweb="select"] > div {
+            background-color: #ffffff !important;
+            color: #1e293b !important;
+            border: 1px solid #0d47a1 !important;  
+            border-radius: 8px !important;
+            transition: all 0.2s ease !important;
+        }
+        .stSelectbox [data-baseweb="select"] > div:hover {
+            background-color: #f0f7ff !important;  
+            border-color: #0d47a1 !important;
+            box-shadow: 0 0 0 2px rgba(13, 71, 161, 0.2) !important;
+        }
+        .stSelectbox [role="listbox"] {
+            background-color: #ffffff !important;
+            border: 1px solid #0d47a1 !important;  
+            border-radius: 8px !important;
+            box-shadow: 0 4px 12px rgba(13, 71, 161, 0.15) !important;
+            margin-top: 6px !important;
+            padding: 6px 0 !important;
+        }
+        .stSelectbox [role="option"] {
+            color: #1e293b !important;
+            padding: 10px 16px !important;
+            font-size: 0.95rem !important;
+            transition: all 0.15s ease !important;
+        }
+        .stSelectbox [role="option"]:hover {
+            background-color: #e3f2ff !important;  
+            color: #0d47a1 !important;  
+            font-weight: 500 !important;
+        }
+        .stSelectbox [aria-selected="true"] {
+            background-color: #0d47a1 !important;  
+            color: white !important;  
+            font-weight: 500 !important;
+        }
+        /* Style for dropdown arrow */
+        .stSelectbox [data-baseweb="select"] > div::after {
+            border-color: #0d47a1 transparent transparent !important;  
+            border-width: 6px 6px 0 !important;
+            margin-top: -3px !important;
+        }
+        .stSelectbox [data-baseweb="select"] > div[aria-expanded="true"]::after {
+            border-color: transparent transparent #0d47a1 !important;  
+            border-width: 0 6px 6px !important;
+            margin-top: -3px !important;
+        }
+        /* Ensure logo is properly displayed */
+        .stApp header img {
+            max-width: 200px !important;
+            height: auto !important;
+        }
     </style>
 """, unsafe_allow_html=True)
 
