@@ -1170,18 +1170,19 @@ if not df_hist_trace.empty:
         df_etiquetas = df_hist_trace.iloc[indices_mostrar].copy()
         text_values = df_etiquetas["Ejecución"].apply(lambda x: format_number(x, decimal_places))
         
-        # 🔥 POSICIONAMIENTO INTELIGENTE: alternar arriba/abajo para evitar superposición
-        text_positions = []
-        for i in range(len(df_etiquetas)):
-            # Alternar entre "top center" y "bottom center" 
-            text_positions.append("top center" if i % 2 == 0 else "middle right")
+        # 🔥 CALCULAR OFFSET DINÁMICO BASADO EN RANGO DE DATOS
+        y_range = df_hist_trace["Ejecución"].max() - df_hist_trace["Ejecución"].min()
+        offset_value = y_range * 0.025  # 2.5% del rango total
+        
+        # 🔥 APLICAR OFFSET: sumar al valor Y para separar de la línea
+        y_values_offset = df_etiquetas["Ejecución"] + offset_value
         
         fig.add_trace(go.Scatter(
             x=df_etiquetas["Fecha"], 
-            y=df_etiquetas["Ejecución"], 
+            y=y_values_offset,  # 🔥 VALORES CON OFFSET
             mode="text", 
             text=text_values, 
-            textposition=text_positions,  # 🔥 POSICIONES ALTERNADAS
+            textposition="middle center",  # 🔥 CENTRADO porque ya tiene offset
             textfont=dict(
                 size=config_etiquetas['size'], 
                 color='#D4A017', 
@@ -1234,17 +1235,22 @@ for escenario in escenarios_sel:
                 
                 text_values = df_etiquetas_proy["Proyección"].apply(lambda x: format_number(x, decimal_places))
                 
-                # 🔥 POSICIONAMIENTO INTELIGENTE: alternar para evitar superposición
-                text_positions = []
-                for i in range(len(df_etiquetas_proy)):
-                    text_positions.append("top center" if i % 2 == 0 else "middle left")
+                # 🔥 CALCULAR OFFSET DINÁMICO BASADO EN RANGO DE DATOS
+                if not df_plot.empty:
+                    y_range_proy = df_plot["Proyección"].max() - df_plot["Proyección"].min()
+                    offset_proy = y_range_proy * 0.025  # 2.5% del rango
+                else:
+                    offset_proy = 0
+                
+                # 🔥 APLICAR OFFSET: sumar al valor Y
+                y_values_offset_proy = df_etiquetas_proy["Proyección"] + offset_proy
                 
                 fig.add_trace(go.Scatter(
                     x=df_etiquetas_proy["Fecha"], 
-                    y=df_etiquetas_proy["Proyección"], 
+                    y=y_values_offset_proy,  # 🔥 VALORES CON OFFSET
                     mode="text", 
                     text=text_values, 
-                    textposition=text_positions,  # 🔥 POSICIONES ALTERNADAS
+                    textposition="middle center",  # 🔥 CENTRADO porque ya tiene offset
                     textfont=dict(
                         size=config_proy['size'], 
                         color=color, 
