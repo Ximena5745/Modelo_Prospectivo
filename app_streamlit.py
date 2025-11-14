@@ -240,6 +240,12 @@ st.markdown("""
             border-color: #27ae60 !important;
         }
         
+        /* Remover fondo verde de los labels de checkbox */
+        .stCheckbox label span {
+            background-color: transparent !important;
+            padding: 0 !important;
+        }
+        
         /* ==================== DOWNLOAD BUTTON ==================== */
         [data-testid="stDownloadButton"] > button {
             background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%) !important;
@@ -351,7 +357,7 @@ if logo_base64:
                 <img src="data:image/jpeg;base64,{logo_base64}" style="width: 180px; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
             </div>
             <div style="flex-grow: 1; text-align: left;">
-                <h1 style="color: #ffffff !important; font-size: 2.5rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+                <h1 style="color: #ffffff !important; font-size: 2.5rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px; text-shadow: 2px 2px 8px rgba(0,0,0,0.5);">
                     Plataforma Prospectiva de Indicadores Institucionales
                 </h1>
                 <div style="height: 4px; width: 280px; background: linear-gradient(90deg, #2ecc71, #3498db, #f1c40f); border-radius: 3px; margin-bottom: 0.75rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>
@@ -365,7 +371,7 @@ if logo_base64:
 else:
     st.markdown("""
     <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%); padding: 2.5rem 2rem; border-radius: 0 0 20px 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); margin: -1rem -3rem 2rem -3rem; text-align: center;">
-        <h1 style="color: #ffffff !important; font-size: 2.5rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+        <h1 style="color: #ffffff !important; font-size: 2.5rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px; text-shadow: 2px 2px 8px rgba(0,0,0,0.5);">
             Plataforma Prospectiva de Indicadores Institucionales
         </h1>
         <div style="height: 4px; width: 280px; background: linear-gradient(90deg, #2ecc71, #3498db, #f1c40f); border-radius: 3px; margin: 0 auto 0.75rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>
@@ -1120,13 +1126,6 @@ fig.update_layout(
             x=0.02, y=0.93, xref="paper", yref="paper",
             showarrow=False,
             font=dict(size=18, color="#4a5568", family="Poppins")
-        ),
-        dict(
-            text=f"Modelo: {modelo_sel}",
-            x=1.02, y=1.0, xref="paper", yref="paper",
-            showarrow=False,
-            font=dict(size=14, color="#718096", family="Poppins", style="italic"),
-            align="left", xanchor="left", yanchor="top"
         )
     ],
     hovermode='x unified',
@@ -1171,7 +1170,7 @@ fig.update_layout(
         bgcolor="white", font_size=22, font_family="Poppins", 
         bordercolor="#cbd5e0", namelength=-1, align="left"
     ),
-    margin=dict(t=100, b=100, l=140, r=250, pad=15),
+    margin=dict(t=100, b=100, l=140, r=50, pad=15),
     shapes=shapes
 )
 
