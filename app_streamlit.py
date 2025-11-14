@@ -333,7 +333,7 @@ st.markdown("""
             [data-baseweb="menu"] > ul > li[aria-selected="true"] {
 """, unsafe_allow_html=True)
 
-# ENCABEZADO CON LOGO (CORREG IDO)
+# ENCABEZADO CON LOGO (CORREGIDO)
 if logo_base64:
     st.markdown(f"""
     <div style="text-align: center; margin: 1rem 0 2rem 0; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
