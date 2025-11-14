@@ -229,7 +229,7 @@ st.markdown("""
             font-size: 0.9rem !important;
         }
         
-        /* Eliminar TODOS los fondos verdes */
+        /* Eliminar TODOS los fondos de los spans */
         .stCheckbox label span,
         .stCheckbox label div,
         .stCheckbox span {
@@ -238,23 +238,28 @@ st.markdown("""
             padding: 0 !important;
         }
         
-        /* Caja del checkbox - blanca por defecto */
+        /* Caja del checkbox - blanca vacía por defecto (NO seleccionado) */
         .stCheckbox > label > div[data-testid="stCheckbox"] {
-            background-color: rgba(255,255,255,0.9) !important;
-            border: 2px solid rgba(255,255,255,0.4) !important;
+            background-color: rgba(255,255,255,0.2) !important;
+            border: 2px solid rgba(255,255,255,0.6) !important;
             border-radius: 4px !important;
         }
         
-        /* Checkbox marcado - azul institucional */
+        /* Checkbox SELECCIONADO - fondo azul claro */
         .stCheckbox input:checked ~ div[data-testid="stCheckbox"] {
-            background-color: #3498db !important;
-            border-color: #2980b9 !important;
+            background-color: #5DADE2 !important;
+            border-color: #3498db !important;
         }
         
         /* Remover cualquier otro estilo de fondo */
         [data-testid="stSidebar"] .stCheckbox > label {
             background: none !important;
             background-color: transparent !important;
+        }
+        
+        /* Asegurar que el ícono de check sea visible */
+        .stCheckbox input:checked ~ div svg {
+            fill: white !important;
         }
         
         /* ==================== DOWNLOAD BUTTON ==================== */
@@ -368,11 +373,11 @@ if logo_base64:
                 <img src="data:image/jpeg;base64,{logo_base64}" style="width: 180px; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
             </div>
             <div style="flex-grow: 1; text-align: left;">
-                <h1 style="color: #FFFFFF !important; font-size: 2.5rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px;">
+                <h1 style="color: #FFFFFF !important; font-size: 2.5rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px; -webkit-text-fill-color: #FFFFFF;">
                     Plataforma Prospectiva de Indicadores Institucionales
                 </h1>
                 <div style="height: 4px; width: 280px; background: linear-gradient(90deg, #2ecc71, #3498db, #f1c40f); border-radius: 3px; margin-bottom: 0.75rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>
-                <p style="color: #FFFFFF !important; font-size: 1.15rem; margin: 0; font-weight: 500; letter-spacing: 0.3px;">
+                <p style="color: #FFFFFF !important; font-size: 1.15rem; margin: 0; font-weight: 500; letter-spacing: 0.3px; -webkit-text-fill-color: #FFFFFF;">
                     📊 Análisis y proyección de indicadores estratégicos 2026-2030
                 </p>
             </div>
@@ -382,11 +387,11 @@ if logo_base64:
 else:
     st.markdown("""
     <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%); padding: 2.5rem 2rem; border-radius: 0 0 20px 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); margin: -1rem -3rem 2rem -3rem; text-align: center;">
-        <h1 style="color: #FFFFFF !important; font-size: 2.5rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px;">
+        <h1 style="color: #FFFFFF !important; font-size: 2.5rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px; -webkit-text-fill-color: #FFFFFF;">
             Plataforma Prospectiva de Indicadores Institucionales
         </h1>
         <div style="height: 4px; width: 280px; background: linear-gradient(90deg, #2ecc71, #3498db, #f1c40f); border-radius: 3px; margin: 0 auto 0.75rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>
-        <p style="color: #FFFFFF !important; font-size: 1.15rem; margin: 0; font-weight: 500; letter-spacing: 0.3px;">
+        <p style="color: #FFFFFF !important; font-size: 1.15rem; margin: 0; font-weight: 500; letter-spacing: 0.3px; -webkit-text-fill-color: #FFFFFF;">
             📊 Análisis y proyección de indicadores estratégicos 2026-2030
         </p>
     </div>
@@ -1124,42 +1129,42 @@ fig.update_layout(
     template="plotly_white",
     plot_bgcolor='#ffffff',
     paper_bgcolor='#ffffff',
-    height=700,
-    font=dict(family="Poppins", size=11, color="#1e293b"),
+    height=600,
+    font=dict(family="Poppins", size=10, color="#1e293b"),
     title=dict(
         text=f"<b>{indicador_sel}</b>",
-        x=0.5, y=0.98, xanchor='center', yanchor='top',
-        font=dict(size=18, color="#1e3a5f", family="Poppins", weight="bold")
+        x=0.5, y=0.97, xanchor='center', yanchor='top',
+        font=dict(size=16, color="#1e3a5f", family="Poppins", weight="bold")
     ),
     annotations=[
         dict(
             text="Evolución Histórica y Proyección",
-            x=0.02, y=0.93, xref="paper", yref="paper",
+            x=0.02, y=0.92, xref="paper", yref="paper",
             showarrow=False,
-            font=dict(size=14, color="#4a5568", family="Poppins")
+            font=dict(size=12, color="#4a5568", family="Poppins")
         )
     ],
     hovermode='x unified',
     legend=dict(
-        orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5,
+        orientation="h", yanchor="bottom", y=1.01, xanchor="center", x=0.5,
         bgcolor="rgba(255,255,255,0.95)", bordercolor="#cbd5e0", borderwidth=1.5,
-        font=dict(size=12, family="Poppins", color="#1e293b", weight=500),
+        font=dict(size=11, family="Poppins", color="#1e293b", weight=500),
         itemsizing='constant', itemclick=False, itemdoubleclick=False
     ),
     xaxis=dict(
         title=dict(
             text="<b>PERIODO</b>",
-            font=dict(size=14, weight=600, family="Poppins", color="#1e293b"),
-            standoff=10
+            font=dict(size=13, weight=600, family="Poppins", color="#1e293b"),
+            standoff=8
         ),
         showgrid=True, gridcolor='rgba(0,0,0,0.05)', gridwidth=1,
         tickvals=tickvals, ticktext=ticktext, 
-        tickfont=dict(size=9, family="Poppins", color="#4a5568", weight=500),
+        tickfont=dict(size=8, family="Poppins", color="#4a5568", weight=500),
         linecolor='#cbd5e0', linewidth=2, mirror=True, showline=True, 
         automargin=True, tickangle=45 if tipo_visualizacion == "Semestral" else 0,
-        title_standoff=15, fixedrange=True,
+        title_standoff=12, fixedrange=True,
         ticklabeloverflow='allow', ticklabelposition='outside',
-        ticklabelstep=1 if tipo_visualizacion == "Anual" else 2,
+        tickmode='auto', nticks=30,
         range=[
             df_hist_trace['Fecha'].min().strftime('%Y-%m-%d') if not df_hist_trace.empty else "2017-01-01", 
             df_proj_sel['Fecha'].max().strftime('%Y-%m-%d') if not df_proj_sel.empty else "2030-12-31"
@@ -1168,20 +1173,20 @@ fig.update_layout(
     yaxis=dict(
         title=dict(
             text=f"<b>{indicador_sel.upper()}</b>",
-            font=dict(size=14, weight=600, family="Poppins", color="#1e293b"),
-            standoff=10
+            font=dict(size=13, weight=600, family="Poppins", color="#1e293b"),
+            standoff=8
         ),
         showgrid=True, gridcolor='rgba(0,0,0,0.05)', gridwidth=1,
         tickformat=f",.{int(decimal_places)}f",
-        tickfont=dict(size=11, family="Poppins", color="#4a5568"),
-        title_standoff=15, showline=True, linecolor='#cbd5e0',
+        tickfont=dict(size=10, family="Poppins", color="#4a5568"),
+        title_standoff=12, showline=True, linecolor='#cbd5e0',
         linewidth=2, mirror=True, zeroline=False, automargin=True
     ),
     hoverlabel=dict(
-        bgcolor="white", font_size=12, font_family="Poppins", 
+        bgcolor="white", font_size=11, font_family="Poppins", 
         bordercolor="#cbd5e0", namelength=-1, align="left"
     ),
-    margin=dict(t=80, b=80, l=100, r=40, pad=10),
+    margin=dict(t=70, b=70, r=30, l=90, pad=8),
     shapes=shapes
 )
 
