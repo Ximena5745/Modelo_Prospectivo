@@ -1323,9 +1323,9 @@ fig.update_layout(
         ),
         showgrid=True, gridcolor='rgba(0,0,0,0.05)', gridwidth=1,
         tickvals=tickvals, ticktext=ticktext, 
-        tickfont=dict(size=8, family="Poppins", color="#4a5568", weight=500),
+        tickfont=dict(size=12, family="Poppins", color="#4a5568", weight=600),  # 🔥 AUMENTADO de 8 a 10px y weight a 600
         linecolor='#cbd5e0', linewidth=2, mirror=True, showline=True, 
-        automargin=True, tickangle=45 if tipo_visualizacion == "Semestral" else 0,
+        automargin=True, tickangle=0,  # 🔥 SIN ROTACIÓN para mejor legibilidad
         title_standoff=12, fixedrange=True,
         ticklabeloverflow='allow', ticklabelposition='outside',
         tickmode='auto', nticks=30,
