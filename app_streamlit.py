@@ -331,19 +331,16 @@ st.markdown("""
             }
             
             [data-baseweb="menu"] > ul > li[aria-selected="true"] {
-                background-color: #2c5f8d !important;
-                color: white !important;
-            }
-        }
-    </style>
 """, unsafe_allow_html=True)
 
-64:
-    st.markdown(f"""
-    <div style="text-align: center; margin: 1rem 0 2rem 0; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-        <img src="data:image/jpeg;base64,{logo_base64}" style="max-width: 250px; height: auto; margin-bottom: 1rem;">
-        <h1 class="app-title" style="margin: 0 0 0.5rem 0; font-size: 2.75rem; font-weight: 800; letter-spacing: -0.5px; color: #1e3a5f !important;">Plataforma Prospectiva de Indicadores Institucionales</h1>
-        <div style="height: 5px; width: 240px; background: linear-gradient(90deg, #2c5f8d, #4a90c8, #2ecc71); margin: 0 auto 1rem; border-radius: 3px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div>
+st.markdown(f"""
+<div style="text-align: center; margin: 1rem 0 2rem 0; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    <img src="data:image/jpeg;base64,{logo_base64}" style="max-width: 250px; height: auto; margin-bottom: 1rem;">
+    <h1 class="app-title" style="margin: 0 0 0.5rem 0; font-size: 2.75rem; font-weight: 800; letter-spacing: -0.5px; color: #1e3a5f !important;">Plataforma Prospectiva de Indicadores Institucionales</h1>
+    <div style="height: 5px; width: 240px; background: linear-gradient(90deg, #2c5f8d, #4a90c8, #2ecc71); margin: 0 auto 1rem; border-radius: 3px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div>
+    <p class="app-subtitle" style="font-size: 1.2rem; margin: 0; font-weight: 500; letter-spacing: 0.3px; color: #475569 !important;">Análisis y proyección de indicadores estratégicos 2026-2030</p>
+</div>
+""", unsafe_allow_html=True)
         <p class="app-subtitle" style="font-size: 1.2rem; margin: 0; font-weight: 500; letter-spacing: 0.3px; color: #475569 !important;">Análisis y proyección de indicadores estratégicos 2026-2030</p>
     </div>
     """, unsafe_allow_html=True)
