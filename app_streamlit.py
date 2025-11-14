@@ -1322,13 +1322,16 @@ fig.update_layout(
             standoff=8
         ),
         showgrid=True, gridcolor='rgba(0,0,0,0.05)', gridwidth=1,
-        tickvals=tickvals, ticktext=ticktext, 
-        tickfont=dict(size=12, family="Poppins", color="#4a5568", weight=600),  # 🔥 AUMENTADO de 8 a 10px y weight a 600
+        tickmode='array',  # 🔥 FORZAR uso de tickvals/ticktext personalizados
+        tickvals=tickvals, 
+        ticktext=ticktext, 
+        tickfont=dict(size=11, family="Poppins", color="#1e293b", weight=600),  # 🔥 AUMENTADO a 11px
         linecolor='#cbd5e0', linewidth=2, mirror=True, showline=True, 
-        automargin=True, tickangle=0,  # 🔥 SIN ROTACIÓN para mejor legibilidad
+        automargin=True, 
+        tickangle=-45,  # 🔥 DIAGONAL para mejor legibilidad con muchas etiquetas
         title_standoff=12, fixedrange=True,
-        ticklabeloverflow='allow', ticklabelposition='outside',
-        tickmode='auto', nticks=30,
+        ticklabeloverflow='allow', 
+        ticklabelposition='outside',
         range=[
             df_hist_trace['Fecha'].min().strftime('%Y-%m-%d') if not df_hist_trace.empty else "2021-07-01", 
             df_proj_sel['Fecha'].max().strftime('%Y-%m-%d') if not df_proj_sel.empty else "2030-12-31"
