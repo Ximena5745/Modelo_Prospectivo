@@ -31,7 +31,7 @@ def get_base64_image(image_path):
 
 # Intentar cargar el logo
 BASE_DIR = Path(__file__).parent
-LOGO_PATH = BASE_DIR / "Wallpaper-POLI_jpg.jpg"
+LOGO_PATH = BASE_DIR / "Wallpaper-POLI.jpg"
 logo_base64 = get_base64_image(LOGO_PATH) if LOGO_PATH.exists() else None
 
 # ==============================
