@@ -1102,10 +1102,8 @@ if not df_hist_trace.empty:
             textfont=dict(
                 size=config_etiquetas['size'], 
                 color='#D4A017', 
-                family="Poppins", 
-                weight="bold"
+                family="Poppins"
             ),
-            textangle=config_etiquetas['angle'],  # 🔥 ROTACIÓN DINÁMICA
             showlegend=False, 
             hoverinfo='skip', 
             texttemplate='%{text}', 
@@ -1160,10 +1158,8 @@ for escenario in escenarios_sel:
                     textfont=dict(
                         size=config_proy['size'], 
                         color=color, 
-                        family="Poppins", 
-                        weight="bold"
+                        family="Poppins"
                     ),
-                    textangle=config_proy['angle'],  # 🔥 ROTACIÓN DINÁMICA
                     showlegend=False, 
                     hoverinfo='skip', 
                     texttemplate='%{text}', 
