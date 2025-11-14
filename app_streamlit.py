@@ -229,21 +229,32 @@ st.markdown("""
             font-size: 0.9rem !important;
         }
         
+        /* Eliminar TODOS los fondos verdes */
+        .stCheckbox label span,
+        .stCheckbox label div,
+        .stCheckbox span {
+            background-color: transparent !important;
+            background: transparent !important;
+            padding: 0 !important;
+        }
+        
+        /* Caja del checkbox */
         .stCheckbox > label > div[data-testid="stCheckbox"] {
             background-color: rgba(255,255,255,0.9) !important;
             border: 2px solid rgba(255,255,255,0.4) !important;
             border-radius: 4px !important;
         }
         
-        .stCheckbox input:checked ~ div {
+        /* Checkbox marcado - solo la caja pequeña en verde */
+        .stCheckbox input:checked ~ div[data-testid="stCheckbox"] {
             background-color: #2ecc71 !important;
             border-color: #27ae60 !important;
         }
         
-        /* Remover fondo verde de los labels de checkbox */
-        .stCheckbox label span {
+        /* Remover cualquier otro estilo de fondo */
+        [data-testid="stSidebar"] .stCheckbox > label {
+            background: none !important;
             background-color: transparent !important;
-            padding: 0 !important;
         }
         
         /* ==================== DOWNLOAD BUTTON ==================== */
@@ -357,11 +368,11 @@ if logo_base64:
                 <img src="data:image/jpeg;base64,{logo_base64}" style="width: 180px; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
             </div>
             <div style="flex-grow: 1; text-align: left;">
-                <h1 style="color: #ffffff !important; font-size: 2.5rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px; text-shadow: 2px 2px 8px rgba(0,0,0,0.5);">
+                <h1 style="color: #F8F9FA !important; font-size: 2.5rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px; text-shadow: 3px 3px 10px rgba(0,0,0,0.7), 0 0 20px rgba(0,0,0,0.5);">
                     Plataforma Prospectiva de Indicadores Institucionales
                 </h1>
                 <div style="height: 4px; width: 280px; background: linear-gradient(90deg, #2ecc71, #3498db, #f1c40f); border-radius: 3px; margin-bottom: 0.75rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>
-                <p style="color: rgba(255,255,255,0.95) !important; font-size: 1.15rem; margin: 0; font-weight: 500; letter-spacing: 0.3px;">
+                <p style="color: #F8F9FA !important; font-size: 1.15rem; margin: 0; font-weight: 500; letter-spacing: 0.3px; text-shadow: 2px 2px 6px rgba(0,0,0,0.5);">
                     📊 Análisis y proyección de indicadores estratégicos 2026-2030
                 </p>
             </div>
@@ -371,11 +382,11 @@ if logo_base64:
 else:
     st.markdown("""
     <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%); padding: 2.5rem 2rem; border-radius: 0 0 20px 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); margin: -1rem -3rem 2rem -3rem; text-align: center;">
-        <h1 style="color: #ffffff !important; font-size: 2.5rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px; text-shadow: 2px 2px 8px rgba(0,0,0,0.5);">
+        <h1 style="color: #F8F9FA !important; font-size: 2.5rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px; text-shadow: 3px 3px 10px rgba(0,0,0,0.7), 0 0 20px rgba(0,0,0,0.5);">
             Plataforma Prospectiva de Indicadores Institucionales
         </h1>
         <div style="height: 4px; width: 280px; background: linear-gradient(90deg, #2ecc71, #3498db, #f1c40f); border-radius: 3px; margin: 0 auto 0.75rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>
-        <p style="color: rgba(255,255,255,0.95) !important; font-size: 1.15rem; margin: 0; font-weight: 500; letter-spacing: 0.3px;">
+        <p style="color: #F8F9FA !important; font-size: 1.15rem; margin: 0; font-weight: 500; letter-spacing: 0.3px; text-shadow: 2px 2px 6px rgba(0,0,0,0.5);">
             📊 Análisis y proyección de indicadores estratégicos 2026-2030
         </p>
     </div>
