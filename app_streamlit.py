@@ -136,12 +136,10 @@ st.markdown("""
         }
         
         /* ==================== DROPDOWNS / SELECTBOX ==================== */
-        /* Contenedor principal */
         .stSelectbox {
             margin-bottom: 1.2rem;
         }
         
-        /* Etiqueta del selectbox */
         .stSelectbox label {
             color: white !important;
             font-weight: 600 !important;
@@ -151,7 +149,6 @@ st.markdown("""
             text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
         
-        /* Campo del dropdown - FORZAR COLORES */
         .stSelectbox > div > div {
             background-color: white !important;
             color: #1e293b !important;
@@ -161,26 +158,22 @@ st.markdown("""
             font-weight: 500 !important;
         }
         
-        /* Texto seleccionado */
         .stSelectbox > div > div > div {
             color: #1e293b !important;
             font-weight: 500 !important;
         }
         
-        /* Hover state */
         .stSelectbox > div > div:hover {
             background-color: #f8fafc !important;
             border-color: #2c5f8d !important;
             box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2) !important;
         }
         
-        /* Focus state */
         .stSelectbox > div > div:focus-within {
             border-color: #1e3a5f !important;
             box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.2) !important;
         }
         
-        /* Dropdown expandido - MENÚ DE OPCIONES */
         [data-baseweb="popover"] {
             background-color: white !important;
             border: 2px solid #4a90c8 !important;
@@ -189,7 +182,6 @@ st.markdown("""
             margin-top: 4px !important;
         }
         
-        /* Opciones individuales */
         [data-baseweb="menu"] > ul > li {
             background-color: white !important;
             color: #1e293b !important;
@@ -198,21 +190,18 @@ st.markdown("""
             transition: all 0.15s ease !important;
         }
         
-        /* Hover en opciones */
         [data-baseweb="menu"] > ul > li:hover {
             background-color: #e3f2fd !important;
             color: #1e3a5f !important;
             font-weight: 600 !important;
         }
         
-        /* Opción seleccionada */
         [data-baseweb="menu"] > ul > li[aria-selected="true"] {
             background-color: #2c5f8d !important;
             color: white !important;
             font-weight: 600 !important;
         }
         
-        /* Flecha del dropdown */
         .stSelectbox svg {
             fill: #2c5f8d !important;
         }
@@ -331,16 +320,22 @@ st.markdown("""
             }
             
             [data-baseweb="menu"] > ul > li[aria-selected="true"] {
+                background-color: #2c5f8d !important;
+                color: white !important;
+            }
+        }
+    </style>
 """, unsafe_allow_html=True)
 
-st.markdown(f"""
-<div style="text-align: center; margin: 1rem 0 2rem 0; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-    <img src="data:image/jpeg;base64,{logo_base64}" style="max-width: 250px; height: auto; margin-bottom: 1rem;">
-    <h1 class="app-title" style="margin: 0 0 0.5rem 0; font-size: 2.75rem; font-weight: 800; letter-spacing: -0.5px; color: #1e3a5f !important;">Plataforma Prospectiva de Indicadores Institucionales</h1>
-    <div style="height: 5px; width: 240px; background: linear-gradient(90deg, #2c5f8d, #4a90c8, #2ecc71); margin: 0 auto 1rem; border-radius: 3px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div>
-    <p class="app-subtitle" style="font-size: 1.2rem; margin: 0; font-weight: 500; letter-spacing: 0.3px; color: #475569 !important;">Análisis y proyección de indicadores estratégicos 2026-2030</p>
-</div>
-""", unsafe_allow_html=True)
+# ==============================
+# HEADER CON LOGO
+# ==============================
+if logo_base64:
+    st.markdown(f"""
+    <div style="text-align: center; margin: 1rem 0 2rem 0; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+        <img src="data:image/jpeg;base64,{logo_base64}" style="max-width: 250px; height: auto; margin-bottom: 1rem;">
+        <h1 class="app-title" style="margin: 0 0 0.5rem 0; font-size: 2.75rem; font-weight: 800; letter-spacing: -0.5px; color: #1e3a5f !important;">Plataforma Prospectiva de Indicadores Institucionales</h1>
+        <div style="height: 5px; width: 240px; background: linear-gradient(90deg, #2c5f8d, #4a90c8, #2ecc71); margin: 0 auto 1rem; border-radius: 3px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div>
         <p class="app-subtitle" style="font-size: 1.2rem; margin: 0; font-weight: 500; letter-spacing: 0.3px; color: #475569 !important;">Análisis y proyección de indicadores estratégicos 2026-2030</p>
     </div>
     """, unsafe_allow_html=True)
@@ -811,28 +806,8 @@ if st.session_state['mostrar_modelos']:
     st.stop()
 
 # ==============================
-# CONTINUAR CON EL RESTO DEL CÓDIGO ORIGINAL...
-# (Las funciones auxiliares, gráficos, métricas, etc. permanecen igual)
-# ==============================
-
-# FILTRAR DATOS
-if 'Linea' in df_hist.columns:
-    df_hist_sel = df_hist[(df_hist["Indicador"] == indicador_sel) & (df_hist["Linea"] == display_name)]
-    if df_hist_sel.empty: 
-        df_hist_sel = df_hist[(df_hist["Indicador"] == indicador_sel) & (df_hist["Linea"].str.replace('_', ' ') == linea_sel)]
-else:
-    df_hist_sel = df_hist[df_hist["Indicador"] == indicador_sel]
-
-df_proj_sel = df_proj[
-    (df_proj["Indicador"] == indicador_sel) & 
-    (df_proj["Modelo"] == modelo_sel) & 
-    (df_proj["Escenario"].isin(escenarios_sel))
-].copy()
-
-df_proj_sel['Fecha'] = pd.to_datetime(df_proj_sel['Fecha'])
-df_proj_sel = df_proj_sel.sort_values('Fecha')
-
 # FUNCIONES AUXILIARES
+# ==============================
 @st.cache_data
 def convert_df_to_csv(df):
     return df.to_csv(index=False, sep=';').encode('utf-8')
@@ -884,6 +859,26 @@ def periodos_rango_por_ano(year: int, tipo: str):
         (pd.Timestamp(year=year, month=1, day=1), pd.Timestamp(year=year, month=12, day=31)),
     ]
 
+# ==============================
+# FILTRAR DATOS
+# ==============================
+if 'Linea' in df_hist.columns:
+    df_hist_sel = df_hist[(df_hist["Indicador"] == indicador_sel) & (df_hist["Linea"] == display_name)]
+    if df_hist_sel.empty: 
+        df_hist_sel = df_hist[(df_hist["Indicador"] == indicador_sel) & (df_hist["Linea"].str.replace('_', ' ') == linea_sel)]
+else:
+    df_hist_sel = df_hist[df_hist["Indicador"] == indicador_sel]
+
+df_proj_sel = df_proj[
+    (df_proj["Indicador"] == indicador_sel) & 
+    (df_proj["Modelo"] == modelo_sel) & 
+    (df_proj["Escenario"].isin(escenarios_sel))
+].copy()
+
+df_proj_sel['Fecha'] = pd.to_datetime(df_proj_sel['Fecha'])
+df_proj_sel = df_proj_sel.sort_values('Fecha')
+
+# Configuración de decimales y sentido
 decimal_places = 0
 if 'Decimales_Ejecucion' in df_hist_sel.columns and not df_hist_sel.empty:
     decimal_places = int(df_hist_sel['Decimales_Ejecucion'].iloc[0]) if pd.notna(df_hist_sel['Decimales_Ejecucion'].iloc[0]) else 0
@@ -894,24 +889,17 @@ if 'Sentido' in df_hist_sel.columns and not df_hist_sel.empty:
 else:
     indicador_negativo = False
 
-if indicador_negativo:
-    colores_escenarios = {
-        'Optimista': '#2ecc71',
-        'Base': '#2c5f8d',
-        'Pesimista': '#e74c3c',
-        'Histórico Semestral': '#4a90c8',
-        'Histórico Anual': '#4a90c8'
-    }
-else:
-    colores_escenarios = {
-        'Optimista': '#2ecc71',
-        'Base': '#2c5f8d',
-        'Pesimista': '#e74c3c',
-        'Histórico Semestral': '#4a90c8',
-        'Histórico Anual': '#4a90c8'
-    }
+colores_escenarios = {
+    'Optimista': '#2ecc71',
+    'Base': '#2c5f8d',
+    'Pesimista': '#e74c3c',
+    'Histórico Semestral': '#D4A017',
+    'Histórico Anual': '#D4A017'
+}
 
+# ==============================
 # TARJETAS DE RESUMEN
+# ==============================
 df_base = df_proj[(df_proj["Indicador"] == indicador_sel) & (df_proj["Modelo"] == modelo_sel) & (df_proj["Escenario"] == 'Base')]
 
 if not df_base.empty:
@@ -940,7 +928,9 @@ else:
     st.warning(f"⚠️ No se encontraron datos para el Escenario Base del indicador {indicador_sel}")
     st.markdown("<br>", unsafe_allow_html=True)
 
-# GRÁFICO
+# ==============================
+# GRÁFICO PRINCIPAL
+# ==============================
 st.subheader("Evolución Histórica y Proyección Detallada")
 
 df_hist_semestral = df_hist_sel[df_hist_sel["Fuente"] == "Semestral"].copy()
@@ -1156,7 +1146,9 @@ fig.update_layout(
 
 st.plotly_chart(fig, use_container_width=True)
 
+# ==============================
 # COMPARATIVO DE ESCENARIOS
+# ==============================
 if not df_proj_sel.empty and len(escenarios_sel) > 0:
     st.markdown("### Comparativo de Escenarios (vs Último 2025)")
     num_cols = max(1, len(escenarios_sel))
@@ -1204,7 +1196,9 @@ if not df_proj_sel.empty and len(escenarios_sel) > 0:
                 unsafe_allow_html=True
             )
 
+# ==============================
 # TABLA DE DATOS DETALLADOS
+# ==============================
 st.markdown("---")
 with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)"):
     df_hist_display = df_hist_sel.rename(columns={'Ejecución': 'Histórico'})[['Fecha', 'Indicador', 'Histórico', 'Fuente']]
