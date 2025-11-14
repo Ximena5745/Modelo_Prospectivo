@@ -1087,6 +1087,21 @@ if st.session_state['mostrar_modelos']:
         image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
         image_files = []
         
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
         for ext in image_extensions:
             image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
         
@@ -1101,6 +1116,7 @@ if st.session_state['mostrar_modelos']:
             if st.session_state.slide_index < 0:
                 st.session_state.slide_index = 0
             
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
             st.markdown("""
             <style>
                 .modal-header {
@@ -1130,6 +1146,2783 @@ if st.session_state['mostrar_modelos']:
             </style>
             """, unsafe_allow_html=True)
             
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)tr(SLIDES_DIR / ext)))
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)        
+                
+                # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)key)
+
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)        
+
+                # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)sion_state:
+        
+        
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)ex = 0
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)x >= len(image_files):
+        
+        
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)ex = len(image_files) - 1
+        
+        
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)x < 0:
+        
+        
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)ex = 0
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)dient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)px 0 0;
+        
+        
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)5rem -2rem;
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True) rgba(30, 58, 95, 0.4);
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True) rgba(0, 0, 0, 0.15);
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)f8d;
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True) rgba(44, 95, 141, 0.2);
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+
+        # VISTA DE MODELOS (MODAL)
+# ==============================
+if st.session_state['mostrar_modelos']:
+    SLIDES_DIR = BASE_DIR / "Slides"
+    
+    import re
+    def natural_sort_key(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(text))]
+    
+    if SLIDES_DIR.exists():
+        image_extensions = ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.PNG', '*.JPG', '*.JPEG']
+        image_files = []
+        
+        for ext in image_extensions:
+            image_files.extend(glob.glob(str(SLIDES_DIR / ext)))
+        
+        image_files.sort(key=natural_sort_key)
+        
+        if image_files:
+            if 'slide_index' not in st.session_state:
+                st.session_state.slide_index = 0
+            
+            if st.session_state.slide_index >= len(image_files):
+                st.session_state.slide_index = len(image_files) - 1
+            if st.session_state.slide_index < 0:
+                st.session_state.slide_index = 0
+            
+            # CORREGIDO: CSS dentro de st.markdown con comillas correctas
+            st.markdown("""
+            <style>
+                .modal-header {
+                    background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+                    padding: 2rem;
+                    border-radius: 12px 12px 0 0;
+                    margin: -2rem -2rem 1.5rem -2rem;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 4px 16px rgba(30, 58, 95, 0.4);
+                }
+                .slide-container {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    margin: 1rem 0;
+                }
+                .slide-image-wrapper {
+                    border: 3px solid #2c5f8d;
+                    border-radius: 12px;
+                    padding: 0.5rem;
+                    background: #f8fafc;
+                    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
+                    margin: 1.5rem 0;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div class="modal-header">
+                <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
+                <div style="height: 4px; width: 200px; background: linear-gradient(90deg, #2ecc71, #f1c40f); margin: 0.75rem auto 0.5rem; border-radius: 3px;"></div>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0;">Visualización de los modelos utilizados en las proyecciones</p>
+            </div>
+            """, unsafe_allow_html=True)
             st.markdown("""
             <div class="modal-header">
                 <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin: 0;">📊 Modelos de Machine Learning</h1>
