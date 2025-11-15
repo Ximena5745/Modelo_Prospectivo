@@ -170,7 +170,7 @@ st.markdown("""
             transform: translateY(0px);
         }
         
-        /* ==================== DROPDOWNS / SELECTBOX ===================== */
+        /* ==================== DROPDOWNS / SELECTBOX ==================== */
         .stSelectbox {
             margin-bottom: 0.8rem;  /* 🔥 REDUCIDO de 1.2rem a 0.8rem */
         }
@@ -970,32 +970,33 @@ def calcular_config_etiquetas(num_puntos: int, tipo_visualizacion: str) -> dict:
     Returns:
         dict con: size (tamaño), show (mostrar o no), angle (ángulo), skip (cada cuántos mostrar)
     """
+    # 🔥 TAMAÑOS SIGNIFICATIVAMENTE AUMENTADOS PARA MÁXIMA VISIBILIDAD
     if tipo_visualizacion == "Semestral":
-        # Para datos semestrales - TAMAÑOS AUMENTADOS
+        # Para datos semestrales - TAMAÑOS MUY GRANDES
         if num_puntos <= 8:
-            return {'size': 13, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 Aumentado de 11 a 13
+            return {'size': 16, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 MUY GRANDE
         elif num_puntos <= 12:
-            return {'size': 12, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 Aumentado de 10 a 12
+            return {'size': 15, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 GRANDE
         elif num_puntos <= 18:
-            return {'size': 11, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 Aumentado de 9 a 11
+            return {'size': 14, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 GRANDE
         elif num_puntos <= 25:
-            return {'size': 10, 'show': True, 'angle': 0, 'skip': 2}  # 🔥 Aumentado de 9 a 10
+            return {'size': 13, 'show': True, 'angle': 0, 'skip': 2}  # 🔥 MEDIANO-GRANDE
         elif num_puntos <= 35:
-            return {'size': 9, 'show': True, 'angle': 0, 'skip': 2}   # 🔥 Aumentado de 8 a 9
+            return {'size': 12, 'show': True, 'angle': 0, 'skip': 2}  # 🔥 MEDIANO
         else:
-            return {'size': 0, 'show': False, 'angle': 0, 'skip': 1}   # NO MOSTRAR - demasiados datos
+            return {'size': 11, 'show': True, 'angle': 0, 'skip': 3}  # 🔥 MOSTRAR 1 de cada 3
     else:
-        # Para datos anuales (menos puntos) - TAMAÑOS AUMENTADOS
+        # Para datos anuales (menos puntos) - TAMAÑOS MUY GRANDES
         if num_puntos <= 5:
-            return {'size': 15, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 Aumentado de 13 a 15
+            return {'size': 18, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 EXTRA GRANDE
         elif num_puntos <= 8:
-            return {'size': 14, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 Aumentado de 12 a 14
+            return {'size': 17, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 MUY GRANDE
         elif num_puntos <= 12:
-            return {'size': 13, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 Aumentado de 11 a 13
+            return {'size': 16, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 GRANDE
         elif num_puntos <= 15:
-            return {'size': 12, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 Aumentado de 10 a 12
+            return {'size': 15, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 GRANDE
         else:
-            return {'size': 11, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 Aumentado de 10 a 11
+            return {'size': 14, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 MEDIANO-GRANDE
 
 # ==============================
 # FILTRAR DATOS
@@ -1126,7 +1127,7 @@ if not df_hist_trace.empty:
         y=df_hist_trace["Ejecución"], 
         name=trace_name, 
         line=dict(color='#D4A017', width=2), 
-        marker=dict(size=12, color='#D4A017', line=dict(width=1, color='white')), 
+        marker=dict(size=6, color='#D4A017', line=dict(width=1, color='white')), 
         mode='lines+markers', 
         hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'
     ))
@@ -1135,7 +1136,7 @@ if not df_hist_trace.empty:
         fig.add_annotation(
             x=0.98, y=0.92, xref='paper', yref='paper',
             text="<i>Nota: Los colores están invertidos (menor = mejor)</i>",
-            showarrow=False, font=dict(size=12, color="#666666"), align="right"
+            showarrow=False, font=dict(size=10, color="#666666"), align="right"
         )
     
     # 🔥 MOSTRAR NÚMEROS SOLO SI LA CONFIGURACIÓN LO PERMITE
@@ -1147,9 +1148,9 @@ if not df_hist_trace.empty:
         df_etiquetas = df_hist_trace.iloc[indices_mostrar].copy()
         text_values = df_etiquetas["Ejecución"].apply(lambda x: format_number(x, decimal_places))
         
-        # 🔥 CALCULAR OFFSET AUMENTADO (5% del rango total para mayor separación)
+        # 🔥 CALCULAR OFFSET AUMENTADO (7% del rango total para mayor separación)
         y_range = df_hist_trace["Ejecución"].max() - df_hist_trace["Ejecución"].min()
-        offset_value = y_range * 0.05  # 🔥 AUMENTADO de 2.5% a 5% para más espacio
+        offset_value = y_range * 0.07  # 🔥 AUMENTADO de 5% a 7% para más espacio
         
         # 🔥 APLICAR OFFSET: sumar al valor Y para separar de la línea
         y_values_offset = df_etiquetas["Ejecución"] + offset_value
@@ -1164,7 +1165,7 @@ if not df_hist_trace.empty:
                 size=config_etiquetas['size'], 
                 color='#D4A017', 
                 family="Poppins",
-                weight=700
+                weight=800  # 🔥 EXTRA BOLD para máxima visibilidad
             ),
             showlegend=False, 
             hoverinfo='skip', 
@@ -1194,7 +1195,7 @@ for escenario in escenarios_sel:
                 x=df_plot["Fecha"], y=df_plot["Proyección"], 
                 name=escenario + (" (Anual)" if tipo_visualizacion == "Anual" else ""), 
                 line=dict(color=color, width=2, dash='dot'), 
-                marker=dict(size=10, color=color, line=dict(width=1, color='white')), 
+                marker=dict(size=6, color=color, line=dict(width=1, color='white')), 
                 mode='lines+markers', 
                 hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'
             ))
@@ -1216,23 +1217,23 @@ for escenario in escenarios_sel:
                 if not df_plot.empty:
                     y_range_proy = df_plot["Proyección"].max() - df_plot["Proyección"].min()
                     
-                    # 🔥 AJUSTAR SEGÚN SENTIDO DEL INDICADOR
+                    # 🔥 AJUSTAR SEGÚN SENTIDO DEL INDICADOR (OFFSETS AUMENTADOS)
                     if not indicador_negativo:
                         # SENTIDO POSITIVO: Mayor valor = Mejor (Optimista arriba)
                         if escenario == "Optimista":
-                            offset_proy = y_range_proy * 0.08  # 8% arriba (línea superior)
+                            offset_proy = y_range_proy * 0.10  # 🔥 10% arriba (aumentado de 8%)
                         elif escenario == "Base":
-                            offset_proy = y_range_proy * 0.05  # 5% arriba (línea media)
+                            offset_proy = y_range_proy * 0.07  # 🔥 7% arriba (aumentado de 5%)
                         else:  # Pesimista
-                            offset_proy = y_range_proy * 0.02  # 2% arriba (línea inferior)
+                            offset_proy = y_range_proy * 0.04  # 🔥 4% arriba (aumentado de 2%)
                     else:
                         # SENTIDO NEGATIVO: Menor valor = Mejor (Pesimista arriba, Optimista abajo)
                         if escenario == "Pesimista":
-                            offset_proy = y_range_proy * 0.02  # 2% arriba (línea inferior tiene mejor resultado)
+                            offset_proy = y_range_proy * 0.04  # 🔥 4% arriba
                         elif escenario == "Base":
-                            offset_proy = y_range_proy * 0.05  # 5% arriba (línea media)
+                            offset_proy = y_range_proy * 0.07  # 🔥 7% arriba
                         else:  # Optimista
-                            offset_proy = y_range_proy * 0.08  # 8% arriba (línea superior tiene peor resultado)
+                            offset_proy = y_range_proy * 0.10  # 🔥 10% arriba
                 else:
                     offset_proy = 0
                 
@@ -1249,7 +1250,7 @@ for escenario in escenarios_sel:
                         size=config_proy['size'], 
                         color=color, 
                         family="Poppins",
-                        weight=700
+                        weight=800  # 🔥 EXTRA BOLD
                     ),
                     showlegend=False, 
                     hoverinfo='skip', 
@@ -1371,32 +1372,41 @@ fig.update_layout(
     shapes=shapes,
     # 🔥 CONFIGURACIÓN DE HERRAMIENTAS DE LA GRÁFICA (MODEBAR)
     modebar=dict(
-        orientation='v',  # Vertical para ahorrar espacio
+        orientation='h',  # 🔥 HORIZONTAL (parte superior derecha como original)
         bgcolor='rgba(255,255,255,0.9)',
         color='#1e3a5f',
         activecolor='#2ecc71'
     ),
-    # 🔥 HABILITAR INTERACTIVIDAD COMPLETA
-    dragmode='zoom',  # Modo por defecto: zoom con arrastre
+    # 🔥 MODO PAN (arrastrar) POR DEFECTO - NO ZOOM
+    dragmode='pan',  # Pan en lugar de zoom
 )
 
 st.plotly_chart(fig, use_container_width=True, config={
     'displayModeBar': True,  # 🔥 MOSTRAR barra de herramientas SIEMPRE
     'displaylogo': False,  # Ocultar logo de Plotly
     'modeBarButtonsToAdd': [
-        'drawline',  # 🔥 Dibujar líneas
-        'drawopenpath',  # 🔥 Dibujar líneas libres
-        'eraseshape',  # 🔥 Borrar formas
+        'drawline',          # ✏️ Dibujar líneas
+        'drawopenpath',      # ✏️ Dibujar líneas libres
+        'drawclosedpath',    # ✏️ Dibujar formas cerradas
+        'drawcircle',        # ⭕ Dibujar círculos
+        'drawrect',          # ▭ Dibujar rectángulos
+        'eraseshape',        # 🗑️ Borrar formas
     ],
-    'modeBarButtonsToRemove': [],  # No remover ninguna
+    'modeBarButtonsToRemove': [
+        'select2d',          # Remover selección 2D
+        'lasso2d'            # Remover lasso
+    ],
     'toImageButtonOptions': {
-        'format': 'png',  # Formato de descarga
+        'format': 'png',     # Formato de descarga
         'filename': f'{indicador_sel}_{modelo_sel}',
-        'height': 800,
-        'width': 1400,
-        'scale': 2  # Calidad alta
+        'height': 1000,      # 🔥 Mayor resolución
+        'width': 1800,       # 🔥 Mayor resolución
+        'scale': 3           # 🔥 Calidad ultra alta (3x)
     },
-    'locale': 'es',  # Idioma español
+    'scrollZoom': True,      # 🔥 Zoom con scroll del mouse
+    'doubleClick': 'reset',  # Doble clic para resetear
+    'showTips': True,        # Mostrar tips
+    'responsive': True,      # Responsive
 })
 
 # 🔥 MOSTRAR BOTÓN "VER HISTORIA COMPLETA" DESPUÉS DE LA GRÁFICA
