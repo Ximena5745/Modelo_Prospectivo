@@ -87,7 +87,7 @@ st.markdown("""
         
         /* ==================== SIDEBAR ==================== */
         [data-testid="stSidebar"] { 
-            background: linear-gradient(180deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%);
+            background: linear-gradient(180deg, #1e3a5f 0%, #2c5f8d 50%, #3d7ab8 100%);
             padding: 1.5rem 1rem;
             overflow-y: auto !important;  /* 🔥 PERMITIR SCROLL VISIBLE */
             max-height: 100vh !important;  /* 🔥 ALTURA MÁXIMA DE VIEWPORT */
@@ -408,17 +408,17 @@ st.markdown("""
 # ==============================
 if logo_base64:
     st.markdown(f"""
-    <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%); padding: 2.5rem 2rem; border-radius: 0 0 20px 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); margin: -1rem -3rem 2rem -3rem;">
-        <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 2rem;">
+    <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #3d7ab8 100%); padding: 2.5rem 2rem; border-radius: 0 0 20px 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); margin: -1rem -3rem 2rem -3rem;">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 2.5rem;">
             <div style="flex-shrink: 0;">
-                <img src="data:image/jpeg;base64,{logo_base64}" style="width: 180px; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                <img src="data:image/jpeg;base64,{logo_base64}" style="width: 220px; height: auto; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.25);">
             </div>
             <div style="flex-grow: 1; text-align: left;">
-                <h1 style="color: #FFFFFF !important; font-size: 2.5rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px; -webkit-text-fill-color: #FFFFFF;">
+                <h1 style="color: #FFFFFF !important; font-size: 2.6rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px; -webkit-text-fill-color: #FFFFFF; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">
                     Plataforma Prospectiva de Indicadores Institucionales
                 </h1>
-                <div style="height: 4px; width: 280px; background: linear-gradient(90deg, #2ecc71, #3498db, #f1c40f); border-radius: 3px; margin-bottom: 0.75rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>
-                <p style="color: #FFFFFF !important; font-size: 1.15rem; margin: 0; font-weight: 500; letter-spacing: 0.3px; -webkit-text-fill-color: #FFFFFF;">
+                <div style="height: 5px; width: 300px; background: linear-gradient(90deg, #2ecc71, #3498db, #f1c40f); border-radius: 3px; margin-bottom: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"></div>
+                <p style="color: #FFFFFF !important; font-size: 1.2rem; margin: 0; font-weight: 500; letter-spacing: 0.3px; -webkit-text-fill-color: #FFFFFF; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">
                     📊 Análisis y proyección de indicadores estratégicos 2026-2030
                 </p>
             </div>
@@ -427,12 +427,12 @@ if logo_base64:
     """, unsafe_allow_html=True)
 else:
     st.markdown("""
-    <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #4a90c8 100%); padding: 2.5rem 2rem; border-radius: 0 0 20px 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); margin: -1rem -3rem 2rem -3rem; text-align: center;">
-        <h1 style="color: #FFFFFF !important; font-size: 2.5rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px; -webkit-text-fill-color: #FFFFFF;">
+    <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #3d7ab8 100%); padding: 2.5rem 2rem; border-radius: 0 0 20px 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); margin: -1rem -3rem 2rem -3rem; text-align: center;">
+        <h1 style="color: #FFFFFF !important; font-size: 2.6rem; font-weight: 800; margin: 0 0 0.75rem 0; letter-spacing: -0.5px; -webkit-text-fill-color: #FFFFFF; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">
             Plataforma Prospectiva de Indicadores Institucionales
         </h1>
-        <div style="height: 4px; width: 280px; background: linear-gradient(90deg, #2ecc71, #3498db, #f1c40f); border-radius: 3px; margin: 0 auto 0.75rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>
-        <p style="color: #FFFFFF !important; font-size: 1.15rem; margin: 0; font-weight: 500; letter-spacing: 0.3px; -webkit-text-fill-color: #FFFFFF;">
+        <div style="height: 5px; width: 300px; background: linear-gradient(90deg, #2ecc71, #3498db, #f1c40f); border-radius: 3px; margin: 0 auto 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"></div>
+        <p style="color: #FFFFFF !important; font-size: 1.2rem; margin: 0; font-weight: 500; letter-spacing: 0.3px; -webkit-text-fill-color: #FFFFFF; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">
             📊 Análisis y proyección de indicadores estratégicos 2026-2030
         </p>
     </div>
@@ -973,29 +973,29 @@ def calcular_config_etiquetas(num_puntos: int, tipo_visualizacion: str) -> dict:
     if tipo_visualizacion == "Semestral":
         # Para datos semestrales - TAMAÑOS AUMENTADOS
         if num_puntos <= 8:
-            return {'size': 11, 'show': True, 'angle': 0, 'skip': 1}  # Mostrar todos - letra grande
+            return {'size': 13, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 Aumentado de 11 a 13
         elif num_puntos <= 12:
-            return {'size': 10, 'show': True, 'angle': 0, 'skip': 1}  # Mostrar todos
+            return {'size': 12, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 Aumentado de 10 a 12
         elif num_puntos <= 18:
-            return {'size': 9, 'show': True, 'angle': 0, 'skip': 1}   # Mostrar todos
+            return {'size': 11, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 Aumentado de 9 a 11
         elif num_puntos <= 25:
-            return {'size': 9, 'show': True, 'angle': 0, 'skip': 2}   # Mostrar 1 de cada 2
+            return {'size': 10, 'show': True, 'angle': 0, 'skip': 2}  # 🔥 Aumentado de 9 a 10
         elif num_puntos <= 35:
-            return {'size': 8, 'show': True, 'angle': 0, 'skip': 2}   # Mostrar 1 de cada 2
+            return {'size': 9, 'show': True, 'angle': 0, 'skip': 2}   # 🔥 Aumentado de 8 a 9
         else:
             return {'size': 0, 'show': False, 'angle': 0, 'skip': 1}   # NO MOSTRAR - demasiados datos
     else:
         # Para datos anuales (menos puntos) - TAMAÑOS AUMENTADOS
         if num_puntos <= 5:
-            return {'size': 13, 'show': True, 'angle': 0, 'skip': 1}  # Mostrar todos - letra grande
+            return {'size': 15, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 Aumentado de 13 a 15
         elif num_puntos <= 8:
-            return {'size': 12, 'show': True, 'angle': 0, 'skip': 1}  # Mostrar todos
+            return {'size': 14, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 Aumentado de 12 a 14
         elif num_puntos <= 12:
-            return {'size': 11, 'show': True, 'angle': 0, 'skip': 1}  # Mostrar todos
+            return {'size': 13, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 Aumentado de 11 a 13
         elif num_puntos <= 15:
-            return {'size': 10, 'show': True, 'angle': 0, 'skip': 1}  # Mostrar todos
+            return {'size': 12, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 Aumentado de 10 a 12
         else:
-            return {'size': 10, 'show': True, 'angle': 0, 'skip': 1}  # Mostrar todos
+            return {'size': 11, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 Aumentado de 10 a 11
 
 # ==============================
 # FILTRAR DATOS
@@ -1103,71 +1103,16 @@ if df_hist_trace.empty:
 fecha_corte_vista = pd.Timestamp(year=2021, month=7, day=1)  # 2021-S2
 df_hist_trace_original = df_hist_trace.copy()
 
+# 🔥 FILTRAR DATOS DESDE 2021-S2 POR DEFECTO
+fecha_corte_vista = pd.Timestamp(year=2021, month=7, day=1)  # 2021-S2
+df_hist_trace_original = df_hist_trace.copy()
+
 # Verificar si hay datos anteriores a 2021-S2
 tiene_datos_antiguos = not df_hist_trace[df_hist_trace['Fecha'] < fecha_corte_vista].empty
 
 # Aplicar filtro solo si NO se ha activado "mostrar historia completa"
 if not st.session_state['mostrar_historia_completa'] and tiene_datos_antiguos:
     df_hist_trace = df_hist_trace[df_hist_trace['Fecha'] >= fecha_corte_vista].copy()
-    
-    # 🔥 MOSTRAR BOTÓN "VER MÁS" SI HAY DATOS ANTIGUOS
-    st.markdown("""
-    <style>
-        .btn-ver-mas button {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%) !important;
-            color: white !important;
-            font-weight: 600 !important;
-            border: none !important;
-            padding: 0.5rem 1rem !important;
-            border-radius: 8px !important;
-            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3) !important;
-            transition: all 0.3s ease !important;
-        }
-        .btn-ver-mas button:hover {
-            background: linear-gradient(135deg, #2980b9 0%, #21618c 100%) !important;
-            transform: translateY(-1px) !important;
-            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4) !important;
-        }
-    </style>
-    """, unsafe_allow_html=True)
-    
-    col_btn1, col_btn2, col_btn3 = st.columns([1.2, 1, 3.8])
-    with col_btn1:
-        st.markdown('<div class="btn-ver-mas">', unsafe_allow_html=True)
-        if st.button("📅 Ver historia completa", key="btn_ver_mas", use_container_width=True):
-            st.session_state['mostrar_historia_completa'] = True
-            st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
-else:
-    # Si está mostrando historia completa, mostrar botón para volver a vista reciente
-    if tiene_datos_antiguos and st.session_state['mostrar_historia_completa']:
-        st.markdown("""
-        <style>
-            .btn-ver-menos button {
-                background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%) !important;
-                color: white !important;
-                font-weight: 600 !important;
-                border: none !important;
-                padding: 0.5rem 1rem !important;
-                border-radius: 8px !important;
-                box-shadow: 0 2px 8px rgba(149, 165, 166, 0.3) !important;
-                transition: all 0.3s ease !important;
-            }
-            .btn-ver-menos button:hover {
-                background: linear-gradient(135deg, #7f8c8d 0%, #6c7a7b 100%) !important;
-                transform: translateY(-1px) !important;
-                box-shadow: 0 4px 12px rgba(149, 165, 166, 0.4) !important;
-            }
-        </style>
-        """, unsafe_allow_html=True)
-        
-        col_btn1, col_btn2, col_btn3 = st.columns([1.2, 1, 3.8])
-        with col_btn1:
-            st.markdown('<div class="btn-ver-menos">', unsafe_allow_html=True)
-            if st.button("📅 Vista reciente (2021+)", key="btn_ver_menos", use_container_width=True):
-                st.session_state['mostrar_historia_completa'] = False
-                st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
 
 # 🔥 CALCULAR CONFIGURACIÓN DE ETIQUETAS DINÁMICAMENTE
 num_puntos_historicos = len(df_hist_trace)
@@ -1453,6 +1398,68 @@ st.plotly_chart(fig, use_container_width=True, config={
     },
     'locale': 'es',  # Idioma español
 })
+
+# 🔥 MOSTRAR BOTÓN "VER HISTORIA COMPLETA" DESPUÉS DE LA GRÁFICA
+if tiene_datos_antiguos:
+    st.markdown("<br>", unsafe_allow_html=True)
+    if not st.session_state['mostrar_historia_completa']:
+        st.markdown("""
+        <style>
+            .btn-ver-mas button {
+                background: linear-gradient(135deg, #3498db 0%, #2980b9 100%) !important;
+                color: white !important;
+                font-weight: 600 !important;
+                border: none !important;
+                padding: 0.6rem 1.2rem !important;
+                border-radius: 8px !important;
+                box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3) !important;
+                transition: all 0.3s ease !important;
+                font-size: 0.95rem !important;
+            }
+            .btn-ver-mas button:hover {
+                background: linear-gradient(135deg, #2980b9 0%, #21618c 100%) !important;
+                transform: translateY(-1px) !important;
+                box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4) !important;
+            }
+        </style>
+        """, unsafe_allow_html=True)
+        
+        col_btn1, col_btn2, col_btn3 = st.columns([1.5, 1, 3.5])
+        with col_btn1:
+            st.markdown('<div class="btn-ver-mas">', unsafe_allow_html=True)
+            if st.button("📅 Ver historia completa", key="btn_ver_mas_below", use_container_width=True):
+                st.session_state['mostrar_historia_completa'] = True
+                st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
+    else:
+        st.markdown("""
+        <style>
+            .btn-ver-menos button {
+                background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%) !important;
+                color: white !important;
+                font-weight: 600 !important;
+                border: none !important;
+                padding: 0.6rem 1.2rem !important;
+                border-radius: 8px !important;
+                box-shadow: 0 2px 8px rgba(149, 165, 166, 0.3) !important;
+                transition: all 0.3s ease !important;
+                font-size: 0.95rem !important;
+            }
+            .btn-ver-menos button:hover {
+                background: linear-gradient(135deg, #7f8c8d 0%, #6c7a7b 100%) !important;
+                transform: translateY(-1px) !important;
+                box-shadow: 0 4px 12px rgba(149, 165, 166, 0.4) !important;
+            }
+        </style>
+        """, unsafe_allow_html=True)
+        
+        col_btn1, col_btn2, col_btn3 = st.columns([1.5, 1, 3.5])
+        with col_btn1:
+            st.markdown('<div class="btn-ver-menos">', unsafe_allow_html=True)
+            if st.button("📅 Vista reciente (2021+)", key="btn_ver_menos_below", use_container_width=True):
+                st.session_state['mostrar_historia_completa'] = False
+                st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
 
 # ==============================
 # COMPARATIVO DE ESCENARIOS
