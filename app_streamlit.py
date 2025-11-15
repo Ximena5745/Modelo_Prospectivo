@@ -1363,42 +1363,42 @@ fig.update_layout(
     plot_bgcolor='#ffffff',
     paper_bgcolor='#ffffff',
     height=700,  # 🔥 AUMENTADO de 600 a 700px para optimizar espacio
-    font=dict(family="Poppins", size=10, color="#1e293b"),
+    font=dict(family="Poppins", size=12, color="#1e293b", weight=600),  # 🔥 Fuente base aumentada a 12px y bold
     title=dict(
         text=f"<b>{indicador_sel}</b>",
         x=0.5, y=0.97, xanchor='center', yanchor='top',
-        font=dict(size=16, color="#1e3a5f", family="Poppins", weight="bold")
+        font=dict(size=20, color="#1e3a5f", family="Poppins", weight="bold")  # 🔥 Título aumentado a 20px
     ),
     annotations=[
         dict(
             text="Evolución Histórica y Proyección",
             x=0.02, y=0.92, xref="paper", yref="paper",
             showarrow=False,
-            font=dict(size=12, color="#4a5568", family="Poppins")
+            font=dict(size=14, color="#4a5568", family="Poppins", weight=600)  # 🔥 Subtítulo a 14px
         )
     ],
     hovermode='x unified',
     legend=dict(
-        orientation="h", yanchor="bottom", y=1.01, xanchor="center", x=0.5,
+        orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5,
         bgcolor="rgba(255,255,255,0.95)", bordercolor="#cbd5e0", borderwidth=1.5,
-        font=dict(size=11, family="Poppins", color="#1e293b", weight=500),
+        font=dict(size=13, family="Poppins", color="#1e293b", weight=600),  # 🔥 Leyenda a 13px
         itemsizing='constant', itemclick=False, itemdoubleclick=False
     ),
     xaxis=dict(
         title=dict(
             text="<b>PERIODO</b>",
-            font=dict(size=13, weight=600, family="Poppins", color="#1e293b"),
-            standoff=8
+            font=dict(size=15, weight=700, family="Poppins", color="#1e293b"),  # 🔥 Aumentado a 15px
+            standoff=10  # 🔥 Mayor separación
         ),
         showgrid=True, gridcolor='rgba(0,0,0,0.05)', gridwidth=1,
         tickmode='array',  # 🔥 FORZAR uso de tickvals/ticktext personalizados
         tickvals=tickvals, 
         ticktext=ticktext, 
-        tickfont=dict(size=11, family="Poppins", color="#1e293b", weight=600),  # 🔥 AUMENTADO a 11px
+        tickfont=dict(size=12, family="Poppins", color="#1e293b", weight=600),  # 🔥 AUMENTADO a 12px
         linecolor='#cbd5e0', linewidth=2, mirror=True, showline=True, 
         automargin=True, 
         tickangle=-45,  # 🔥 DIAGONAL para mejor legibilidad con muchas etiquetas
-        title_standoff=12, fixedrange=True,
+        title_standoff=15, fixedrange=False,  # 🔥 HABILITAR ZOOM (fixedrange=False)
         ticklabeloverflow='allow', 
         ticklabelposition='outside',
         range=[
@@ -1409,24 +1409,50 @@ fig.update_layout(
     yaxis=dict(
         title=dict(
             text=f"<b>{indicador_sel.upper()}</b>",
-            font=dict(size=13, weight=600, family="Poppins", color="#1e293b"),
-            standoff=10  # 🔥 Aumentado de 8 a 10
+            font=dict(size=15, weight=700, family="Poppins", color="#1e293b"),  # 🔥 Aumentado a 15px
+            standoff=12  # 🔥 Aumentado de 10 a 12
         ),
         showgrid=True, gridcolor='rgba(0,0,0,0.05)', gridwidth=1,
         tickformat=f",.{int(decimal_places)}f",
-        tickfont=dict(size=11, family="Poppins", color="#1e293b", weight=600),  # 🔥 Aumentado a 11px y bold
-        title_standoff=15, showline=True, linecolor='#cbd5e0',
-        linewidth=2, mirror=True, zeroline=False, automargin=True
+        tickfont=dict(size=12, family="Poppins", color="#1e293b", weight=600),  # 🔥 Aumentado a 12px
+        title_standoff=18, showline=True, linecolor='#cbd5e0',  # 🔥 Mayor separación
+        linewidth=2, mirror=True, zeroline=False, automargin=True, fixedrange=False  # 🔥 HABILITAR ZOOM
     ),
     hoverlabel=dict(
-        bgcolor="white", font_size=11, font_family="Poppins", 
+        bgcolor="white", font_size=12, font_family="Poppins",  # 🔥 Hover aumentado a 12px
         bordercolor="#cbd5e0", namelength=-1, align="left"
     ),
     margin=dict(t=80, b=90, r=40, l=100, pad=8),  # 🔥 MÁRGENES OPTIMIZADOS para mayor espacio
-    shapes=shapes
+    shapes=shapes,
+    # 🔥 CONFIGURACIÓN DE HERRAMIENTAS DE LA GRÁFICA (MODEBAR)
+    modebar=dict(
+        orientation='v',  # Vertical para ahorrar espacio
+        bgcolor='rgba(255,255,255,0.9)',
+        color='#1e3a5f',
+        activecolor='#2ecc71'
+    ),
+    # 🔥 HABILITAR INTERACTIVIDAD COMPLETA
+    dragmode='zoom',  # Modo por defecto: zoom con arrastre
 )
 
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, use_container_width=True, config={
+    'displayModeBar': True,  # 🔥 MOSTRAR barra de herramientas SIEMPRE
+    'displaylogo': False,  # Ocultar logo de Plotly
+    'modeBarButtonsToAdd': [
+        'drawline',  # 🔥 Dibujar líneas
+        'drawopenpath',  # 🔥 Dibujar líneas libres
+        'eraseshape',  # 🔥 Borrar formas
+    ],
+    'modeBarButtonsToRemove': [],  # No remover ninguna
+    'toImageButtonOptions': {
+        'format': 'png',  # Formato de descarga
+        'filename': f'{indicador_sel}_{modelo_sel}',
+        'height': 800,
+        'width': 1400,
+        'scale': 2  # Calidad alta
+    },
+    'locale': 'es',  # Idioma español
+})
 
 # ==============================
 # COMPARATIVO DE ESCENARIOS
