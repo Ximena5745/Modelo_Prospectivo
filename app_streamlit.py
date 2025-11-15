@@ -170,7 +170,7 @@ st.markdown("""
             transform: translateY(0px);
         }
         
-        /* ==================== DROPDOWNS / SELECTBOX ==================== */
+        /* ==================== DROPDOWNS / SELECTBOX ===================== */
         .stSelectbox {
             margin-bottom: 0.8rem;  /* 🔥 REDUCIDO de 1.2rem a 0.8rem */
         }
@@ -1126,7 +1126,7 @@ if not df_hist_trace.empty:
         y=df_hist_trace["Ejecución"], 
         name=trace_name, 
         line=dict(color='#D4A017', width=2), 
-        marker=dict(size=6, color='#D4A017', line=dict(width=1, color='white')), 
+        marker=dict(size=12, color='#D4A017', line=dict(width=1, color='white')), 
         mode='lines+markers', 
         hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'
     ))
@@ -1135,7 +1135,7 @@ if not df_hist_trace.empty:
         fig.add_annotation(
             x=0.98, y=0.92, xref='paper', yref='paper',
             text="<i>Nota: Los colores están invertidos (menor = mejor)</i>",
-            showarrow=False, font=dict(size=10, color="#666666"), align="right"
+            showarrow=False, font=dict(size=12, color="#666666"), align="right"
         )
     
     # 🔥 MOSTRAR NÚMEROS SOLO SI LA CONFIGURACIÓN LO PERMITE
@@ -1194,7 +1194,7 @@ for escenario in escenarios_sel:
                 x=df_plot["Fecha"], y=df_plot["Proyección"], 
                 name=escenario + (" (Anual)" if tipo_visualizacion == "Anual" else ""), 
                 line=dict(color=color, width=2, dash='dot'), 
-                marker=dict(size=6, color=color, line=dict(width=1, color='white')), 
+                marker=dict(size=10, color=color, line=dict(width=1, color='white')), 
                 mode='lines+markers', 
                 hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'
             ))
