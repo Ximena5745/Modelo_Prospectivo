@@ -9,6 +9,17 @@ import glob
 import base64
 
 # ==============================
+# FUNCIÓN PARA CARGAR LOGO (antes de todo)
+# ==============================
+def get_base64_image(image_path):
+    """Convierte imagen a base64 para embedding en HTML"""
+    try:
+        with open(image_path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode()
+    except:
+        return None
+
+# ==============================
 # CONFIGURACIÓN_STREAMLIT
 # ==============================
 st.set_page_config(
@@ -19,15 +30,180 @@ st.set_page_config(
 )
 
 # ==============================
-# FUNCIÓN PARA CARGAR LOGO
+# PANTALLA DE CARGA / SPLASH SCREEN
 # ==============================
-def get_base64_image(image_path):
-    """Convierte imagen a base64 para embedding en HTML"""
-    try:
-        with open(image_path, "rb") as img_file:
-            return base64.b64encode(img_file.read()).decode()
-    except:
-        return None
+# Crear placeholder para la pantalla de carga
+splash_placeholder = st.empty()
+
+# Mostrar pantalla de carga
+with splash_placeholder.container():
+    st.markdown("""
+    <style>
+        /* Ocultar elementos de Streamlit durante la carga */
+        #MainMenu {visibility: hidden;}
+        header {visibility: hidden;}
+        footer {visibility: hidden;}
+        
+        /* Pantalla de carga overlay */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #3d7ab8 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        
+        /* Logo animado */
+        .splash-logo {
+            width: 280px;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            animation: pulse 2s ease-in-out infinite;
+            margin-bottom: 2rem;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        /* Texto de carga */
+        .splash-text {
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: slideUp 0.8s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Mensaje secundario */
+        .splash-subtitle {
+            color: rgba(255,255,255,0.9);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 400;
+            margin-bottom: 2.5rem;
+            text-align: center;
+            animation: slideUp 1s ease-out;
+        }
+        
+        /* Spinner de carga */
+        .splash-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255,255,255,0.2);
+            border-top: 5px solid #2ecc71;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Barra de progreso */
+        .progress-container {
+            width: 400px;
+            height: 6px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #3498db, #f1c40f);
+            border-radius: 10px;
+            animation: loading 2s ease-in-out infinite;
+            box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+        }
+        
+        @keyframes loading {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+        
+        /* Versión */
+        .splash-version {
+            position: absolute;
+            bottom: 30px;
+            color: rgba(255,255,255,0.6);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # Intentar cargar el logo
+    BASE_DIR_TEMP = Path(__file__).parent
+    LOGO_PATH_TEMP = BASE_DIR_TEMP / "Wallpaper-POLI.jpg"
+    
+    if LOGO_PATH_TEMP.exists():
+        logo_base64_temp = get_base64_image(LOGO_PATH_TEMP)
+        logo_html = f'<img src="data:image/jpeg;base64,{logo_base64_temp}" class="splash-logo" alt="Logo POLI">'
+    else:
+        logo_html = '<div style="width: 280px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 3rem; margin-bottom: 2rem;">📊</div>'
+    
+    st.markdown(f"""
+    <div class="splash-screen">
+        {logo_html}
+        <div class="splash-text">
+            🚀 Plataforma Prospectiva POLI
+        </div>
+        <div class="splash-subtitle">
+            Cargando indicadores y proyecciones...
+        </div>
+        <div class="splash-spinner"></div>
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+        <div class="splash-version">
+            v2.0 - Dashboard Interactivo | 2025
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Simular carga (puedes ajustar el tiempo)
+    import time
+    time.sleep(2.5)  # 2.5 segundos de pantalla de carga
+
+# Limpiar la pantalla de carga
+splash_placeholder.empty()
 
 # Intentar cargar el logo
 BASE_DIR = Path(__file__).parent
