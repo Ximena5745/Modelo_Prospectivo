@@ -639,39 +639,6 @@ st.markdown("""
                 color: white !important;
             }
         }
-        /* ==================== ACCESIBILIDAD UNIVERSAL: TEXTO SIEMPRE VISIBLE ==================== */
-@media (prefers-color-scheme: dark) {
-
-    /* Forzar texto claro en cualquier componente marcado por Streamlit */
-    .stMarkdown, .streamlit-expanderHeader, .streamlit-expanderContent,
-    .stButton > button, [data-testid="stDownloadButton"] > button,
-    .st-expanderHeader, .st-expanderContent, .stLinkButton, a, p, span {
-        color: #ffffff !important;
-    }
-
-    /* Ajuste de fondos para evitar texto oscuro sobre fondo oscuro */
-    .streamlit-expanderHeader {
-        background-color: #1f2937 !important;
-    }
-
-    .streamlit-expanderContent {
-        background-color: #111827 !important;
-    }
-
-    /* Forzar contraste del texto dentro del header del expander */
-    .streamlit-expanderHeader div,
-    .streamlit-expanderHeader p,
-    .streamlit-expanderHeader span {
-        color: #ffffff !important;
-    }
-
-    /* Corrección directa para el texto:
-       📋 Ver Datos Detallados (Histórico y Proyección)
-       (cubre cualquier caso donde esté dentro de markdown o expander) */
-    .ver-detallado, .ver-detallado * {
-        color: #ffffff !important;
-    }
-}
     </style>
 """, unsafe_allow_html=True)
 
@@ -1797,46 +1764,28 @@ if not df_proj_sel.empty and len(escenarios_sel) > 0:
 # TABLA DE DATOS DETALLADOS
 # ==============================
 st.markdown("---")
-
-with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)", expanded=False):
-     # Texto corregido para modo oscuro usando la clase .ver-detallado
-    st.markdown(
-        '<p class="ver-detallado">📋 Ver Datos Detallados (Histórico y Proyección)</p>',
-        unsafe_allow_html=True
-    )
-
-    # ==============================
-    # PROCESAMIENTO Y PRESENTACIÓN DE DATOS
-    # ==============================
-
-    df_hist_display = df_hist_sel.rename(columns={
-        # (tu mapeo real de columnas va aquí)
-    })
-
-    df_proj_display = df_proj_sel.pivot_table(
-        index="fecha",
-        aggfunc="sum"
-    )
-
-    df_final_display = pd.merge(
-        df_hist_display,
-        df_proj_display,
-        on="fecha",
-        how="outer"
-    )
-
-    df_final_display = df_final_display.sort_values("fecha")
-
-    # Copia para descarga
+with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)"):
+    df_hist_display = df_hist_sel.rename(columns={'Ejecución': 'Histórico'})[['Fecha', 'Indicador', 'Histórico', 'Fuente']]
+    df_proj_display = df_proj_sel.pivot_table(index='Fecha', columns='Escenario', values='Proyección').reset_index()
+    df_final_display = pd.merge(df_hist_display, df_proj_display, on='Fecha', how='outer')
+    df_final_display = df_final_display.sort_values(by='Fecha').reset_index(drop=True)
+    
     df_download = df_final_display.copy()
 
-    # Formateo de columnas numéricas
     for col in df_final_display.columns:
-        if df_final_display[col].dtype in [np.float64, np.int64, float, int]:
-            df_final_display[col] = df_final_display[col].round(2)
-
-    # Asegurar formato de fecha
-    df_final_display["Fecha"] = df_final_display["fecha"].dt.strftime("%Y-%m-%d")
-
-    # Preparar CSV
+        if df_final_display[col].dtype in [np.float64, np.int64]:
+            df_final_display[col] = df_final_display[col].apply(lambda x: format_number(x, decimal_places) if pd.notna(x) else '-')
+    
+    df_final_display['Fecha'] = df_final_display['Fecha'].dt.strftime('%Y-%m-%d')
+    
     csv_file = convert_df_to_csv(df_download)
+    
+    st.download_button(
+        label="📥 Descargar Información Detallada (CSV)",
+        data=csv_file,
+        file_name=f'{indicador_sel}_{modelo_sel}_Proyecciones.csv',
+        mime='text/csv',
+        key='download_csv_button'
+    )
+
+    st.dataframe(df_final_display, use_container_width=True, hide_index=True)
