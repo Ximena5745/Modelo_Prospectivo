@@ -639,6 +639,39 @@ st.markdown("""
                 color: white !important;
             }
         }
+        /* ==================== ACCESIBILIDAD UNIVERSAL: TEXTO SIEMPRE VISIBLE ==================== */
+@media (prefers-color-scheme: dark) {
+
+    /* Forzar texto claro en cualquier componente marcado por Streamlit */
+    .stMarkdown, .streamlit-expanderHeader, .streamlit-expanderContent,
+    .stButton > button, [data-testid="stDownloadButton"] > button,
+    .st-expanderHeader, .st-expanderContent, .stLinkButton, a, p, span {
+        color: #ffffff !important;
+    }
+
+    /* Ajuste de fondos para evitar texto oscuro sobre fondo oscuro */
+    .streamlit-expanderHeader {
+        background-color: #1f2937 !important;
+    }
+
+    .streamlit-expanderContent {
+        background-color: #111827 !important;
+    }
+
+    /* Forzar contraste del texto dentro del header del expander */
+    .streamlit-expanderHeader div,
+    .streamlit-expanderHeader p,
+    .streamlit-expanderHeader span {
+        color: #ffffff !important;
+    }
+
+    /* Corrección directa para el texto:
+       📋 Ver Datos Detallados (Histórico y Proyección)
+       (cubre cualquier caso donde esté dentro de markdown o expander) */
+    .ver-detallado, .ver-detallado * {
+        color: #ffffff !important;
+    }
+}
     </style>
 """, unsafe_allow_html=True)
 
@@ -1789,3 +1822,5 @@ with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)"):
     )
 
     st.dataframe(df_final_display, use_container_width=True, hide_index=True)
+
+    
