@@ -211,7 +211,7 @@ LOGO_PATH = BASE_DIR / "Wallpaper-POLI.jpg"
 logo_base64 = get_base64_image(LOGO_PATH) if LOGO_PATH.exists() else None
 
 # ==============================
-# ESTILOS CSS MEJORADOS
+# ESTILOS CSS MEJORADOS CON SOPORTE MODO OSCURO
 # ==============================
 st.markdown("""
     <style>
@@ -222,6 +222,7 @@ st.markdown("""
             font-family: 'Poppins', sans-serif;
         }
         
+        /* 🔥 MODO CLARO */
         .main { 
             background-color: #f0f4f8; 
             color: #1e293b; 
@@ -234,6 +235,23 @@ st.markdown("""
         .main .block-container { 
             padding: 2rem 3rem; 
             max-width: 1800px; 
+        }
+        
+        /* 🔥 MODO OSCURO - AJUSTES GLOBALES */
+        @media (prefers-color-scheme: dark) {
+            .main { 
+                background-color: #0f172a !important; 
+                color: #e2e8f0 !important; 
+            }
+            
+            .stApp { 
+                background-color: #0f172a !important; 
+            }
+            
+            /* Forzar texto visible en modo oscuro */
+            .stMarkdown, .stMarkdown p, .stMarkdown div, .stMarkdown span {
+                color: #e2e8f0 !important;
+            }
         }
         
         /* ==================== TIPOGRAFÍA ==================== */
@@ -261,22 +279,37 @@ st.markdown("""
             margin: 1.5rem 0 0.75rem 0; 
         }
         
+        /* 🔥 MODO OSCURO - TIPOGRAFÍA */
+        @media (prefers-color-scheme: dark) {
+            h1 { 
+                color: #93c5fd !important; 
+            }
+            
+            h2 { 
+                color: #60a5fa !important; 
+                border-bottom-color: #3b82f6 !important;
+            }
+            
+            h3 { 
+                color: #60a5fa !important; 
+            }
+        }
+        
         /* ==================== SIDEBAR ==================== */
         [data-testid="stSidebar"] { 
             background: linear-gradient(180deg, #1e3a5f 0%, #2c5f8d 50%, #3d7ab8 100%);
             padding: 1.5rem 1rem;
-            overflow-y: auto !important;  /* 🔥 PERMITIR SCROLL VISIBLE */
-            max-height: 100vh !important;  /* 🔥 ALTURA MÁXIMA DE VIEWPORT */
+            overflow-y: auto !important;
+            max-height: 100vh !important;
         }
         
-        /* 🔥 AJUSTAR CONTENEDOR INTERNO DEL SIDEBAR */
         [data-testid="stSidebar"] > div:first-child {
             overflow-y: auto !important;
             max-height: calc(100vh - 2rem) !important;
-            padding-bottom: 2rem !important;  /* 🔥 ESPACIO AL FINAL */
+            padding-bottom: 2rem !important;
         }
         
-        /* 🔥 SCROLLBAR PERSONALIZADA PARA SIDEBAR */
+        /* Scrollbar personalizada */
         [data-testid="stSidebar"]::-webkit-scrollbar,
         [data-testid="stSidebar"] > div:first-child::-webkit-scrollbar {
             width: 8px;
@@ -348,14 +381,14 @@ st.markdown("""
         
         /* ==================== DROPDOWNS / SELECTBOX ==================== */
         .stSelectbox {
-            margin-bottom: 0.8rem;  /* 🔥 REDUCIDO de 1.2rem a 0.8rem */
+            margin-bottom: 0.8rem;
         }
         
         .stSelectbox label {
             color: white !important;
             font-weight: 600 !important;
-            font-size: 0.9rem !important;  /* 🔥 REDUCIDO de 0.95rem */
-            margin-bottom: 0.4rem !important;  /* 🔥 REDUCIDO de 0.5rem */
+            font-size: 0.9rem !important;
+            margin-bottom: 0.4rem !important;
             display: block !important;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
@@ -389,7 +422,7 @@ st.markdown("""
             box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3) !important;
         }
         
-        /* Dropdown expandido - MENÚ DE OPCIONES */
+        /* Dropdown expandido */
         [data-baseweb="popover"] {
             background-color: #ffffff !important;
             border: 2px solid #cbd5e0 !important;
@@ -428,16 +461,15 @@ st.markdown("""
         
         /* ==================== CHECKBOXES MEJORADOS ==================== */
         .stCheckbox {
-            margin-bottom: 0.5rem;  /* 🔥 REDUCIDO de 0.8rem a 0.5rem */
+            margin-bottom: 0.5rem;
         }
         
         .stCheckbox label {
             color: white !important;
             font-weight: 500 !important;
-            font-size: 0.85rem !important;  /* 🔥 REDUCIDO de 0.9rem */
+            font-size: 0.85rem !important;
         }
         
-        /* Eliminar TODOS los fondos de los spans y contenedores */
         .stCheckbox label span,
         .stCheckbox label div,
         .stCheckbox span,
@@ -449,7 +481,7 @@ st.markdown("""
             padding: 0 !important;
         }
         
-        /* Caja del checkbox NO seleccionado - vacía/transparente con borde blanco */
+        /* Caja del checkbox NO seleccionado */
         .stCheckbox > label > div[data-testid="stCheckbox"],
         .stCheckbox > label > div > div[role="checkbox"] {
             background-color: transparent !important;
@@ -458,7 +490,7 @@ st.markdown("""
             border-radius: 4px !important;
         }
         
-        /* Checkbox SELECCIONADO - fondo azul claro */
+        /* Checkbox SELECCIONADO */
         .stCheckbox input:checked ~ div[data-testid="stCheckbox"],
         .stCheckbox input:checked ~ div > div[role="checkbox"] {
             background-color: #5DADE2 !important;
@@ -466,14 +498,12 @@ st.markdown("""
             border: 2px solid #3498db !important;
         }
         
-        /* Asegurar que el ícono de check sea visible cuando está seleccionado */
         .stCheckbox input:checked ~ div svg,
         .stCheckbox input:checked ~ div > div svg {
             fill: white !important;
             color: white !important;
         }
         
-        /* Ocultar check cuando NO está seleccionado */
         .stCheckbox input:not(:checked) ~ div svg,
         .stCheckbox input:not(:checked) ~ div > div svg {
             display: none !important;
@@ -527,6 +557,26 @@ st.markdown("""
             line-height: 1; 
         }
         
+        /* 🔥 MODO OSCURO - MÉTRICAS */
+        @media (prefers-color-scheme: dark) {
+            .metric-card { 
+                background: #1e293b !important; 
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important; 
+            }
+            
+            .metric-card:hover { 
+                box-shadow: 0 8px 24px rgba(0,0,0,0.4) !important; 
+            }
+            
+            .metric-label { 
+                color: #94a3b8 !important; 
+            }
+            
+            .metric-value { 
+                color: #60a5fa !important; 
+            }
+        }
+        
         /* ==================== GRÁFICOS ==================== */
         .stPlotlyChart { 
             border-radius: 12px; 
@@ -535,6 +585,14 @@ st.markdown("""
             margin: 1.5rem 0;
             background: white;
             padding: 1rem;
+        }
+        
+        /* 🔥 MODO OSCURO - GRÁFICOS */
+        @media (prefers-color-scheme: dark) {
+            .stPlotlyChart { 
+                background: #1e293b !important;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important; 
+            }
         }
         
         /* ==================== EXPANDER ===================== */
@@ -558,24 +616,20 @@ st.markdown("""
             transform: translateY(-1px);
         }
         
-        /* Estilo para el texto del expander */
         .streamlit-expanderHeader .st-emotion-cache-1ck1k16 {
             color: #1e3a5f !important;
             font-weight: 700 !important;
         }
         
-        /* Estilo para el ícono del expander */
         .streamlit-expanderHeader svg {
             color: #1e3a5f !important;
             stroke-width: 2.5px;
         }
         
-        /* Estilo para el contenedor del expander */
         .stExpander {
             margin: 1.5rem 0 !important;
         }
         
-        /* Estilo para el contenido del expander */
         .streamlit-expanderContent {
             background-color: #ffffff !important;
             border: 2px solid #e2e8f0 !important;
@@ -586,7 +640,7 @@ st.markdown("""
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
         }
         
-        /* Estilo para el modo oscuro */
+        /* 🔥 MODO OSCURO - EXPANDER */
         @media (prefers-color-scheme: dark) {
             .streamlit-expanderHeader {
                 background-color: #1e3a5f !important;
@@ -599,17 +653,27 @@ st.markdown("""
                 border-color: #4a90c8 !important;
             }
             
-            .streamlit-expanderHeader .st-emotion-cache-1ck1k16 {
+            .streamlit-expanderHeader .st-emotion-cache-1ck1k16,
+            /* 🔥 SELECTORES ADICIONALES PARA TEXTO DEL EXPANDER */
+            .streamlit-expanderHeader p,
+            .streamlit-expanderHeader span,
+            .streamlit-expanderHeader div {
                 color: #ffffff !important;
             }
             
             .streamlit-expanderHeader svg {
                 color: #ffffff !important;
+                fill: #ffffff !important;
             }
             
             .streamlit-expanderContent {
                 background-color: #1e293b !important;
                 border-color: #2d3748 !important;
+                color: #e2e8f0 !important;
+            }
+            
+            /* 🔥 FORZAR TEXTO VISIBLE EN CONTENIDO DEL EXPANDER */
+            .streamlit-expanderContent * {
                 color: #e2e8f0 !important;
             }
         }
@@ -620,7 +684,31 @@ st.markdown("""
             border-radius: 8px !important;
         }
         
-        /* ==================== MODO OSCURO OVERRIDE ==================== */
+        /* 🔥 MODO OSCURO - DATAFRAME */
+        @media (prefers-color-scheme: dark) {
+            .stDataFrame {
+                border-color: #3b82f6 !important;
+            }
+            
+            /* Fondo de las celdas */
+            .stDataFrame table {
+                background-color: #1e293b !important;
+            }
+            
+            /* Texto de las celdas */
+            .stDataFrame td, .stDataFrame th {
+                color: #e2e8f0 !important;
+                background-color: #1e293b !important;
+            }
+            
+            /* Headers */
+            .stDataFrame thead th {
+                background-color: #334155 !important;
+                color: #f1f5f9 !important;
+            }
+        }
+        
+        /* 🔥 MODO OSCURO - DROPDOWNS (MANTENER LEGIBLES) */
         @media (prefers-color-scheme: dark) {
             .stSelectbox > div > div,
             [data-baseweb="popover"],
@@ -998,6 +1086,17 @@ if st.session_state['mostrar_modelos']:
                     box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
                     margin: 1.5rem 0;
                 }
+                
+                /* 🔥 MODO OSCURO - MODAL DE SLIDES */
+                @media (prefers-color-scheme: dark) {
+                    .slide-container {
+                        background: #1e293b !important;
+                    }
+                    .slide-image-wrapper {
+                        background: #0f172a !important;
+                        border-color: #3b82f6 !important;
+                    }
+                }
             </style>
             """, unsafe_allow_html=True)
             
@@ -1209,33 +1308,30 @@ def calcular_config_etiquetas(num_puntos: int, tipo_visualizacion: str) -> dict:
     Returns:
         dict con: size (tamaño), show (mostrar o no), angle (ángulo), skip (cada cuántos mostrar)
     """
-    # 🔥 TAMAÑOS SIGNIFICATIVAMENTE AUMENTADOS PARA MÁXIMA VISIBILIDAD
     if tipo_visualizacion == "Semestral":
-        # Para datos semestrales - TAMAÑOS MUY GRANDES
         if num_puntos <= 8:
-            return {'size': 16, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 MUY GRANDE
+            return {'size': 16, 'show': True, 'angle': 0, 'skip': 1}
         elif num_puntos <= 12:
-            return {'size': 15, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 GRANDE
+            return {'size': 15, 'show': True, 'angle': 0, 'skip': 1}
         elif num_puntos <= 18:
-            return {'size': 14, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 GRANDE
+            return {'size': 14, 'show': True, 'angle': 0, 'skip': 1}
         elif num_puntos <= 25:
-            return {'size': 13, 'show': True, 'angle': 0, 'skip': 2}  # 🔥 MEDIANO-GRANDE
+            return {'size': 13, 'show': True, 'angle': 0, 'skip': 2}
         elif num_puntos <= 35:
-            return {'size': 12, 'show': True, 'angle': 0, 'skip': 2}  # 🔥 MEDIANO
+            return {'size': 12, 'show': True, 'angle': 0, 'skip': 2}
         else:
-            return {'size': 11, 'show': True, 'angle': 0, 'skip': 3}  # 🔥 MOSTRAR 1 de cada 3
+            return {'size': 11, 'show': True, 'angle': 0, 'skip': 3}
     else:
-        # Para datos anuales (menos puntos) - TAMAÑOS MUY GRANDES
         if num_puntos <= 5:
-            return {'size': 18, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 EXTRA GRANDE
+            return {'size': 18, 'show': True, 'angle': 0, 'skip': 1}
         elif num_puntos <= 8:
-            return {'size': 17, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 MUY GRANDE
+            return {'size': 17, 'show': True, 'angle': 0, 'skip': 1}
         elif num_puntos <= 12:
-            return {'size': 16, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 GRANDE
+            return {'size': 16, 'show': True, 'angle': 0, 'skip': 1}
         elif num_puntos <= 15:
-            return {'size': 15, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 GRANDE
+            return {'size': 15, 'show': True, 'angle': 0, 'skip': 1}
         else:
-            return {'size': 14, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 MEDIANO-GRANDE
+            return {'size': 14, 'show': True, 'angle': 0, 'skip': 1}
 
 # ==============================
 # FILTRAR DATOS
@@ -1339,12 +1435,8 @@ if df_hist_trace.empty:
             lambda x: pd.Timestamp(year=x.year, month=6, day=30)
         )
 
-# 🔥 FILTRAR DATOS DESDE 2021-S2 POR DEFECTO
-fecha_corte_vista = pd.Timestamp(year=2021, month=7, day=1)  # 2021-S2
-df_hist_trace_original = df_hist_trace.copy()
-
-# 🔥 FILTRAR DATOS DESDE 2021-S2 POR DEFECTO
-fecha_corte_vista = pd.Timestamp(year=2021, month=7, day=1)  # 2021-S2
+# Filtrar datos desde 2021-S2 por defecto
+fecha_corte_vista = pd.Timestamp(year=2021, month=7, day=1)
 df_hist_trace_original = df_hist_trace.copy()
 
 # Verificar si hay datos anteriores a 2021-S2
@@ -1354,7 +1446,7 @@ tiene_datos_antiguos = not df_hist_trace[df_hist_trace['Fecha'] < fecha_corte_vi
 if not st.session_state['mostrar_historia_completa'] and tiene_datos_antiguos:
     df_hist_trace = df_hist_trace[df_hist_trace['Fecha'] >= fecha_corte_vista].copy()
 
-# 🔥 CALCULAR CONFIGURACIÓN DE ETIQUETAS DINÁMICAMENTE
+# Calcular configuración de etiquetas dinámicamente
 num_puntos_historicos = len(df_hist_trace)
 config_etiquetas = calcular_config_etiquetas(num_puntos_historicos, tipo_visualizacion)
 
@@ -1378,25 +1470,22 @@ if not df_hist_trace.empty:
             showarrow=False, font=dict(size=10, color="#666666"), align="right"
         )
     
-    # 🔥 MOSTRAR NÚMEROS SOLO SI LA CONFIGURACIÓN LO PERMITE
+    # Mostrar números solo si la configuración lo permite
     if mostrar_numeros and config_etiquetas['show']:
-        # Filtrar puntos según 'skip' (mostrar 1 de cada N)
         skip = config_etiquetas['skip']
         indices_mostrar = list(range(0, len(df_hist_trace), skip))
         
         df_etiquetas = df_hist_trace.iloc[indices_mostrar].copy()
         text_values = df_etiquetas["Ejecución"].apply(lambda x: format_number(x, decimal_places))
         
-        # 🔥 CALCULAR OFFSET AUMENTADO (7% del rango total para mayor separación)
         y_range = df_hist_trace["Ejecución"].max() - df_hist_trace["Ejecución"].min()
-        offset_value = y_range * 0.07  # 🔥 AUMENTADO de 5% a 7% para más espacio
+        offset_value = y_range * 0.07
         
-        # 🔥 APLICAR OFFSET: sumar al valor Y para separar de la línea
         y_values_offset = df_etiquetas["Ejecución"] + offset_value
         
         fig.add_trace(go.Scatter(
             x=df_etiquetas["Fecha"], 
-            y=y_values_offset,  # 🔥 VALORES CON OFFSET AUMENTADO
+            y=y_values_offset,
             mode="text", 
             text=text_values, 
             textposition="middle center",
@@ -1404,7 +1493,7 @@ if not df_hist_trace.empty:
                 size=config_etiquetas['size'], 
                 color='#D4A017', 
                 family="Poppins",
-                weight=800  # 🔥 EXTRA BOLD para máxima visibilidad
+                weight=800
             ),
             showlegend=False, 
             hoverinfo='skip', 
@@ -1439,49 +1528,42 @@ for escenario in escenarios_sel:
                 hovertemplate=f'%{{x}}<br>%{{y:,.{int(decimal_places)}f}}<extra></extra>'
             ))
             
-            # 🔥 MOSTRAR NÚMEROS DE PROYECCIÓN SOLO SI LA CONFIGURACIÓN LO PERMITE
+            # Mostrar números de proyección solo si la configuración lo permite
             if mostrar_numeros and config_etiquetas['show']:
-                # Calcular configuración para proyecciones (usualmente menos puntos)
                 num_puntos_proy = len(df_plot)
                 config_proy = calcular_config_etiquetas(num_puntos_proy, tipo_visualizacion)
                 
-                # Filtrar puntos según 'skip'
                 skip = config_proy['skip']
                 indices_mostrar = list(range(0, len(df_plot), skip))
                 df_etiquetas_proy = df_plot.iloc[indices_mostrar].copy()
                 
                 text_values = df_etiquetas_proy["Proyección"].apply(lambda x: format_number(x, decimal_places))
                 
-                # 🔥 CALCULAR OFFSET DIFERENCIADO SEGÚN ESCENARIO Y SENTIDO DEL INDICADOR
                 if not df_plot.empty:
                     y_range_proy = df_plot["Proyección"].max() - df_plot["Proyección"].min()
                     
-                    # 🔥 AJUSTAR SEGÚN SENTIDO DEL INDICADOR (OFFSETS AUMENTADOS)
                     if not indicador_negativo:
-                        # SENTIDO POSITIVO: Mayor valor = Mejor (Optimista arriba)
                         if escenario == "Optimista":
-                            offset_proy = y_range_proy * 0.10  # 🔥 10% arriba (aumentado de 8%)
+                            offset_proy = y_range_proy * 0.10
                         elif escenario == "Base":
-                            offset_proy = y_range_proy * 0.07  # 🔥 7% arriba (aumentado de 5%)
-                        else:  # Pesimista
-                            offset_proy = y_range_proy * 0.04  # 🔥 4% arriba (aumentado de 2%)
+                            offset_proy = y_range_proy * 0.07
+                        else:
+                            offset_proy = y_range_proy * 0.04
                     else:
-                        # SENTIDO NEGATIVO: Menor valor = Mejor (Pesimista arriba, Optimista abajo)
                         if escenario == "Pesimista":
-                            offset_proy = y_range_proy * 0.04  # 🔥 4% arriba
+                            offset_proy = y_range_proy * 0.04
                         elif escenario == "Base":
-                            offset_proy = y_range_proy * 0.07  # 🔥 7% arriba
-                        else:  # Optimista
-                            offset_proy = y_range_proy * 0.10  # 🔥 10% arriba
+                            offset_proy = y_range_proy * 0.07
+                        else:
+                            offset_proy = y_range_proy * 0.10
                 else:
                     offset_proy = 0
                 
-                # 🔥 APLICAR OFFSET: sumar al valor Y
                 y_values_offset_proy = df_etiquetas_proy["Proyección"] + offset_proy
                 
                 fig.add_trace(go.Scatter(
                     x=df_etiquetas_proy["Fecha"], 
-                    y=y_values_offset_proy,  # 🔥 VALORES CON OFFSET SEGÚN SENTIDO
+                    y=y_values_offset_proy,
                     mode="text", 
                     text=text_values, 
                     textposition="middle center",
@@ -1489,7 +1571,7 @@ for escenario in escenarios_sel:
                         size=config_proy['size'], 
                         color=color, 
                         family="Poppins",
-                        weight=800  # 🔥 EXTRA BOLD
+                        weight=800
                     ),
                     showlegend=False, 
                     hoverinfo='skip', 
@@ -1510,16 +1592,16 @@ if mostrar_linea_divisoria:
 # Configurar ejes
 tickvals = []
 ticktext = []
-hist_years = sorted(df_hist_trace['Fecha'].dt.year.unique()) if not df_hist_trace.empty else []  # 🔥 Usar df_hist_trace filtrado
+hist_years = sorted(df_hist_trace['Fecha'].dt.year.unique()) if not df_hist_trace.empty else []
 proj_years = sorted(df_proj_sel['Fecha'].dt.year.unique()) if not df_proj_sel.empty else []
 all_years = sorted(set(hist_years + proj_years))
 
 if all_years:
-    min_year = min(all_years) if all_years else 2021  # 🔥 Usar el mínimo real de los datos filtrados
+    min_year = min(all_years) if all_years else 2021
     max_year = max(max(all_years), 2030)
     all_years = list(range(min_year, max_year + 1))
 else:
-    all_years = list(range(2021, 2031))  # 🔥 Default desde 2021
+    all_years = list(range(2021, 2031))
 
 if tipo_visualizacion == "Semestral":
     for year in all_years:
@@ -1547,43 +1629,43 @@ fig.update_layout(
     template="plotly_white",
     plot_bgcolor='#ffffff',
     paper_bgcolor='#ffffff',
-    height=700,  # 🔥 AUMENTADO de 600 a 700px para optimizar espacio
-    font=dict(family="Poppins", size=12, color="#1e293b", weight=600),  # 🔥 Fuente base aumentada a 12px y bold
+    height=700,
+    font=dict(family="Poppins", size=12, color="#1e293b", weight=600),
     title=dict(
         text=f"<b>{indicador_sel}</b>",
         x=0.5, y=0.97, xanchor='center', yanchor='top',
-        font=dict(size=20, color="#1e3a5f", family="Poppins", weight="bold")  # 🔥 Título aumentado a 20px
+        font=dict(size=20, color="#1e3a5f", family="Poppins", weight="bold")
     ),
     annotations=[
         dict(
             text="Evolución Histórica y Proyección",
             x=0.02, y=0.92, xref="paper", yref="paper",
             showarrow=False,
-            font=dict(size=14, color="#4a5568", family="Poppins", weight=600)  # 🔥 Subtítulo a 14px
+            font=dict(size=14, color="#4a5568", family="Poppins", weight=600)
         )
     ],
     hovermode='x unified',
     legend=dict(
         orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5,
         bgcolor="rgba(255,255,255,0.95)", bordercolor="#cbd5e0", borderwidth=1.5,
-        font=dict(size=13, family="Poppins", color="#1e293b", weight=600),  # 🔥 Leyenda a 13px
+        font=dict(size=13, family="Poppins", color="#1e293b", weight=600),
         itemsizing='constant', itemclick=False, itemdoubleclick=False
     ),
     xaxis=dict(
         title=dict(
             text="<b>PERIODO</b>",
-            font=dict(size=15, weight=700, family="Poppins", color="#1e293b"),  # 🔥 Aumentado a 15px
-            standoff=10  # 🔥 Mayor separación
+            font=dict(size=15, weight=700, family="Poppins", color="#1e293b"),
+            standoff=10
         ),
         showgrid=True, gridcolor='rgba(0,0,0,0.05)', gridwidth=1,
-        tickmode='array',  # 🔥 FORZAR uso de tickvals/ticktext personalizados
+        tickmode='array',
         tickvals=tickvals, 
         ticktext=ticktext, 
-        tickfont=dict(size=12, family="Poppins", color="#1e293b", weight=600),  # 🔥 AUMENTADO a 12px
+        tickfont=dict(size=12, family="Poppins", color="#1e293b", weight=600),
         linecolor='#cbd5e0', linewidth=2, mirror=True, showline=True, 
         automargin=True, 
-        tickangle=-45,  # 🔥 DIAGONAL para mejor legibilidad con muchas etiquetas
-        title_standoff=15, fixedrange=False,  # 🔥 HABILITAR ZOOM (fixedrange=False)
+        tickangle=-45,
+        title_standoff=15, fixedrange=False,
         ticklabeloverflow='allow', 
         ticklabelposition='outside',
         range=[
@@ -1594,61 +1676,59 @@ fig.update_layout(
     yaxis=dict(
         title=dict(
             text=f"<b>{indicador_sel.upper()}</b>",
-            font=dict(size=15, weight=700, family="Poppins", color="#1e293b"),  # 🔥 Aumentado a 15px
-            standoff=12  # 🔥 Aumentado de 10 a 12
+            font=dict(size=15, weight=700, family="Poppins", color="#1e293b"),
+            standoff=12
         ),
         showgrid=True, gridcolor='rgba(0,0,0,0.05)', gridwidth=1,
         tickformat=f",.{int(decimal_places)}f",
-        tickfont=dict(size=12, family="Poppins", color="#1e293b", weight=600),  # 🔥 Aumentado a 12px
-        title_standoff=18, showline=True, linecolor='#cbd5e0',  # 🔥 Mayor separación
-        linewidth=2, mirror=True, zeroline=False, automargin=True, fixedrange=False  # 🔥 HABILITAR ZOOM
+        tickfont=dict(size=12, family="Poppins", color="#1e293b", weight=600),
+        title_standoff=18, showline=True, linecolor='#cbd5e0',
+        linewidth=2, mirror=True, zeroline=False, automargin=True, fixedrange=False
     ),
     hoverlabel=dict(
-        bgcolor="white", font_size=12, font_family="Poppins",  # 🔥 Hover aumentado a 12px
+        bgcolor="white", font_size=12, font_family="Poppins",
         bordercolor="#cbd5e0", namelength=-1, align="left"
     ),
-    margin=dict(t=80, b=90, r=40, l=100, pad=8),  # 🔥 MÁRGENES OPTIMIZADOS para mayor espacio
+    margin=dict(t=80, b=90, r=40, l=100, pad=8),
     shapes=shapes,
-    # 🔥 CONFIGURACIÓN DE HERRAMIENTAS DE LA GRÁFICA (MODEBAR)
     modebar=dict(
-        orientation='h',  # 🔥 HORIZONTAL (parte superior derecha como original)
+        orientation='h',
         bgcolor='rgba(255,255,255,0.9)',
         color='#1e3a5f',
         activecolor='#2ecc71'
     ),
-    # 🔥 MODO PAN (arrastrar) POR DEFECTO - NO ZOOM
-    dragmode='pan',  # Pan en lugar de zoom
+    dragmode='pan',
 )
 
 st.plotly_chart(fig, use_container_width=True, config={
-    'displayModeBar': True,  # 🔥 MOSTRAR barra de herramientas SIEMPRE
-    'displaylogo': False,  # Ocultar logo de Plotly
+    'displayModeBar': True,
+    'displaylogo': False,
     'modeBarButtonsToAdd': [
-        'drawline',          # ✏️ Dibujar líneas
-        'drawopenpath',      # ✏️ Dibujar líneas libres
-        'drawclosedpath',    # ✏️ Dibujar formas cerradas
-        'drawcircle',        # ⭕ Dibujar círculos
-        'drawrect',          # ▭ Dibujar rectángulos
-        'eraseshape',        # 🗑️ Borrar formas
+        'drawline',
+        'drawopenpath',
+        'drawclosedpath',
+        'drawcircle',
+        'drawrect',
+        'eraseshape',
     ],
     'modeBarButtonsToRemove': [
-        'select2d',          # Remover selección 2D
-        'lasso2d'            # Remover lasso
+        'select2d',
+        'lasso2d'
     ],
     'toImageButtonOptions': {
-        'format': 'png',     # Formato de descarga
+        'format': 'png',
         'filename': f'{indicador_sel}_{modelo_sel}',
-        'height': 1000,      # 🔥 Mayor resolución
-        'width': 1800,       # 🔥 Mayor resolución
-        'scale': 3           # 🔥 Calidad ultra alta (3x)
+        'height': 1000,
+        'width': 1800,
+        'scale': 3
     },
-    'scrollZoom': True,      # 🔥 Zoom con scroll del mouse
-    'doubleClick': 'reset',  # Doble clic para resetear
-    'showTips': True,        # Mostrar tips
-    'responsive': True,      # Responsive
+    'scrollZoom': True,
+    'doubleClick': 'reset',
+    'showTips': True,
+    'responsive': True,
 })
 
-# 🔥 MOSTRAR BOTÓN "VER HISTORIA COMPLETA" DESPUÉS DE LA GRÁFICA
+# Mostrar botón "Ver Historia Completa" después de la gráfica
 if tiene_datos_antiguos:
     st.markdown("<br>", unsafe_allow_html=True)
     if not st.session_state['mostrar_historia_completa']:
@@ -1656,35 +1736,6 @@ if tiene_datos_antiguos:
         <style>
             .btn-ver-mas button {
                 background: linear-gradient(135deg, #3498db 0%, #2980b9 100%) !important;
-                color: white !important;
-                font-weight: 600 !important;
-                border: none !important;
-                padding: 0.6rem 1.2rem !important;
-                border-radius: 8px !important;
-                box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3) !important;
-                transition: all 0.3s ease !important;
-                font-size: 0.95rem !important;
-            }
-            .btn-ver-mas button:hover {
-                background: linear-gradient(135deg, #2980b9 0%, #21618c 100%) !important;
-                transform: translateY(-1px) !important;
-                box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4) !important;
-            }
-        </style>
-        """, unsafe_allow_html=True)
-        
-        col_btn1, col_btn2, col_btn3 = st.columns([1.5, 1, 3.5])
-        with col_btn1:
-            st.markdown('<div class="btn-ver-mas">', unsafe_allow_html=True)
-            if st.button("📅 Ver historia completa", key="btn_ver_mas_below", use_container_width=True):
-                st.session_state['mostrar_historia_completa'] = True
-                st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
-    else:
-        st.markdown("""
-        <style>
-            .btn-ver-menos button {
-                background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%) !important;
                 color: white !important;
                 font-weight: 600 !important;
                 border: none !important;
@@ -1788,4 +1839,33 @@ with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)"):
         key='download_csv_button'
     )
 
-    st.dataframe(df_final_display, use_container_width=True, hide_index=True)
+    st.dataframe(df_final_display, use_container_width=True, hide_index=True) !important;
+                border-radius: 8px !important;
+                box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3) !important;
+                transition: all 0.3s ease !important;
+                font-size: 0.95rem !important;
+            }
+            .btn-ver-mas button:hover {
+                background: linear-gradient(135deg, #2980b9 0%, #21618c 100%) !important;
+                transform: translateY(-1px) !important;
+                box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4) !important;
+            }
+        </style>
+        """, unsafe_allow_html=True)
+        
+        col_btn1, col_btn2, col_btn3 = st.columns([1.5, 1, 3.5])
+        with col_btn1:
+            st.markdown('<div class="btn-ver-mas">', unsafe_allow_html=True)
+            if st.button("📅 Ver historia completa", key="btn_ver_mas_below", use_container_width=True):
+                st.session_state['mostrar_historia_completa'] = True
+                st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
+    else:
+        st.markdown("""
+        <style>
+            .btn-ver-menos button {
+                background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%) !important;
+                color: white !important;
+                font-weight: 600 !important;
+                border: none !important;
+                padding: 0.6rem 1.2rem
