@@ -1794,24 +1794,888 @@ if not df_proj_sel.empty and len(escenarios_sel) > 0:
             )
 
 # ==============================
+# ==============================
 # TABLA DE DATOS DETALLADOS
 # ==============================
 st.markdown("---")
-with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)"):
-    df_hist_display = df_hist_sel.rename(columns={'Ejecución': 'Histórico'})[['Fecha', 'Indicador', 'Histórico', 'Fuente']]
-    df_proj_display = df_proj_sel.pivot_table(index='Fecha', columns='Escenario', values='Proyección').reset_index()
-    df_final_display = pd.merge(df_hist_display, df_proj_display, on='Fecha', how='outer')
-    df_final_display = df_final_display.sort_values(by='Fecha').reset_index(drop=True)
-    
+
+with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)", expanded=False):
+
+    # Texto corregido para modo oscuro usando la clase .ver-detallado
+    st.markdown(
+        '<p class="ver-detallado">📋 Ver Datos Detallados (Histórico y Proyección)</p>',
+        unsafe_allow_html=True
+    )
+
+    # ==============================
+    # PROCESAMIENTO Y PRESENTACIÓN DE DATOS
+    # ==============================
+
+    df_hist_display = df_hist_sel.rename(columns={
+        # (tu mapeo real de columnas va aquí)
+    })
+
+    df_proj_display = df_proj_sel.pivot_table(
+        index="fecha",
+        aggfunc="sum"
+    )
+
+    df_final_display = pd.merge(
+        df_hist_display,
+        df_proj_display,
+        on="fecha",
+        how="outer"
+    )
+
+    df_final_display = df_final_display.sort_values("fecha")
+
+    # Copia para descarga
     df_download = df_final_display.copy()
 
+    # Formateo de columnas numéricas
     for col in df_final_display.columns:
-        if df_final_display[col].dtype in [np.float64, np.int64]:
-            df_final_display[col] = df_final_display[col].apply(lambda x: format_number(x, decimal_places) if pd.notna(x) else '-')
-    
-    df_final_display['Fecha'] = df_final_display['Fecha'].dt.strftime('%Y-%m-%d')
-    
+        if df_final_display[col].dtype in [np.float64, np.int64, float, int]:
+            df_final_display[col] = df_final_display[col].round(2)
+
+    # Asegurar formato de fecha
+    df_final_display["Fecha"] = df_final_display["fecha"].dt.strftime("%Y-%m-%d")
+
+    # Preparar CSV
     csv_file = convert_df_to_csv(df_download)
+
+# ==============================
+# TABLA DE DATOS DETALLADOS
+# ==============================
+st.markdown("---")
+
+with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)", expanded=False):
+
+    # Texto corregido para modo oscuro usando la clase .ver-detallado
+    st.markdown(
+        '<p class="ver-detallado">📋 Ver Datos Detallados (Histórico y Proyección)</p>',
+        unsafe_allow_html=True
+    )
+
+    # ==============================
+    # PROCESAMIENTO Y PRESENTACIÓN DE DATOS
+    # ==============================
+
+    df_hist_display = df_hist_sel.rename(columns={
+        # (tu mapeo real de columnas va aquí)
+    })
+
+    df_proj_display = df_proj_sel.pivot_table(
+        index="fecha",
+        aggfunc="sum"
+    )
+
+    df_final_display = pd.merge(
+        df_hist_display,
+        df_proj_display,
+        on="fecha",
+        how="outer"
+    )
+
+    df_final_display = df_final_display.sort_values("fecha")
+
+    # Copia para descarga
+    df_download = df_final_display.copy()
+
+    # Formateo de columnas numéricas
+    for col in df_final_display.columns:
+        if df_final_display[col].dtype in [np.float64, np.int64, float, int]:
+            df_final_display[col] = df_final_display[col].round(2)
+
+    # Asegurar formato de fecha
+    df_final_display["Fecha"] = df_final_display["fecha"].dt.strftime("%Y-%m-%d")
+
+    # Preparar CSV
+    csv_file = convert_df_to_csv(df_download)
+
+# ==============================
+# TABLA DE DATOS DETALLADOS
+# ==============================
+st.markdown("---")
+
+with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)", expanded=False):
+
+    # Texto corregido para modo oscuro usando la clase .ver-detallado
+    st.markdown(
+        '<p class="ver-detallado">📋 Ver Datos Detallados (Histórico y Proyección)</p>',
+        unsafe_allow_html=True
+    )
+
+    # ==============================
+    # PROCESAMIENTO Y PRESENTACIÓN DE DATOS
+    # ==============================
+
+    df_hist_display = df_hist_sel.rename(columns={
+        # (tu mapeo real de columnas va aquí)
+    })
+
+    df_proj_display = df_proj_sel.pivot_table(
+        index="fecha",
+        aggfunc="sum"
+    )
+
+    df_final_display = pd.merge(
+        df_hist_display,
+        df_proj_display,
+        on="fecha",
+        how="outer"
+    )
+
+    df_final_display = df_final_display.sort_values("fecha")
+
+    # Copia para descarga
+    df_download = df_final_display.copy()
+
+    # Formateo de columnas numéricas
+    for col in df_final_display.columns:
+        if df_final_display[col].dtype in [np.float64, np.int64, float, int]:
+            df_final_display[col] = df_final_display[col].round(2)
+
+    # Asegurar formato de fecha
+    df_final_display["Fecha"] = df_final_display["fecha"].dt.strftime("%Y-%m-%d")
+
+    # Preparar CSV
+    csv_file = convert_df_to_csv(df_download)
+
+# ==============================
+# TABLA DE DATOS DETALLADOS
+# ==============================
+st.markdown("---")
+
+with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)", expanded=False):
+
+    # Texto corregido para modo oscuro usando la clase .ver-detallado
+    st.markdown(
+        '<p class="ver-detallado">📋 Ver Datos Detallados (Histórico y Proyección)</p>',
+        unsafe_allow_html=True
+    )
+
+    # ==============================
+    # PROCESAMIENTO Y PRESENTACIÓN DE DATOS
+    # ==============================
+
+    df_hist_display = df_hist_sel.rename(columns={
+        # (tu mapeo real de columnas va aquí)
+    })
+
+    df_proj_display = df_proj_sel.pivot_table(
+        index="fecha",
+        aggfunc="sum"
+    )
+
+    df_final_display = pd.merge(
+        df_hist_display,
+        df_proj_display,
+        on="fecha",
+        how="outer"
+    )
+
+    df_final_display = df_final_display.sort_values("fecha")
+
+    # Copia para descarga
+    df_download = df_final_display.copy()
+
+    # Formateo de columnas numéricas
+    for col in df_final_display.columns:
+        if df_final_display[col].dtype in [np.float64, np.int64, float, int]:
+            df_final_display[col] = df_final_display[col].round(2)
+
+    # Asegurar formato de fecha
+    df_final_display["Fecha"] = df_final_display["fecha"].dt.strftime("%Y-%m-%d")
+
+    # Preparar CSV
+    csv_file = convert_df_to_csv(df_download)
+stórico y Proyección)"):
+# ==============================
+# TABLA DE DATOS DETALLADOS
+# ==============================
+st.markdown("---")
+
+with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)", expanded=False):
+
+    # Texto corregido para modo oscuro usando la clase .ver-detallado
+    st.markdown(
+        '<p class="ver-detallado">📋 Ver Datos Detallados (Histórico y Proyección)</p>',
+        unsafe_allow_html=True
+    )
+
+    # ==============================
+    # PROCESAMIENTO Y PRESENTACIÓN DE DATOS
+    # ==============================
+
+    df_hist_display = df_hist_sel.rename(columns={
+        # (tu mapeo real de columnas va aquí)
+    })
+
+    df_proj_display = df_proj_sel.pivot_table(
+        index="fecha",
+        aggfunc="sum"
+    )
+
+    df_final_display = pd.merge(
+        df_hist_display,
+        df_proj_display,
+        on="fecha",
+        how="outer"
+    )
+
+    df_final_display = df_final_display.sort_values("fecha")
+
+    # Copia para descarga
+    df_download = df_final_display.copy()
+
+    # Formateo de columnas numéricas
+    for col in df_final_display.columns:
+        if df_final_display[col].dtype in [np.float64, np.int64, float, int]:
+            df_final_display[col] = df_final_display[col].round(2)
+
+    # Asegurar formato de fecha
+    df_final_display["Fecha"] = df_final_display["fecha"].dt.strftime("%Y-%m-%d")
+
+    # Preparar CSV
+    csv_file = convert_df_to_csv(df_download)
+mns={'Ejecución': 'Histórico'})[['Fecha', 'Indicador', 'Histórico', 'Fuente']]
+# ==============================
+# TABLA DE DATOS DETALLADOS
+# ==============================
+st.markdown("---")
+
+with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)", expanded=False):
+
+    # Texto corregido para modo oscuro usando la clase .ver-detallado
+    st.markdown(
+        '<p class="ver-detallado">📋 Ver Datos Detallados (Histórico y Proyección)</p>',
+        unsafe_allow_html=True
+    )
+
+    # ==============================
+    # PROCESAMIENTO Y PRESENTACIÓN DE DATOS
+    # ==============================
+
+    df_hist_display = df_hist_sel.rename(columns={
+        # (tu mapeo real de columnas va aquí)
+    })
+
+    df_proj_display = df_proj_sel.pivot_table(
+        index="fecha",
+        aggfunc="sum"
+    )
+
+    df_final_display = pd.merge(
+        df_hist_display,
+        df_proj_display,
+        on="fecha",
+        how="outer"
+    )
+
+    df_final_display = df_final_display.sort_values("fecha")
+
+    # Copia para descarga
+    df_download = df_final_display.copy()
+
+    # Formateo de columnas numéricas
+    for col in df_final_display.columns:
+        if df_final_display[col].dtype in [np.float64, np.int64, float, int]:
+            df_final_display[col] = df_final_display[col].round(2)
+
+    # Asegurar formato de fecha
+    df_final_display["Fecha"] = df_final_display["fecha"].dt.strftime("%Y-%m-%d")
+
+    # Preparar CSV
+    csv_file = convert_df_to_csv(df_download)
+(index='Fecha', columns='Escenario', values='Proyección').reset_index()
+# ==============================
+# TABLA DE DATOS DETALLADOS
+# ==============================
+st.markdown("---")
+
+with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)", expanded=False):
+
+    # Texto corregido para modo oscuro usando la clase .ver-detallado
+    st.markdown(
+        '<p class="ver-detallado">📋 Ver Datos Detallados (Histórico y Proyección)</p>',
+        unsafe_allow_html=True
+    )
+
+    # ==============================
+    # PROCESAMIENTO Y PRESENTACIÓN DE DATOS
+    # ==============================
+
+    df_hist_display = df_hist_sel.rename(columns={
+        # (tu mapeo real de columnas va aquí)
+    })
+
+    df_proj_display = df_proj_sel.pivot_table(
+        index="fecha",
+        aggfunc="sum"
+    )
+
+    df_final_display = pd.merge(
+        df_hist_display,
+        df_proj_display,
+        on="fecha",
+        how="outer"
+    )
+
+    df_final_display = df_final_display.sort_values("fecha")
+
+    # Copia para descarga
+    df_download = df_final_display.copy()
+
+    # Formateo de columnas numéricas
+    for col in df_final_display.columns:
+        if df_final_display[col].dtype in [np.float64, np.int64, float, int]:
+            df_final_display[col] = df_final_display[col].round(2)
+
+    # Asegurar formato de fecha
+    df_final_display["Fecha"] = df_final_display["fecha"].dt.strftime("%Y-%m-%d")
+
+    # Preparar CSV
+    csv_file = convert_df_to_csv(df_download)
+ay, df_proj_display, on='Fecha', how='outer')
+# ==============================
+# TABLA DE DATOS DETALLADOS
+# ==============================
+st.markdown("---")
+
+with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)", expanded=False):
+
+    # Texto corregido para modo oscuro usando la clase .ver-detallado
+    st.markdown(
+        '<p class="ver-detallado">📋 Ver Datos Detallados (Histórico y Proyección)</p>',
+        unsafe_allow_html=True
+    )
+
+    # ==============================
+    # PROCESAMIENTO Y PRESENTACIÓN DE DATOS
+    # ==============================
+
+    df_hist_display = df_hist_sel.rename(columns={
+        # (tu mapeo real de columnas va aquí)
+    })
+
+    df_proj_display = df_proj_sel.pivot_table(
+        index="fecha",
+        aggfunc="sum"
+    )
+
+    df_final_display = pd.merge(
+        df_hist_display,
+        df_proj_display,
+        on="fecha",
+        how="outer"
+    )
+
+    df_final_display = df_final_display.sort_values("fecha")
+
+    # Copia para descarga
+    df_download = df_final_display.copy()
+
+    # Formateo de columnas numéricas
+    for col in df_final_display.columns:
+        if df_final_display[col].dtype in [np.float64, np.int64, float, int]:
+            df_final_display[col] = df_final_display[col].round(2)
+
+    # Asegurar formato de fecha
+    df_final_display["Fecha"] = df_final_display["fecha"].dt.strftime("%Y-%m-%d")
+
+    # Preparar CSV
+    csv_file = convert_df_to_csv(df_download)
+values(by='Fecha').reset_index(drop=True)
+# ==============================
+# TABLA DE DATOS DETALLADOS
+# ==============================
+st.markdown("---")
+
+with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)", expanded=False):
+
+    # Texto corregido para modo oscuro usando la clase .ver-detallado
+    st.markdown(
+        '<p class="ver-detallado">📋 Ver Datos Detallados (Histórico y Proyección)</p>',
+        unsafe_allow_html=True
+    )
+
+    # ==============================
+    # PROCESAMIENTO Y PRESENTACIÓN DE DATOS
+    # ==============================
+
+    df_hist_display = df_hist_sel.rename(columns={
+        # (tu mapeo real de columnas va aquí)
+    })
+
+    df_proj_display = df_proj_sel.pivot_table(
+        index="fecha",
+        aggfunc="sum"
+    )
+
+    df_final_display = pd.merge(
+        df_hist_display,
+        df_proj_display,
+        on="fecha",
+        how="outer"
+    )
+
+    df_final_display = df_final_display.sort_values("fecha")
+
+    # Copia para descarga
+    df_download = df_final_display.copy()
+
+    # Formateo de columnas numéricas
+    for col in df_final_display.columns:
+        if df_final_display[col].dtype in [np.float64, np.int64, float, int]:
+            df_final_display[col] = df_final_display[col].round(2)
+
+    # Asegurar formato de fecha
+    df_final_display["Fecha"] = df_final_display["fecha"].dt.strftime("%Y-%m-%d")
+
+    # Preparar CSV
+    csv_file = convert_df_to_csv(df_download)
+
+# ==============================
+# TABLA DE DATOS DETALLADOS
+# ==============================
+st.markdown("---")
+
+with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)", expanded=False):
+
+    # Texto corregido para modo oscuro usando la clase .ver-detallado
+    st.markdown(
+        '<p class="ver-detallado">📋 Ver Datos Detallados (Histórico y Proyección)</p>',
+        unsafe_allow_html=True
+    )
+
+    # ==============================
+    # PROCESAMIENTO Y PRESENTACIÓN DE DATOS
+    # ==============================
+
+    df_hist_display = df_hist_sel.rename(columns={
+        # (tu mapeo real de columnas va aquí)
+    })
+
+    df_proj_display = df_proj_sel.pivot_table(
+        index="fecha",
+        aggfunc="sum"
+    )
+
+    df_final_display = pd.merge(
+        df_hist_display,
+        df_proj_display,
+        on="fecha",
+        how="outer"
+    )
+
+    df_final_display = df_final_display.sort_values("fecha")
+
+    # Copia para descarga
+    df_download = df_final_display.copy()
+
+    # Formateo de columnas numéricas
+    for col in df_final_display.columns:
+        if df_final_display[col].dtype in [np.float64, np.int64, float, int]:
+            df_final_display[col] = df_final_display[col].round(2)
+
+    # Asegurar formato de fecha
+    df_final_display["Fecha"] = df_final_display["fecha"].dt.strftime("%Y-%m-%d")
+
+    # Preparar CSV
+    csv_file = convert_df_to_csv(df_download)
+
+# ==============================
+# TABLA DE DATOS DETALLADOS
+# ==============================
+st.markdown("---")
+
+with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)", expanded=False):
+
+    # Texto corregido para modo oscuro usando la clase .ver-detallado
+    st.markdown(
+        '<p class="ver-detallado">📋 Ver Datos Detallados (Histórico y Proyección)</p>',
+        unsafe_allow_html=True
+    )
+
+    # ==============================
+    # PROCESAMIENTO Y PRESENTACIÓN DE DATOS
+    # ==============================
+
+    df_hist_display = df_hist_sel.rename(columns={
+        # (tu mapeo real de columnas va aquí)
+    })
+
+    df_proj_display = df_proj_sel.pivot_table(
+        index="fecha",
+        aggfunc="sum"
+    )
+
+    df_final_display = pd.merge(
+        df_hist_display,
+        df_proj_display,
+        on="fecha",
+        how="outer"
+    )
+
+    df_final_display = df_final_display.sort_values("fecha")
+
+    # Copia para descarga
+    df_download = df_final_display.copy()
+
+    # Formateo de columnas numéricas
+    for col in df_final_display.columns:
+        if df_final_display[col].dtype in [np.float64, np.int64, float, int]:
+            df_final_display[col] = df_final_display[col].round(2)
+
+    # Asegurar formato de fecha
+    df_final_display["Fecha"] = df_final_display["fecha"].dt.strftime("%Y-%m-%d")
+
+    # Preparar CSV
+    csv_file = convert_df_to_csv(df_download)
+
+# ==============================
+# TABLA DE DATOS DETALLADOS
+# ==============================
+st.markdown("---")
+
+with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)", expanded=False):
+
+    # Texto corregido para modo oscuro usando la clase .ver-detallado
+    st.markdown(
+        '<p class="ver-detallado">📋 Ver Datos Detallados (Histórico y Proyección)</p>',
+        unsafe_allow_html=True
+    )
+
+    # ==============================
+    # PROCESAMIENTO Y PRESENTACIÓN DE DATOS
+    # ==============================
+
+    df_hist_display = df_hist_sel.rename(columns={
+        # (tu mapeo real de columnas va aquí)
+    })
+
+    df_proj_display = df_proj_sel.pivot_table(
+        index="fecha",
+        aggfunc="sum"
+    )
+
+    df_final_display = pd.merge(
+        df_hist_display,
+        df_proj_display,
+        on="fecha",
+        how="outer"
+    )
+
+    df_final_display = df_final_display.sort_values("fecha")
+
+    # Copia para descarga
+    df_download = df_final_display.copy()
+
+    # Formateo de columnas numéricas
+    for col in df_final_display.columns:
+        if df_final_display[col].dtype in [np.float64, np.int64, float, int]:
+            df_final_display[col] = df_final_display[col].round(2)
+
+    # Asegurar formato de fecha
+    df_final_display["Fecha"] = df_final_display["fecha"].dt.strftime("%Y-%m-%d")
+
+    # Preparar CSV
+    csv_file = convert_df_to_csv(df_download)
+
+# ==============================
+# TABLA DE DATOS DETALLADOS
+# ==============================
+st.markdown("---")
+
+with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)", expanded=False):
+
+    # Texto corregido para modo oscuro usando la clase .ver-detallado
+    st.markdown(
+        '<p class="ver-detallado">📋 Ver Datos Detallados (Histórico y Proyección)</p>',
+        unsafe_allow_html=True
+    )
+
+    # ==============================
+    # PROCESAMIENTO Y PRESENTACIÓN DE DATOS
+    # ==============================
+
+    df_hist_display = df_hist_sel.rename(columns={
+        # (tu mapeo real de columnas va aquí)
+    })
+
+    df_proj_display = df_proj_sel.pivot_table(
+        index="fecha",
+        aggfunc="sum"
+    )
+
+    df_final_display = pd.merge(
+        df_hist_display,
+        df_proj_display,
+        on="fecha",
+        how="outer"
+    )
+
+    df_final_display = df_final_display.sort_values("fecha")
+
+    # Copia para descarga
+    df_download = df_final_display.copy()
+
+    # Formateo de columnas numéricas
+    for col in df_final_display.columns:
+        if df_final_display[col].dtype in [np.float64, np.int64, float, int]:
+            df_final_display[col] = df_final_display[col].round(2)
+
+    # Asegurar formato de fecha
+    df_final_display["Fecha"] = df_final_display["fecha"].dt.strftime("%Y-%m-%d")
+
+    # Preparar CSV
+    csv_file = convert_df_to_csv(df_download)
+.float64, np.int64]:
+# ==============================
+# TABLA DE DATOS DETALLADOS
+# ==============================
+st.markdown("---")
+
+with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)", expanded=False):
+
+    # Texto corregido para modo oscuro usando la clase .ver-detallado
+    st.markdown(
+        '<p class="ver-detallado">📋 Ver Datos Detallados (Histórico y Proyección)</p>',
+        unsafe_allow_html=True
+    )
+
+    # ==============================
+    # PROCESAMIENTO Y PRESENTACIÓN DE DATOS
+    # ==============================
+
+    df_hist_display = df_hist_sel.rename(columns={
+        # (tu mapeo real de columnas va aquí)
+    })
+
+    df_proj_display = df_proj_sel.pivot_table(
+        index="fecha",
+        aggfunc="sum"
+    )
+
+    df_final_display = pd.merge(
+        df_hist_display,
+        df_proj_display,
+        on="fecha",
+        how="outer"
+    )
+
+    df_final_display = df_final_display.sort_values("fecha")
+
+    # Copia para descarga
+    df_download = df_final_display.copy()
+
+    # Formateo de columnas numéricas
+    for col in df_final_display.columns:
+        if df_final_display[col].dtype in [np.float64, np.int64, float, int]:
+            df_final_display[col] = df_final_display[col].round(2)
+
+    # Asegurar formato de fecha
+    df_final_display["Fecha"] = df_final_display["fecha"].dt.strftime("%Y-%m-%d")
+
+    # Preparar CSV
+    csv_file = convert_df_to_csv(df_download)
+display[col].apply(lambda x: format_number(x, decimal_places) if pd.notna(x) else '-')
+# ==============================
+# TABLA DE DATOS DETALLADOS
+# ==============================
+st.markdown("---")
+
+with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)", expanded=False):
+
+    # Texto corregido para modo oscuro usando la clase .ver-detallado
+    st.markdown(
+        '<p class="ver-detallado">📋 Ver Datos Detallados (Histórico y Proyección)</p>',
+        unsafe_allow_html=True
+    )
+
+    # ==============================
+    # PROCESAMIENTO Y PRESENTACIÓN DE DATOS
+    # ==============================
+
+    df_hist_display = df_hist_sel.rename(columns={
+        # (tu mapeo real de columnas va aquí)
+    })
+
+    df_proj_display = df_proj_sel.pivot_table(
+        index="fecha",
+        aggfunc="sum"
+    )
+
+    df_final_display = pd.merge(
+        df_hist_display,
+        df_proj_display,
+        on="fecha",
+        how="outer"
+    )
+
+    df_final_display = df_final_display.sort_values("fecha")
+
+    # Copia para descarga
+    df_download = df_final_display.copy()
+
+    # Formateo de columnas numéricas
+    for col in df_final_display.columns:
+        if df_final_display[col].dtype in [np.float64, np.int64, float, int]:
+            df_final_display[col] = df_final_display[col].round(2)
+
+    # Asegurar formato de fecha
+    df_final_display["Fecha"] = df_final_display["fecha"].dt.strftime("%Y-%m-%d")
+
+    # Preparar CSV
+    csv_file = convert_df_to_csv(df_download)
+
+# ==============================
+# TABLA DE DATOS DETALLADOS
+# ==============================
+st.markdown("---")
+
+with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)", expanded=False):
+
+    # Texto corregido para modo oscuro usando la clase .ver-detallado
+    st.markdown(
+        '<p class="ver-detallado">📋 Ver Datos Detallados (Histórico y Proyección)</p>',
+        unsafe_allow_html=True
+    )
+
+    # ==============================
+    # PROCESAMIENTO Y PRESENTACIÓN DE DATOS
+    # ==============================
+
+    df_hist_display = df_hist_sel.rename(columns={
+        # (tu mapeo real de columnas va aquí)
+    })
+
+    df_proj_display = df_proj_sel.pivot_table(
+        index="fecha",
+        aggfunc="sum"
+    )
+
+    df_final_display = pd.merge(
+        df_hist_display,
+        df_proj_display,
+        on="fecha",
+        how="outer"
+    )
+
+    df_final_display = df_final_display.sort_values("fecha")
+
+    # Copia para descarga
+    df_download = df_final_display.copy()
+
+    # Formateo de columnas numéricas
+    for col in df_final_display.columns:
+        if df_final_display[col].dtype in [np.float64, np.int64, float, int]:
+            df_final_display[col] = df_final_display[col].round(2)
+
+    # Asegurar formato de fecha
+    df_final_display["Fecha"] = df_final_display["fecha"].dt.strftime("%Y-%m-%d")
+
+    # Preparar CSV
+    csv_file = convert_df_to_csv(df_download)
+lay['Fecha'].dt.strftime('%Y-%m-%d')
+# ==============================
+# TABLA DE DATOS DETALLADOS
+# ==============================
+st.markdown("---")
+
+with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)", expanded=False):
+
+    # Texto corregido para modo oscuro usando la clase .ver-detallado
+    st.markdown(
+        '<p class="ver-detallado">📋 Ver Datos Detallados (Histórico y Proyección)</p>',
+        unsafe_allow_html=True
+    )
+
+    # ==============================
+    # PROCESAMIENTO Y PRESENTACIÓN DE DATOS
+    # ==============================
+
+    df_hist_display = df_hist_sel.rename(columns={
+        # (tu mapeo real de columnas va aquí)
+    })
+
+    df_proj_display = df_proj_sel.pivot_table(
+        index="fecha",
+        aggfunc="sum"
+    )
+
+    df_final_display = pd.merge(
+        df_hist_display,
+        df_proj_display,
+        on="fecha",
+        how="outer"
+    )
+
+    df_final_display = df_final_display.sort_values("fecha")
+
+    # Copia para descarga
+    df_download = df_final_display.copy()
+
+    # Formateo de columnas numéricas
+    for col in df_final_display.columns:
+        if df_final_display[col].dtype in [np.float64, np.int64, float, int]:
+            df_final_display[col] = df_final_display[col].round(2)
+
+    # Asegurar formato de fecha
+    df_final_display["Fecha"] = df_final_display["fecha"].dt.strftime("%Y-%m-%d")
+
+    # Preparar CSV
+    csv_file = convert_df_to_csv(df_download)
+
+# ==============================
+# TABLA DE DATOS DETALLADOS
+# ==============================
+st.markdown("---")
+
+with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)", expanded=False):
+
+    # Texto corregido para modo oscuro usando la clase .ver-detallado
+    st.markdown(
+        '<p class="ver-detallado">📋 Ver Datos Detallados (Histórico y Proyección)</p>',
+        unsafe_allow_html=True
+    )
+
+    # ==============================
+    # PROCESAMIENTO Y PRESENTACIÓN DE DATOS
+    # ==============================
+
+    df_hist_display = df_hist_sel.rename(columns={
+        # (tu mapeo real de columnas va aquí)
+    })
+
+    df_proj_display = df_proj_sel.pivot_table(
+        index="fecha",
+        aggfunc="sum"
+    )
+
+    df_final_display = pd.merge(
+        df_hist_display,
+        df_proj_display,
+        on="fecha",
+        how="outer"
+    )
+
+    df_final_display = df_final_display.sort_values("fecha")
+
+    # Copia para descarga
+    df_download = df_final_display.copy()
+
+    # Formateo de columnas numéricas
+    for col in df_final_display.columns:
+        if df_final_display[col].dtype in [np.float64, np.int64, float, int]:
+            df_final_display[col] = df_final_display[col].round(2)
+
+    # Asegurar formato de fecha
+    df_final_display["Fecha"] = df_final_display["fecha"].dt.strftime("%Y-%m-%d")
+
+    # Preparar CSV
+    csv_file = convert_df_to_csv(df_download)
+
     
     st.download_button(
         label="📥 Descargar Información Detallada (CSV)",
