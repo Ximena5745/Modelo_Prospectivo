@@ -1402,9 +1402,9 @@ else:
     st.warning(f"⚠️ No se encontraron datos para el Escenario Base del indicador {indicador_sel}")
     st.markdown("<br>", unsafe_allow_html=True)
 
-# ==============================
+# ===============================
 # GRÁFICO PRINCIPAL CON TAMAÑO DE LETRA DINÁMICO
-# ==============================
+# ===============================
 st.subheader("Evolución Histórica y Proyección Detallada")
 
 df_hist_semestral = df_hist_sel[df_hist_sel["Fuente"] == "Semestral"].copy()
@@ -1811,9 +1811,9 @@ if not df_proj_sel.empty and len(escenarios_sel) > 0:
                 unsafe_allow_html=True
             )
 
-# ===============================
+# ==============================
 # TABLA DE DATOS DETALLADOS
-# ===============================
+# ==============================
 st.markdown("---")
 with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)"):
     df_hist_display = df_hist_sel.rename(columns={'Ejecución': 'Histórico'})[['Fecha', 'Indicador', 'Histórico', 'Fuente']]
