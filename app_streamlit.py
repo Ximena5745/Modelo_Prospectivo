@@ -1768,13 +1768,22 @@ st.markdown("---")
 # CSS Style
 st.markdown("""
     <style>
-        .streamlit-expanderHeader > div > p {
+        /* Target the expander header text directly */
+        .streamlit-expanderHeader p,
+        .streamlit-expanderHeader span,
+        .streamlit-expanderHeader div {
             color: #1e3a5f !important;
+            -webkit-text-fill-color: #1e3a5f !important;
             font-weight: 600 !important;
         }
+        
+        /* Dark mode override - make it more specific */
         @media (prefers-color-scheme: dark) {
-            .streamlit-expanderHeader > div > p {
+            .streamlit-expanderHeader p,
+            .streamlit-expanderHeader span,
+            .streamlit-expanderHeader div {
                 color: #4a90c8 !important;
+                -webkit-text-fill-color: #4a90c8 !important;
             }
         }
     </style>
