@@ -1764,6 +1764,23 @@ if not df_proj_sel.empty and len(escenarios_sel) > 0:
 # TABLA DE DATOS DETALLADOS
 # ==============================
 st.markdown("---")
+
+# CSS Style
+st.markdown("""
+    <style>
+        .streamlit-expanderHeader > div > p {
+            color: #1e3a5f !important;
+            font-weight: 600 !important;
+        }
+        @media (prefers-color-scheme: dark) {
+            .streamlit-expanderHeader > div > p {
+                color: #4a90c8 !important;
+            }
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+
 with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)"):
     df_hist_display = df_hist_sel.rename(columns={'Ejecución': 'Histórico'})[['Fecha', 'Indicador', 'Histórico', 'Fuente']]
     df_proj_display = df_proj_sel.pivot_table(index='Fecha', columns='Escenario', values='Proyección').reset_index()
