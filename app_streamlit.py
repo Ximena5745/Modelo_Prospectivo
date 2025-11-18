@@ -539,16 +539,79 @@ st.markdown("""
         
         /* ==================== EXPANDER ==================== */
         .streamlit-expanderHeader {
-            background-color: white !important;
-            border: 2px solid #4a90c8 !important;
+            background-color: #f8fafc !important;
+            border: 2px solid #2c5f8d !important;
             border-radius: 8px !important;
             color: #1e3a5f !important;
-            font-weight: 600 !important;
+            font-weight: 700 !important;
+            padding: 0.75rem 1.25rem !important;
+            margin: 1.5rem 0 1rem 0 !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+            transition: all 0.3s ease !important;
+            font-size: 1.1rem !important;
         }
         
         .streamlit-expanderHeader:hover {
-            background-color: #f0f8ff !important;
-            border-color: #2c5f8d !important;
+            background-color: #e6f0fa !important;
+            border-color: #1e3a5f !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+            transform: translateY(-1px);
+        }
+        
+        /* Estilo para el texto del expander */
+        .streamlit-expanderHeader .st-emotion-cache-1ck1k16 {
+            color: #1e3a5f !important;
+            font-weight: 700 !important;
+        }
+        
+        /* Estilo para el ícono del expander */
+        .streamlit-expanderHeader svg {
+            color: #1e3a5f !important;
+            stroke-width: 2.5px;
+        }
+        
+        /* Estilo para el contenedor del expander */
+        .stExpander {
+            margin: 1.5rem 0 !important;
+        }
+        
+        /* Estilo para el contenido del expander */
+        .streamlit-expanderContent {
+            background-color: #ffffff !important;
+            border: 2px solid #e2e8f0 !important;
+            border-top: none !important;
+            border-radius: 0 0 8px 8px !important;
+            padding: 1.5rem !important;
+            margin-top: -8px !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+        }
+        
+        /* Estilo para el modo oscuro */
+        @media (prefers-color-scheme: dark) {
+            .streamlit-expanderHeader {
+                background-color: #1e3a5f !important;
+                border-color: #3d7ab8 !important;
+                color: #ffffff !important;
+            }
+            
+            .streamlit-expanderHeader:hover {
+                background-color: #2c5f8d !important;
+                border-color: #4a90c8 !important;
+            }
+            
+            .streamlit-expanderHeader .st-emotion-cache-1ck1k16 {
+                color: #ffffff !important;
+            }
+            
+            .streamlit-expanderHeader svg {
+                color: #ffffff !important;
+            }
+            
+            .streamlit-expanderContent {
+                background-color: #1e293b !important;
+                border-color: #2d3748 !important;
+                color: #e2e8f0 !important;
+            }
         }
         
         /* ==================== DATAFRAME ==================== */
