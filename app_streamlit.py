@@ -1811,9 +1811,9 @@ if not df_proj_sel.empty and len(escenarios_sel) > 0:
                 unsafe_allow_html=True
             )
 
-# ==============================
+# ===============================
 # TABLA DE DATOS DETALLADOS
-# ==============================
+# ===============================
 st.markdown("---")
 with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)"):
     df_hist_display = df_hist_sel.rename(columns={'Ejecución': 'Histórico'})[['Fecha', 'Indicador', 'Histórico', 'Fuente']]
