@@ -537,7 +537,7 @@ st.markdown("""
             padding: 1rem;
         }
         
-        /* ==================== EXPANDER ==================== */
+        /* ==================== EXPANDER ===================== */
         .streamlit-expanderHeader {
             background-color: #f8fafc !important;
             border: 2px solid #2c5f8d !important;
