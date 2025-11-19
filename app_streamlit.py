@@ -1818,16 +1818,16 @@ with st.expander(" Ver Datos Detallados (Histórico y Proyección)"):
     
     # Crear la tabla pivote para las proyecciones
     df_proj_display = df_proj_filtered.pivot_table(
-        index='Fecha', 
+        index=['Fecha', 'Indicador'], 
         columns='Escenario', 
         values='Proyección'
     ).reset_index()
     
-    # Combinar histricos y proyecciones
+    # Combinar históricos y proyecciones
     df_final_display = pd.merge(
         df_hist_display, 
         df_proj_display, 
-        on='Fecha', 
+        on=['Fecha', 'Indicador'], 
         how='outer'
     )
     
