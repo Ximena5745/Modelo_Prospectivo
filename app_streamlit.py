@@ -1787,36 +1787,55 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Filtrar histórico según el tipo de visualización seleccionado
-with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)"):
+# Filtrar histrico segn el tipo de visualizacin seleccionado
+with st.expander(" Ver Datos Detallados (Histrico y Proyeccin)"):
+    # Filtrar histrico segn el tipo de visualizacin seleccionado
     if tipo_visualizacion == "Anual":
         df_hist_display = df_hist_sel[df_hist_sel['Fuente'] == 'Cierre'].copy()
     else:  # Semestral
         df_hist_display = df_hist_sel[df_hist_sel['Fuente'] == 'Semestral'].copy()
     
-    df_hist_display = df_hist_display.rename(columns={'Ejecución': 'Histórico'})[['Fecha', 'Indicador', 'Histórico', 'Fuente']]
+    # Asegurarse de que la columna Fecha sea datetime
+    df_hist_display['Fecha'] = pd.to_datetime(df_hist_display['Fecha'])
+    df_hist_display = df_hist_display.rename(columns={'Ejecucin': 'Histrico'})[['Fecha', 'Indicador', 'Histrico', 'Fuente']]
     
-    # Filtrar proyecciones según el tipo de visualización
+    # Filtrar proyecciones segn el tipo de visualizacin
     if tipo_visualizacion == "Anual":
-        # Para visualización anual, solo mostrar proyecciones de fin de año (junio)
+        # Para visualizacin anual, solo mostrar proyecciones de fin de ao (junio)
         df_proj_filtered = df_proj_sel[df_proj_sel['Fecha'].dt.month == 6].copy()
     else:
-        # Para visualización semestral, mostrar todas las proyecciones
+        # Para visualizacin semestral, mostrar todas las proyecciones
         df_proj_filtered = df_proj_sel.copy()
     
-    df_proj_display = df_proj_filtered.pivot_table(index='Fecha', columns='Escenario', values='Proyección').reset_index()
+    # Asegurarse de que la columna Fecha sea datetime
+    df_proj_filtered['Fecha'] = pd.to_datetime(df_proj_filtered['Fecha'])
     
-    # Combinar históricos y proyecciones
-    df_final_display = pd.merge(df_hist_display, df_proj_display, on='Fecha', how='outer')
+    # Crear la tabla pivote para las proyecciones
+    df_proj_display = df_proj_filtered.pivot_table(
+        index='Fecha', 
+        columns='Escenario', 
+        values='Proyeccin'
+    ).reset_index()
+    
+    # Combinar histricos y proyecciones
+    df_final_display = pd.merge(
+        df_hist_display, 
+        df_proj_display, 
+        on='Fecha', 
+        how='outer'
+    )
     
     # Ordenar por fecha
     df_final_display = df_final_display.sort_values('Fecha')
     
-    # Formatear fechas para mejor visualización
-    df_final_display['Fecha'] = df_final_display['Fecha'].dt.strftime('%Y-%m-%d')
+    # Convertir fechas a string para visualizacin
+    df_final_display['Fecha'] = df_final_display['Fecha'].apply(
+        lambda x: x.strftime('%Y-%m-%d') if pd.notnull(x) else ''
+    )
     
-    # Reordenar columnas para mejor presentación
-    column_order = ['Fecha', 'Indicador', 'Histórico', 'Fuente'] + [e for e in escenarios_sel if e in df_proj_display.columns]
+    # Reordenar columnas para mejor presentacin
+    column_order = ['Fecha', 'Indicador', 'Histrico', 'Fuente'] + \
+                 [e for e in escenarios_sel if e in df_proj_display.columns]
     df_final_display = df_final_display[column_order]
     df_final_display = df_final_display.sort_values(by='Fecha').reset_index(drop=True)
     
