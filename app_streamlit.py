@@ -51,7 +51,7 @@ with splash_placeholder.container():
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: linear-gradient(135deg, #0a243a 0%, #10385a 50%, #2e5c84 100%);
+            background: linear-gradient(135deg, #0a243a 0%, #10385a 30%, #10385a 70%, #2e5c84 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
