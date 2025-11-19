@@ -51,7 +51,7 @@ with splash_placeholder.container():
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #3d7ab8 100%);
+            background: linear-gradient(135deg, #0a243a 0%, #10385a 50%, #2e5c84 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -1768,26 +1768,28 @@ st.markdown("---")
 # CSS Style
 st.markdown("""
     <style>
-        /* Target the expander header text directly */
-        .streamlit-expanderHeader p,
-        .streamlit-expanderHeader span,
-        .streamlit-expanderHeader div {
+        /* Target the expander header text with more specific selectors */
+        [data-testid="stExpander"] .streamlit-expanderHeader,
+        [data-testid="stExpander"] .streamlit-expanderHeader * {
             color: #1e3a5f !important;
             -webkit-text-fill-color: #1e3a5f !important;
             font-weight: 600 !important;
+            fill: #1e3a5f !important; /* For SVG icons */
         }
         
-        /* Dark mode override - make it more specific */
+        /* Dark mode override */
         @media (prefers-color-scheme: dark) {
-            .streamlit-expanderHeader p,
-            .streamlit-expanderHeader span,
-            .streamlit-expanderHeader div {
+            [data-testid="stExpander"] .streamlit-expanderHeader,
+            [data-testid="stExpander"] .streamlit-expanderHeader * {
                 color: #4a90c8 !important;
                 -webkit-text-fill-color: #4a90c8 !important;
+                fill: #4a90c8 !important; /* For SVG icons */
             }
         }
     </style>
 """, unsafe_allow_html=True)
+
+
 
 
 with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)"):
