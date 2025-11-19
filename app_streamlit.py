@@ -1850,7 +1850,11 @@ with st.expander(" Ver Datos Detallados (Histórico y Proyección)"):
     for col in df_final_display.columns:
         if df_final_display[col].dtype in [np.float64, np.int64]:
             df_final_display[col] = df_final_display[col].apply(lambda x: format_number(x, decimal_places) if pd.notna(x) else '-')
-    
+
+    # Convertir siempre a datetime, ignorando errores
+    df_final_display['Fecha'] = pd.to_datetime(df_final_display['Fecha'], errors='coerce')
+
+    # Formatear sin romper si hay NaT
     df_final_display['Fecha'] = df_final_display['Fecha'].dt.strftime('%Y-%m-%d')
     
     csv_file = convert_df_to_csv(df_download)
