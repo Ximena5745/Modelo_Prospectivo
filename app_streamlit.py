@@ -726,17 +726,17 @@ try:
         if cand in df_proj_raw.columns:
             rename_rules[cand] = 'Periodicidad'
             break
-    if 'escenario_base' in df_proj_raw.columns: rename_rules['escenario_base'] = 'Escenario_Base'
+    if 'escenario_base' in df_proj_raw.columns: rename_rules['escenario_base'] = 'Escenario_Realista'
     if 'escenario_pesimista' in df_proj_raw.columns: rename_rules['escenario_pesimista'] = 'Escenario_Pesimista'
     if 'escenario_optimista' in df_proj_raw.columns: rename_rules['escenario_optimista'] = 'Escenario_Optimista'
-    if 'proyeccion' in df_proj_raw.columns: rename_rules['proyeccion'] = 'Escenario_Base'
+    if 'proyeccion' in df_proj_raw.columns: rename_rules['proyeccion'] = 'Escenario_Realista'
     if 'ic_inferior' in df_proj_raw.columns: rename_rules['ic_inferior'] = 'Escenario_Pesimista'
     if 'ic_superior' in df_proj_raw.columns: rename_rules['ic_superior'] = 'Escenario_Optimista'
 
     if rename_rules:
         df_proj_raw = df_proj_raw.rename(columns=rename_rules)
 
-    required = {'Indicador', 'Modelo', 'Fecha_Proyeccion', 'Escenario_Base', 'Escenario_Pesimista', 'Escenario_Optimista'}
+    required = {'Indicador', 'Modelo', 'Fecha_Proyeccion', 'Escenario_Realista', 'Escenario_Pesimista', 'Escenario_Optimista'}
     missing = [c for c in required if c not in df_proj_raw.columns]
     if missing:
         st.error(f"❌ Faltan columnas requeridas: {missing}")
@@ -754,7 +754,7 @@ df_proj_list = []
 if not df_proj_raw.empty:
     for _, row in df_proj_raw.iterrows():
         base_data = {'Indicador': row['Indicador'], 'Periodicidad': row.get('Periodicidad', 'Semestral'), 'Fecha': row['Fecha_Proyeccion'], 'Modelo': row['Modelo']}
-        if pd.notna(row.get('Escenario_Base')): df_proj_list.append({**base_data, 'Escenario': 'Base', 'Proyección': row['Escenario_Base']})
+        if pd.notna(row.get('Escenario_Realista')): df_proj_list.append({**base_data, 'Escenario': 'Realista', 'Proyección': row['Escenario_Realista']})
         if pd.notna(row.get('Escenario_Pesimista')): df_proj_list.append({**base_data, 'Escenario': 'Pesimista', 'Proyección': row['Escenario_Pesimista']})
         if pd.notna(row.get('Escenario_Optimista')): df_proj_list.append({**base_data, 'Escenario': 'Optimista', 'Proyección': row['Escenario_Optimista']})
 
@@ -889,18 +889,16 @@ with st.sidebar:
         )
     
     modelo_display_names = {
-        'ARIMA': '📊 ARIMA',
+        'Media_Movil_Tendencia': '📊 Media_Movil_Tendencia',
         'ETS': '📈 ETS',
-        'Holt_Winters': '📉 Holt-Winters',
-        'Random_Forest': '🌳 Random Forest',
-        'SVR': '🎯 SVR',
-        'Linear_Regression': '📈 Regresión Lineal',
+        'Modelo_Conservador': '📉 Modelo_Conservador',
+        'Polinomial_Grado_2': '📈 Polinomial_Grado_2',
+        'Proyeccion_CAGR': '🎯 Proyeccion_CAGR',
         'Regresion_Lineal': '📈 Regresión Lineal',
-        'Prophet': '🔮 Prophet',
-        'Tendencia_Historica': '📜 Tendencia Histórica',
-        'Crecimiento_Historico': '📜 Crecimiento Histórico',
+        'Heuristico_2obs': '🔮 Heurístico',
         'Ensemble_Ponderado': '🤝 Ensemble Ponderado',
-        'Promedio_Modelos': '➗ Promedio de Modelos'
+        'Promedio_Modelos': '➗ Promedio de Modelos',
+        'Suavizado_Exponencial' :'📊  Suavizado_Exponencial'
     }
     
     if modelos:
@@ -913,14 +911,14 @@ with st.sidebar:
         modelo_sel = ""
     
     # Escenarios
-    escenarios_disponibles = ['Base', 'Pesimista', 'Optimista']
+    escenarios_disponibles = ['Realista', 'Pesimista', 'Optimista']
     if modelo_sel and not df_proj.empty and modelo_sel in df_proj["Modelo"].unique():
         escenarios_modelo = df_proj[(df_proj["Modelo"] == modelo_sel) & (df_proj["Indicador"] == indicador_sel)]["Escenario"].unique()
         escenarios_disponibles = [e for e in escenarios_disponibles if e in escenarios_modelo]
     
     st.markdown("**🌍 Escenarios:**")
     escenarios_sel = []
-    escenario_icons = {'Base': '⚖️', 'Pesimista': '📉', 'Optimista': '📈'}
+    escenario_icons = {'Realista': '⚖️', 'Pesimista': '📉', 'Optimista': '📈'}
     for escenario in escenarios_disponibles:
         icon = escenario_icons.get(escenario, '🌍')
         if st.checkbox(f"{icon} {escenario}", value=True, key=f"esc_{escenario}"):
@@ -1278,7 +1276,7 @@ colores_escenarios = {
 # ==============================
 # TARJETAS DE RESUMEN
 # ==============================
-df_base = df_proj[(df_proj["Indicador"] == indicador_sel) & (df_proj["Modelo"] == modelo_sel) & (df_proj["Escenario"] == 'Base')]
+df_base = df_proj[(df_proj["Indicador"] == indicador_sel) & (df_proj["Modelo"] == modelo_sel) & (df_proj["Escenario"] == 'Realista')]
 
 if not df_base.empty:
     valor_2026 = df_base[df_base['Fecha'].dt.year == 2026]['Proyección'].max()
@@ -1303,7 +1301,7 @@ if not df_base.empty:
         st.markdown(f'<div class="metric-card" style="border-left-color: {color_tend};"><div class="metric-label">📊 TENDENCIA PERIODO</div><div style="font-size: 2rem; margin: 0.5rem 0;">{icon_tend}</div><div style="color: {color_tend}; font-size: 1.1rem; font-weight: 700;">{tendencia}</div></div>', unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 else:
-    st.warning(f"⚠️ No se encontraron datos para el Escenario Base del indicador {indicador_sel}")
+    st.warning(f"⚠️ No se encontraron datos para el Escenario Realista del indicador {indicador_sel}")
     st.markdown("<br>", unsafe_allow_html=True)
 
 # ==============================

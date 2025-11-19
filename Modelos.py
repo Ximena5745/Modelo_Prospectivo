@@ -760,7 +760,7 @@ if all_results:
     df_proy = pd.DataFrame(
         all_results,
         columns=["Id", "Indicador", "Periodicidad", "Tipo_Indicador", "Fecha_Proyeccion",
-                 "Modelo", "Escenario_Base", "Escenario_Pesimista", "Escenario_Optimista"]
+                 "Modelo", "Escenario_Realista", "Escenario_Pesimista", "Escenario_Optimista"]
     )
 
     df_stats = pd.DataFrame(stats_summary)
@@ -788,8 +788,8 @@ if all_results:
     df_porcentuales = df_proy[df_proy['Tipo_Indicador'] == '%'].copy()
     if len(df_porcentuales) > 0:
         valores_invalidos = df_porcentuales[
-            (df_porcentuales['Escenario_Base'] > 100) |
-            (df_porcentuales['Escenario_Base'] < 0) |
+            (df_porcentuales['Escenario_Realista'] > 100) |
+            (df_porcentuales['Escenario_Realista'] < 0) |
             (df_porcentuales['Escenario_Optimista'] > 100) |
             (df_porcentuales['Escenario_Pesimista'] < 0)
         ]
@@ -811,7 +811,7 @@ if all_results:
         ]
 
         if len(indicador_proy) > 0:
-            primer_proy = indicador_proy.iloc[0]['Escenario_Base']
+            primer_proy = indicador_proy.iloc[0]['Escenario_Realista']
             crec_proyectado = ((primer_proy / stat['Ultimo_Valor']) - 1) * 100
 
             if stat['Tendencia'] == 'creciente' and crec_proyectado < 0:
@@ -828,12 +828,12 @@ if all_results:
         pivot = df_proy.pivot_table(
             index=['Indicador', 'Fecha_Proyeccion'],
             columns='Modelo',
-            values='Escenario_Base'
+            values='Escenario_Realista'
         ).round(2)
         pivot.to_excel(writer, sheet_name='Comparacion_Modelos')
 
         resumen_tipo = df_proy.groupby(['Tipo_Indicador', 'Modelo']).agg({
-            'Escenario_Base': ['mean', 'min', 'max', 'std'],
+            'Escenario_Realista': ['mean', 'min', 'max', 'std'],
             'Id': 'count'
         }).round(2)
         resumen_tipo.to_excel(writer, sheet_name='Analisis_Por_Tipo')
@@ -853,7 +853,7 @@ if all_results:
             ]
 
             if len(indicador_proy) > 0:
-                primer_proy = indicador_proy.iloc[0]['Escenario_Base']
+                primer_proy = indicador_proy.iloc[0]['Escenario_Realista']
                 crec_proyectado = ((primer_proy / stat['Ultimo_Valor']) - 1) * 100
 
                 coherente = True
@@ -895,7 +895,7 @@ if all_results:
             crec_hist = stat_ind.iloc[0]['Crecimiento_Ponderado_%']
             ultimo = stat_ind.iloc[0]['Ultimo_Valor']
             tendencia = stat_ind.iloc[0]['Tendencia']
-            crec_proy = ((row['Escenario_Base'] / ultimo) - 1) * 100
+            crec_proy = ((row['Escenario_Realista'] / ultimo) - 1) * 100
 
             tipo_sym = "📍" if row['Tipo_Indicador'] == '%' else "📊"
             tend_sym = "📈" if tendencia == 'creciente' else "📉" if tendencia == 'decreciente' else "➡️"
