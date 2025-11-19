@@ -1787,9 +1787,9 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Filtrar histrico segn el tipo de visualizacin seleccionado
+# Filtrar histrico segn el tipo de visualización seleccionado
 with st.expander(" Ver Datos Detallados (Histórico y Proyección)"):
-    # Filtrar histrico segn el tipo de visualizacin seleccionado
+    # Filtrar histrico segn el tipo de visualización seleccionado
     if tipo_visualizacion == "Anual":
         df_hist_display = df_hist_sel[df_hist_sel['Fuente'] == 'Cierre'].copy()
     else:  # Semestral
@@ -1798,7 +1798,7 @@ with st.expander(" Ver Datos Detallados (Histórico y Proyección)"):
     # Asegurarse de que la columna Fecha sea datetime
     df_hist_display['Fecha'] = pd.to_datetime(df_hist_display['Fecha'])
     
-    # Verificar si la columna 'Ejecucin' existe, si no, usar 'Valor' o 'Valor_Historico'
+    # Verificar si la columna 'Ejecución' existe, si no, usar 'Valor' o 'Valor_Historico'
     hist_col = 'Ejecución' if 'Ejecución' in df_hist_display.columns else 'Valor_Historico' if 'Valor_Historico' in df_hist_display.columns else 'Valor'
     df_hist_display = df_hist_display.rename(columns={hist_col: 'Histórico'})
     
@@ -1807,8 +1807,8 @@ with st.expander(" Ver Datos Detallados (Histórico y Proyección)"):
     
     # Filtrar proyecciones segn el tipo de visualizacin
     if tipo_visualizacion == "Anual":
-        # Para visualizacin anual, solo mostrar proyecciones de fin de ao (junio)
-        df_proj_filtered = df_proj_sel[df_proj_sel['Fecha'].dt.month == 6].copy()
+        # Para visualizacin anual, solo mostrar proyecciones de fin de año (Diciembre)
+        df_proj_filtered = df_proj_sel[df_proj_sel['Fecha'].dt.month == 12].copy()
     else:
         # Para visualizacin semestral, mostrar todas las proyecciones
         df_proj_filtered = df_proj_sel.copy()
@@ -1834,12 +1834,12 @@ with st.expander(" Ver Datos Detallados (Histórico y Proyección)"):
     # Ordenar por fecha
     df_final_display = df_final_display.sort_values('Fecha')
     
-    # Convertir fechas a string para visualizacin
+    # Convertir fechas a string para visualización
     df_final_display['Fecha'] = df_final_display['Fecha'].apply(
         lambda x: x.strftime('%Y-%m-%d') if pd.notnull(x) else ''
     )
     
-    # Reordenar columnas para mejor presentacin
+    # Reordenar columnas para mejor presentación
     column_order = ['Fecha', 'Indicador', 'Histórico', 'Fuente'] + \
                  [e for e in escenarios_sel if e in df_proj_display.columns]
     df_final_display = df_final_display[column_order]
