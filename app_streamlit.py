@@ -1787,13 +1787,37 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-
-
-
+# Filtrar histórico según el tipo de visualización seleccionado
 with st.expander("📋 Ver Datos Detallados (Histórico y Proyección)"):
-    df_hist_display = df_hist_sel.rename(columns={'Ejecución': 'Histórico'})[['Fecha', 'Indicador', 'Histórico', 'Fuente']]
-    df_proj_display = df_proj_sel.pivot_table(index='Fecha', columns='Escenario', values='Proyección').reset_index()
+    if tipo_visualizacion == "Anual":
+        df_hist_display = df_hist_sel[df_hist_sel['Fuente'] == 'Cierre'].copy()
+    else:  # Semestral
+        df_hist_display = df_hist_sel[df_hist_sel['Fuente'] == 'Semestral'].copy()
+    
+    df_hist_display = df_hist_display.rename(columns={'Ejecución': 'Histórico'})[['Fecha', 'Indicador', 'Histórico', 'Fuente']]
+    
+    # Filtrar proyecciones según el tipo de visualización
+    if tipo_visualizacion == "Anual":
+        # Para visualización anual, solo mostrar proyecciones de fin de año (junio)
+        df_proj_filtered = df_proj_sel[df_proj_sel['Fecha'].dt.month == 6].copy()
+    else:
+        # Para visualización semestral, mostrar todas las proyecciones
+        df_proj_filtered = df_proj_sel.copy()
+    
+    df_proj_display = df_proj_filtered.pivot_table(index='Fecha', columns='Escenario', values='Proyección').reset_index()
+    
+    # Combinar históricos y proyecciones
     df_final_display = pd.merge(df_hist_display, df_proj_display, on='Fecha', how='outer')
+    
+    # Ordenar por fecha
+    df_final_display = df_final_display.sort_values('Fecha')
+    
+    # Formatear fechas para mejor visualización
+    df_final_display['Fecha'] = df_final_display['Fecha'].dt.strftime('%Y-%m-%d')
+    
+    # Reordenar columnas para mejor presentación
+    column_order = ['Fecha', 'Indicador', 'Histórico', 'Fuente'] + [e for e in escenarios_sel if e in df_proj_display.columns]
+    df_final_display = df_final_display[column_order]
     df_final_display = df_final_display.sort_values(by='Fecha').reset_index(drop=True)
     
     df_download = df_final_display.copy()
