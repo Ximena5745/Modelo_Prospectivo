@@ -1165,22 +1165,36 @@ def calcular_config_etiquetas(num_puntos: int, tipo_visualizacion: str) -> dict:
         tipo_visualizacion: 'Anual' o 'Semestral'
         
     Returns:
-        dict: Configuración de etiquetas para los ejes
+        dict: Configuración de etiquetas para los ejes que incluye:
+            - show: si mostrar las etiquetas
+            - angle: ángulo de rotación en grados
+            - skip: cada cuántas etiquetas mostrar
+            - size: tamaño de la fuente
     """
+    base_config = {
+        'show': True,
+        'size': 12  # Tamaño de fuente base
+    }
+    
     if tipo_visualizacion == "Anual":
         if num_puntos <= 10:
-            return {'show': True, 'angle': 0, 'skip': 1}
+            return {**base_config, 'angle': 0, 'skip': 1}
         elif num_puntos <= 20:
-            return {'show': True, 'angle': 45, 'skip': 1}
+            return {**base_config, 'angle': 45, 'skip': 1}
         else:
-            return {'show': True, 'angle': 45, 'skip': max(1, num_puntos // 10)}
+            return {**base_config, 'angle': 45, 'skip': max(1, num_puntos // 10)}
     else:  # Semestral
         if num_puntos <= 20:
-            return {'show': True, 'angle': 0, 'skip': 1}
+            return {**base_config, 'angle': 0, 'skip': 1}
         elif num_puntos <= 40:
-            return {'show': True, 'angle': 45, 'skip': 2}
+            return {**base_config, 'angle': 45, 'skip': 2, 'size': 11}
         else:
-            return {'show': True, 'angle': 45, 'skip': max(2, num_puntos // 10)}
+            return {
+                **base_config, 
+                'angle': 45, 
+                'skip': max(2, num_puntos // 10),
+                'size': 10  # Tamaño más pequeño para muchos puntos
+            }
 
 def format_number(value, decimals):
     if pd.isna(value): return ''
