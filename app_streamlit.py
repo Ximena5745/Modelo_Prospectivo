@@ -1788,7 +1788,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Filtrar histrico segn el tipo de visualizacin seleccionado
-with st.expander(" Ver Datos Detallados (Histrico y Proyeccin)"):
+with st.expander(" Ver Datos Detallados (Histórico y Proyección)"):
     # Filtrar histrico segn el tipo de visualizacin seleccionado
     if tipo_visualizacion == "Anual":
         df_hist_display = df_hist_sel[df_hist_sel['Fuente'] == 'Cierre'].copy()
@@ -1799,11 +1799,11 @@ with st.expander(" Ver Datos Detallados (Histrico y Proyeccin)"):
     df_hist_display['Fecha'] = pd.to_datetime(df_hist_display['Fecha'])
     
     # Verificar si la columna 'Ejecucin' existe, si no, usar 'Valor' o 'Valor_Historico'
-    hist_col = 'Ejecucin' if 'Ejecucin' in df_hist_display.columns else 'Valor_Historico' if 'Valor_Historico' in df_hist_display.columns else 'Valor'
-    df_hist_display = df_hist_display.rename(columns={hist_col: 'Historico'})
+    hist_col = 'Ejecución' if 'Ejecución' in df_hist_display.columns else 'Valor_Historico' if 'Valor_Historico' in df_hist_display.columns else 'Valor'
+    df_hist_display = df_hist_display.rename(columns={hist_col: 'Histórico'})
     
     # Seleccionar solo las columnas necesarias
-    df_hist_display = df_hist_display[['Fecha', 'Indicador', 'Historico', 'Fuente']]
+    df_hist_display = df_hist_display[['Fecha', 'Indicador', 'Histórico', 'Fuente']]
     
     # Filtrar proyecciones segn el tipo de visualizacin
     if tipo_visualizacion == "Anual":
@@ -1840,7 +1840,7 @@ with st.expander(" Ver Datos Detallados (Histrico y Proyeccin)"):
     )
     
     # Reordenar columnas para mejor presentacin
-    column_order = ['Fecha', 'Indicador', 'Historico', 'Fuente'] + \
+    column_order = ['Fecha', 'Indicador', 'Histórico', 'Fuente'] + \
                  [e for e in escenarios_sel if e in df_proj_display.columns]
     df_final_display = df_final_display[column_order]
     df_final_display = df_final_display.sort_values(by='Fecha').reset_index(drop=True)
