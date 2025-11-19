@@ -74,8 +74,8 @@ with splash_placeholder.container():
         .splash-logo {
             width: 280px;
             height: auto;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
             animation: pulse 2s ease-in-out infinite;
             margin-bottom: 2rem;
         }
@@ -263,7 +263,7 @@ st.markdown("""
         
         /* ==================== SIDEBAR ==================== */
         [data-testid="stSidebar"] { 
-            background: linear-gradient(180deg, #1e3a5f 0%, #2c5f8d 50%, #3d7ab8 100%);
+            background: linear-gradient(180deg, #0A243A 0%, #10385A 30%, #10385A 70%, #2E5C84 100%);
             padding: 1.5rem 1rem;
             overflow-y: auto !important;  /* 🔥 PERMITIR SCROLL VISIBLE */
             max-height: 100vh !important;  /* 🔥 ALTURA MÁXIMA DE VIEWPORT */
@@ -577,7 +577,7 @@ st.markdown("""
         
         /* Estilo para el contenido del expander */
         .streamlit-expanderContent {
-            background-color: #ffffff !important;
+            background-color: #10385A !important;
             border: 2px solid #e2e8f0 !important;
             border-top: none !important;
             border-radius: 0 0 8px 8px !important;
@@ -600,11 +600,11 @@ st.markdown("""
             }
             
             .streamlit-expanderHeader .st-emotion-cache-1ck1k16 {
-                color: #ffffff !important;
+                color: #10385A !important;
             }
             
             .streamlit-expanderHeader svg {
-                color: #ffffff !important;
+                color: #10385A !important;
             }
             
             .streamlit-expanderContent {
@@ -647,7 +647,7 @@ st.markdown("""
 # ==============================
 if logo_base64:
     st.markdown(f"""
-    <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 50%, #3d7ab8 100%); padding: 2.5rem 2rem; border-radius: 0 0 20px 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); margin: -1rem -3rem 2rem -3rem;">
+    <div style="background: linear-gradient(135deg, #0A243A 0%, #10385A 30%, #10385A 70%, #2E5C84 100%); padding: 2.5rem 2rem; border-radius: 0 0 20px 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); margin: -1rem -3rem 2rem -3rem;">
         <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 2.5rem;">
             <div style="flex-shrink: 0;">
                 <img src="data:image/jpeg;base64,{logo_base64}" style="width: 220px; height: auto; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.25);">
