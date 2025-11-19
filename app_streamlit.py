@@ -1156,6 +1156,32 @@ def convert_df_to_xlsx(df):
             worksheet.set_column(i, i, min(max_length, 30))  # Limitar el ancho máximo a 30
     return output.getvalue()
 
+def calcular_config_etiquetas(num_puntos: int, tipo_visualizacion: str) -> dict:
+    """
+    Calcula la configuración de etiquetas para los ejes de la gráfica.
+    
+    Args:
+        num_puntos: Número de puntos de datos
+        tipo_visualizacion: 'Anual' o 'Semestral'
+        
+    Returns:
+        dict: Configuración de etiquetas para los ejes
+    """
+    if tipo_visualizacion == "Anual":
+        if num_puntos <= 10:
+            return {'show': True, 'angle': 0, 'skip': 1}
+        elif num_puntos <= 20:
+            return {'show': True, 'angle': 45, 'skip': 1}
+        else:
+            return {'show': True, 'angle': 45, 'skip': max(1, num_puntos // 10)}
+    else:  # Semestral
+        if num_puntos <= 20:
+            return {'show': True, 'angle': 0, 'skip': 1}
+        elif num_puntos <= 40:
+            return {'show': True, 'angle': 45, 'skip': 2}
+        else:
+            return {'show': True, 'angle': 45, 'skip': max(2, num_puntos // 10)}
+
 def format_number(value, decimals):
     if pd.isna(value): return ''
     try:
