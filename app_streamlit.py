@@ -1143,8 +1143,18 @@ if st.session_state['mostrar_modelos']:
 # FUNCIONES AUXILIARES
 # ==============================
 @st.cache_data
-def convert_df_to_csv(df):
-    return df.to_csv(index=False, sep=';').encode('utf-8')
+def convert_df_to_xlsx(df):
+    import io
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        df.to_excel(writer, index=False, sheet_name='Datos')
+        workbook = writer.book
+        worksheet = writer.sheets['Datos']
+        # Ajustar el ancho de las columnas
+        for i, col in enumerate(df.columns):
+            max_length = max(df[col].astype(str).apply(len).max(), len(col)) + 2
+            worksheet.set_column(i, i, min(max_length, 30))  # Limitar el ancho máximo a 30
+    return output.getvalue()
 
 def format_number(value, decimals):
     if pd.isna(value): return ''
@@ -1192,48 +1202,6 @@ def periodos_rango_por_ano(year: int, tipo: str):
     return [
         (pd.Timestamp(year=year, month=1, day=1), pd.Timestamp(year=year, month=12, day=31)),
     ]
-
-# ==============================
-# FUNCIÓN PARA CALCULAR TAMAÑO DE LETRA DINÁMICO
-# ==============================
-def calcular_config_etiquetas(num_puntos: int, tipo_visualizacion: str) -> dict:
-    """
-    Calcula la configuración de etiquetas basado en el número de puntos de datos.
-    
-    Args:
-        num_puntos: Número de puntos de datos históricos
-        tipo_visualizacion: "Semestral" o "Anual"
-    
-    Returns:
-        dict con: size (tamaño), show (mostrar o no), angle (ángulo), skip (cada cuántos mostrar)
-    """
-    # 🔥 TAMAÑOS SIGNIFICATIVAMENTE AUMENTADOS PARA MÁXIMA VISIBILIDAD
-    if tipo_visualizacion == "Semestral":
-        # Para datos semestrales - TAMAÑOS MUY GRANDES
-        if num_puntos <= 8:
-            return {'size': 16, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 MUY GRANDE
-        elif num_puntos <= 12:
-            return {'size': 15, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 GRANDE
-        elif num_puntos <= 18:
-            return {'size': 14, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 GRANDE
-        elif num_puntos <= 25:
-            return {'size': 13, 'show': True, 'angle': 0, 'skip': 2}  # 🔥 MEDIANO-GRANDE
-        elif num_puntos <= 35:
-            return {'size': 12, 'show': True, 'angle': 0, 'skip': 2}  # 🔥 MEDIANO
-        else:
-            return {'size': 11, 'show': True, 'angle': 0, 'skip': 3}  # 🔥 MOSTRAR 1 de cada 3
-    else:
-        # Para datos anuales (menos puntos) - TAMAÑOS MUY GRANDES
-        if num_puntos <= 5:
-            return {'size': 18, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 EXTRA GRANDE
-        elif num_puntos <= 8:
-            return {'size': 17, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 MUY GRANDE
-        elif num_puntos <= 12:
-            return {'size': 16, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 GRANDE
-        elif num_puntos <= 15:
-            return {'size': 15, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 GRANDE
-        else:
-            return {'size': 14, 'show': True, 'angle': 0, 'skip': 1}  # 🔥 MEDIANO-GRANDE
 
 # ==============================
 # FILTRAR DATOS
@@ -1857,14 +1825,14 @@ with st.expander(" Ver Datos Detallados (Histórico y Proyección)"):
     # Formatear sin romper si hay NaT
     df_final_display['Fecha'] = df_final_display['Fecha'].dt.strftime('%Y-%m-%d')
     
-    csv_file = convert_df_to_csv(df_download)
+    excel_file = convert_df_to_xlsx(df_download)
     
     st.download_button(
-        label="📥 Descargar Información Detallada (CSV)",
-        data=csv_file,
-        file_name=f'{indicador_sel}_{modelo_sel}_Proyecciones.csv',
-        mime='text/csv',
-        key='download_csv_button'
+        label="📥 Descargar Información Detallada (Excel)",
+        data=excel_file,
+        file_name=f'{indicador_sel}_{modelo_sel}_Proyecciones.xlsx',
+        mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        key='download_excel_button'
     )
 
     st.dataframe(df_final_display, use_container_width=True, hide_index=True)
