@@ -1797,7 +1797,13 @@ with st.expander(" Ver Datos Detallados (Histrico y Proyeccin)"):
     
     # Asegurarse de que la columna Fecha sea datetime
     df_hist_display['Fecha'] = pd.to_datetime(df_hist_display['Fecha'])
-    df_hist_display = df_hist_display.rename(columns={'Ejecucin': 'Histrico'})[['Fecha', 'Indicador', 'Histrico', 'Fuente']]
+    
+    # Verificar si la columna 'Ejecucin' existe, si no, usar 'Valor' o 'Valor_Historico'
+    hist_col = 'Ejecucin' if 'Ejecucin' in df_hist_display.columns else 'Valor_Historico' if 'Valor_Historico' in df_hist_display.columns else 'Valor'
+    df_hist_display = df_hist_display.rename(columns={hist_col: 'Historico'})
+    
+    # Seleccionar solo las columnas necesarias
+    df_hist_display = df_hist_display[['Fecha', 'Indicador', 'Historico', 'Fuente']]
     
     # Filtrar proyecciones segn el tipo de visualizacin
     if tipo_visualizacion == "Anual":
@@ -1814,7 +1820,7 @@ with st.expander(" Ver Datos Detallados (Histrico y Proyeccin)"):
     df_proj_display = df_proj_filtered.pivot_table(
         index='Fecha', 
         columns='Escenario', 
-        values='Proyeccin'
+        values='Proyección'
     ).reset_index()
     
     # Combinar histricos y proyecciones
@@ -1834,7 +1840,7 @@ with st.expander(" Ver Datos Detallados (Histrico y Proyeccin)"):
     )
     
     # Reordenar columnas para mejor presentacin
-    column_order = ['Fecha', 'Indicador', 'Histrico', 'Fuente'] + \
+    column_order = ['Fecha', 'Indicador', 'Historico', 'Fuente'] + \
                  [e for e in escenarios_sel if e in df_proj_display.columns]
     df_final_display = df_final_display[column_order]
     df_final_display = df_final_display.sort_values(by='Fecha').reset_index(drop=True)
