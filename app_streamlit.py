@@ -1349,18 +1349,18 @@ df_hist_anual = df_hist_sel[df_hist_sel["Fuente"] == "Cierre"].copy()
 
 if tipo_visualizacion == "Semestral" and not df_hist_semestral.empty:
     # Ordenar por fecha original antes de normalizar
-    df_hist_semestral = df_hist_semestral.sort_values('Fecha')
+    df_hist_semestral = df_hist_semestral.sort_values('Fecha').copy()
     df_hist_semestral['Fecha_Original'] = df_hist_semestral['Fecha']
-    df_hist_semestral['Fecha'] = df_hist_semestral['Fecha'].apply(
+    df_hist_semestral['Fecha'] = df_hist_semestral['Fecha_Original'].apply(
         lambda x: pd.Timestamp(year=x.year, month=3, day=15) if x.month <= 6 else pd.Timestamp(year=x.year, month=9, day=15)
     )
     # Consolidar duplicados tomando el último valor cronológico por fecha normalizada
     df_hist_semestral = df_hist_semestral.groupby('Fecha', as_index=False).last()
 if tipo_visualizacion == "Anual" and not df_hist_anual.empty:
     # Ordenar por fecha original antes de normalizar
-    df_hist_anual = df_hist_anual.sort_values('Fecha')
+    df_hist_anual = df_hist_anual.sort_values('Fecha').copy()
     df_hist_anual['Fecha_Original'] = df_hist_anual['Fecha']
-    df_hist_anual['Fecha'] = df_hist_anual['Fecha'].apply(
+    df_hist_anual['Fecha'] = df_hist_anual['Fecha_Original'].apply(
         lambda x: pd.Timestamp(year=x.year, month=6, day=30)
     )
     # Consolidar duplicados tomando el último valor cronológico por fecha normalizada
@@ -1374,16 +1374,16 @@ if df_hist_trace.empty:
 if df_hist_trace.empty:
     df_hist_trace = df_hist_sel.copy()
     # Ordenar por fecha original antes de normalizar
-    df_hist_trace = df_hist_trace.sort_values('Fecha')
+    df_hist_trace = df_hist_trace.sort_values('Fecha').copy()
     df_hist_trace['Fecha_Original'] = df_hist_trace['Fecha']
     if tipo_visualizacion == "Semestral":
-        df_hist_trace['Fecha'] = df_hist_trace['Fecha'].apply(
+        df_hist_trace['Fecha'] = df_hist_trace['Fecha_Original'].apply(
             lambda x: pd.Timestamp(year=x.year, month=3, day=15) if x.month <= 6 else pd.Timestamp(year=x.year, month=9, day=15)
         )
         # Consolidar duplicados tomando el último valor cronológico por fecha normalizada
         df_hist_trace = df_hist_trace.groupby('Fecha', as_index=False).last()
     else:
-        df_hist_trace['Fecha'] = df_hist_trace['Fecha'].apply(
+        df_hist_trace['Fecha'] = df_hist_trace['Fecha_Original'].apply(
             lambda x: pd.Timestamp(year=x.year, month=6, day=30)
         )
         # Consolidar duplicados tomando el último valor cronológico por fecha normalizada
@@ -1469,17 +1469,17 @@ for escenario in escenarios_sel:
         df_plot = df_esc.copy()
         
         # Ordenar por fecha original antes de normalizar
-        df_plot = df_plot.sort_values('Fecha')
+        df_plot = df_plot.sort_values('Fecha').copy()
         df_plot['Fecha_Original'] = df_plot['Fecha']
 
         if tipo_visualizacion == "Semestral":
-            df_plot['Fecha'] = df_plot['Fecha'].apply(
+            df_plot['Fecha'] = df_plot['Fecha_Original'].apply(
                 lambda x: pd.Timestamp(year=x.year, month=3, day=15) if x.month <= 6 else pd.Timestamp(year=x.year, month=9, day=15)
             )
             # Consolidar duplicados tomando el último valor cronológico por fecha normalizada
             df_plot = df_plot.groupby('Fecha', as_index=False).last()
         else:
-            df_plot['Año'] = df_plot['Fecha'].dt.year
+            df_plot['Año'] = df_plot['Fecha_Original'].dt.year
             df_plot = df_plot.groupby('Año').last().reset_index()
             df_plot['Fecha'] = df_plot['Año'].apply(lambda y: pd.Timestamp(year=y, month=6, day=30))
 
@@ -1896,16 +1896,16 @@ if st.checkbox("🔍 Mostrar datos de depuración", value=False, key="debug_data
         df_esc = df_proj_sel[df_proj_sel["Escenario"] == escenario].copy()
         if not df_esc.empty:
             df_plot_debug = df_esc.copy()
-            df_plot_debug = df_plot_debug.sort_values('Fecha')
+            df_plot_debug = df_plot_debug.sort_values('Fecha').copy()
             df_plot_debug['Fecha_Original'] = df_plot_debug['Fecha']
             if tipo_visualizacion == "Semestral":
-                df_plot_debug['Fecha'] = df_plot_debug['Fecha'].apply(
+                df_plot_debug['Fecha'] = df_plot_debug['Fecha_Original'].apply(
                     lambda x: pd.Timestamp(year=x.year, month=3, day=15) if x.month <= 6 else pd.Timestamp(year=x.year, month=9, day=15)
                 )
                 df_plot_debug = df_plot_debug.groupby('Fecha', as_index=False).last()
                 st.dataframe(df_plot_debug[['Fecha_Original', 'Fecha', 'Proyección']].tail(10))
             else:
-                df_plot_debug['Año'] = df_plot_debug['Fecha'].dt.year
+                df_plot_debug['Año'] = df_plot_debug['Fecha_Original'].dt.year
                 df_plot_debug = df_plot_debug.groupby('Año').last().reset_index()
                 df_plot_debug['Fecha'] = df_plot_debug['Año'].apply(lambda y: pd.Timestamp(year=y, month=6, day=30))
                 st.dataframe(df_plot_debug[['Fecha_Original', 'Fecha', 'Año', 'Proyección']].tail(10))
