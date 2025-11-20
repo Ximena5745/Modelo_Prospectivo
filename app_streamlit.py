@@ -1803,21 +1803,37 @@ st.markdown("""
     <style>
         /* Target the expander header text with more specific selectors */
         [data-testid="stExpander"] .streamlit-expanderHeader,
-        [data-testid="stExpander"] .streamlit-expanderHeader * {
+        [data-testid="stExpander"] .streamlit-expanderHeader *,
+        [data-testid="stExpander"] summary,
+        [data-testid="stExpander"] summary * {
             color: #1e3a5f !important;
             -webkit-text-fill-color: #1e3a5f !important;
             font-weight: 600 !important;
             fill: #1e3a5f !important; /* For SVG icons */
         }
-        
-        /* Dark mode override */
+
+        /* Dark mode override - More specific and comprehensive */
         @media (prefers-color-scheme: dark) {
             [data-testid="stExpander"] .streamlit-expanderHeader,
-            [data-testid="stExpander"] .streamlit-expanderHeader * {
+            [data-testid="stExpander"] .streamlit-expanderHeader *,
+            [data-testid="stExpander"] summary,
+            [data-testid="stExpander"] summary *,
+            [data-testid="stExpander"] details summary,
+            [data-testid="stExpander"] details summary * {
                 color: #ffffff !important;
                 -webkit-text-fill-color: #ffffff !important;
                 fill: #ffffff !important; /* For SVG icons */
             }
+        }
+
+        /* Additional fallback for dark theme using data attributes */
+        [data-theme="dark"] [data-testid="stExpander"] .streamlit-expanderHeader,
+        [data-theme="dark"] [data-testid="stExpander"] .streamlit-expanderHeader *,
+        html[data-theme="dark"] [data-testid="stExpander"] summary,
+        html[data-theme="dark"] [data-testid="stExpander"] summary * {
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+            fill: #ffffff !important;
         }
     </style>
 """, unsafe_allow_html=True)
