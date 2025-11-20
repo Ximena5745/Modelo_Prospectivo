@@ -1348,13 +1348,23 @@ df_hist_semestral = df_hist_sel[df_hist_sel["Fuente"] == "Semestral"].copy()
 df_hist_anual = df_hist_sel[df_hist_sel["Fuente"] == "Cierre"].copy()
 
 if tipo_visualizacion == "Semestral" and not df_hist_semestral.empty:
+    # Ordenar por fecha original antes de normalizar
+    df_hist_semestral = df_hist_semestral.sort_values('Fecha')
+    df_hist_semestral['Fecha_Original'] = df_hist_semestral['Fecha']
     df_hist_semestral['Fecha'] = df_hist_semestral['Fecha'].apply(
         lambda x: pd.Timestamp(year=x.year, month=3, day=15) if x.month <= 6 else pd.Timestamp(year=x.year, month=9, day=15)
     )
+    # Consolidar duplicados tomando el último valor cronológico por fecha normalizada
+    df_hist_semestral = df_hist_semestral.groupby('Fecha', as_index=False).last()
 if tipo_visualizacion == "Anual" and not df_hist_anual.empty:
+    # Ordenar por fecha original antes de normalizar
+    df_hist_anual = df_hist_anual.sort_values('Fecha')
+    df_hist_anual['Fecha_Original'] = df_hist_anual['Fecha']
     df_hist_anual['Fecha'] = df_hist_anual['Fecha'].apply(
         lambda x: pd.Timestamp(year=x.year, month=6, day=30)
     )
+    # Consolidar duplicados tomando el último valor cronológico por fecha normalizada
+    df_hist_anual = df_hist_anual.groupby('Fecha', as_index=False).last()
 
 fig = go.Figure()
 
@@ -1363,14 +1373,21 @@ if df_hist_trace.empty:
     df_hist_trace = df_hist_anual if not df_hist_anual.empty else df_hist_semestral
 if df_hist_trace.empty:
     df_hist_trace = df_hist_sel.copy()
+    # Ordenar por fecha original antes de normalizar
+    df_hist_trace = df_hist_trace.sort_values('Fecha')
+    df_hist_trace['Fecha_Original'] = df_hist_trace['Fecha']
     if tipo_visualizacion == "Semestral":
         df_hist_trace['Fecha'] = df_hist_trace['Fecha'].apply(
             lambda x: pd.Timestamp(year=x.year, month=3, day=15) if x.month <= 6 else pd.Timestamp(year=x.year, month=9, day=15)
         )
+        # Consolidar duplicados tomando el último valor cronológico por fecha normalizada
+        df_hist_trace = df_hist_trace.groupby('Fecha', as_index=False).last()
     else:
         df_hist_trace['Fecha'] = df_hist_trace['Fecha'].apply(
             lambda x: pd.Timestamp(year=x.year, month=6, day=30)
         )
+        # Consolidar duplicados tomando el último valor cronológico por fecha normalizada
+        df_hist_trace = df_hist_trace.groupby('Fecha', as_index=False).last()
 
 # 🔥 FILTRAR DATOS DESDE 2021-S2 POR DEFECTO
 fecha_corte_vista = pd.Timestamp(year=2021, month=7, day=1)  # 2021-S2
@@ -1451,15 +1468,21 @@ for escenario in escenarios_sel:
         color = colores_escenarios.get(escenario, '#2c5f8d')
         df_plot = df_esc.copy()
         
+        # Ordenar por fecha original antes de normalizar
+        df_plot = df_plot.sort_values('Fecha')
+        df_plot['Fecha_Original'] = df_plot['Fecha']
+
         if tipo_visualizacion == "Semestral":
             df_plot['Fecha'] = df_plot['Fecha'].apply(
                 lambda x: pd.Timestamp(year=x.year, month=3, day=15) if x.month <= 6 else pd.Timestamp(year=x.year, month=9, day=15)
             )
+            # Consolidar duplicados tomando el último valor cronológico por fecha normalizada
+            df_plot = df_plot.groupby('Fecha', as_index=False).last()
         else:
             df_plot['Año'] = df_plot['Fecha'].dt.year
-            df_plot = df_plot.sort_values('Fecha').groupby('Año').last().reset_index()
+            df_plot = df_plot.groupby('Año').last().reset_index()
             df_plot['Fecha'] = df_plot['Año'].apply(lambda y: pd.Timestamp(year=y, month=6, day=30))
-        
+
         df_plot = df_plot.sort_values('Fecha')
         
         if not df_plot.empty:
@@ -1864,20 +1887,28 @@ st.markdown("""
 # 🔍 DIAGNÓSTICO: Mostrar datos graficados
 if st.checkbox("🔍 Mostrar datos de depuración", value=False, key="debug_data"):
     st.markdown("### 📊 Datos Históricos Graficados")
-    st.dataframe(df_hist_trace[['Fecha', 'Ejecución']].tail(5))
+    st.dataframe(df_hist_trace[['Fecha', 'Ejecución']].tail(10))
+    st.markdown(f"**Último punto histórico:** {df_hist_trace['Fecha'].iloc[-1]} = {df_hist_trace['Ejecución'].iloc[-1]:,.0f}")
 
-    st.markdown("### 📈 Datos de Proyección Graficados")
+    st.markdown("### 📈 Datos de Proyección Graficados (DESPUÉS de consolidación)")
     for escenario in escenarios_sel:
         st.markdown(f"**{escenario}:**")
         df_esc = df_proj_sel[df_proj_sel["Escenario"] == escenario].copy()
         if not df_esc.empty:
-            if tipo_visualizacion == "Anual":
-                df_plot_debug = df_esc.copy()
-                df_plot_debug['Año'] = df_plot_debug['Fecha'].dt.year
-                df_plot_debug = df_plot_debug.sort_values('Fecha').groupby('Año').last().reset_index()
-                st.dataframe(df_plot_debug[['Año', 'Fecha', 'Proyección']].tail(5))
+            df_plot_debug = df_esc.copy()
+            df_plot_debug = df_plot_debug.sort_values('Fecha')
+            df_plot_debug['Fecha_Original'] = df_plot_debug['Fecha']
+            if tipo_visualizacion == "Semestral":
+                df_plot_debug['Fecha'] = df_plot_debug['Fecha'].apply(
+                    lambda x: pd.Timestamp(year=x.year, month=3, day=15) if x.month <= 6 else pd.Timestamp(year=x.year, month=9, day=15)
+                )
+                df_plot_debug = df_plot_debug.groupby('Fecha', as_index=False).last()
+                st.dataframe(df_plot_debug[['Fecha_Original', 'Fecha', 'Proyección']].tail(10))
             else:
-                st.dataframe(df_esc[['Fecha', 'Proyección']].tail(5))
+                df_plot_debug['Año'] = df_plot_debug['Fecha'].dt.year
+                df_plot_debug = df_plot_debug.groupby('Año').last().reset_index()
+                df_plot_debug['Fecha'] = df_plot_debug['Año'].apply(lambda y: pd.Timestamp(year=y, month=6, day=30))
+                st.dataframe(df_plot_debug[['Fecha_Original', 'Fecha', 'Año', 'Proyección']].tail(10))
 
 # Filtrar histrico segn el tipo de visualización seleccionado
 with st.expander(" Ver Datos Detallados (Histórico y Proyección)"):
