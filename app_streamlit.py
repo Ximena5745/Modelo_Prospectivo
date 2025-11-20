@@ -600,11 +600,11 @@ st.markdown("""
             }
             
             .streamlit-expanderHeader .st-emotion-cache-1ck1k16 {
-                color: #10385A !important;
+                color: #ffffff !important;
             }
-            
+
             .streamlit-expanderHeader svg {
-                color: #10385A !important;
+                color: #ffffff !important;
             }
             
             .streamlit-expanderContent {
@@ -1814,9 +1814,9 @@ st.markdown("""
         @media (prefers-color-scheme: dark) {
             [data-testid="stExpander"] .streamlit-expanderHeader,
             [data-testid="stExpander"] .streamlit-expanderHeader * {
-                color: #4a90c8 !important;
-                -webkit-text-fill-color: #4a90c8 !important;
-                fill: #4a90c8 !important; /* For SVG icons */
+                color: #ffffff !important;
+                -webkit-text-fill-color: #ffffff !important;
+                fill: #ffffff !important; /* For SVG icons */
             }
         }
     </style>
