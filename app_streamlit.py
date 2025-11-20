@@ -1861,6 +1861,24 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# 🔍 DIAGNÓSTICO: Mostrar datos graficados
+if st.checkbox("🔍 Mostrar datos de depuración", value=False, key="debug_data"):
+    st.markdown("### 📊 Datos Históricos Graficados")
+    st.dataframe(df_hist_trace[['Fecha', 'Ejecución']].tail(5))
+
+    st.markdown("### 📈 Datos de Proyección Graficados")
+    for escenario in escenarios_sel:
+        st.markdown(f"**{escenario}:**")
+        df_esc = df_proj_sel[df_proj_sel["Escenario"] == escenario].copy()
+        if not df_esc.empty:
+            if tipo_visualizacion == "Anual":
+                df_plot_debug = df_esc.copy()
+                df_plot_debug['Año'] = df_plot_debug['Fecha'].dt.year
+                df_plot_debug = df_plot_debug.sort_values('Fecha').groupby('Año').last().reset_index()
+                st.dataframe(df_plot_debug[['Año', 'Fecha', 'Proyección']].tail(5))
+            else:
+                st.dataframe(df_esc[['Fecha', 'Proyección']].tail(5))
+
 # Filtrar histrico segn el tipo de visualización seleccionado
 with st.expander(" Ver Datos Detallados (Histórico y Proyección)"):
     # Filtrar histrico segn el tipo de visualización seleccionado
