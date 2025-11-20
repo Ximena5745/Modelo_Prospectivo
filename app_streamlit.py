@@ -1814,6 +1814,15 @@ st.markdown("""
 
         /* Dark mode override - More specific and comprehensive */
         @media (prefers-color-scheme: dark) {
+            /* Background and border for expander header */
+            [data-testid="stExpander"] .streamlit-expanderHeader,
+            [data-testid="stExpander"] summary,
+            [data-testid="stExpander"] details summary {
+                background-color: #1e3a5f !important;
+                border-color: #3d7ab8 !important;
+            }
+
+            /* Text and icons color */
             [data-testid="stExpander"] .streamlit-expanderHeader,
             [data-testid="stExpander"] .streamlit-expanderHeader *,
             [data-testid="stExpander"] summary,
@@ -1824,9 +1833,23 @@ st.markdown("""
                 -webkit-text-fill-color: #ffffff !important;
                 fill: #ffffff !important; /* For SVG icons */
             }
+
+            /* Hover state */
+            [data-testid="stExpander"] .streamlit-expanderHeader:hover,
+            [data-testid="stExpander"] summary:hover {
+                background-color: #2c5f8d !important;
+                border-color: #4a90c8 !important;
+            }
         }
 
         /* Additional fallback for dark theme using data attributes */
+        [data-theme="dark"] [data-testid="stExpander"] .streamlit-expanderHeader,
+        [data-theme="dark"] [data-testid="stExpander"] summary,
+        html[data-theme="dark"] [data-testid="stExpander"] details summary {
+            background-color: #1e3a5f !important;
+            border-color: #3d7ab8 !important;
+        }
+
         [data-theme="dark"] [data-testid="stExpander"] .streamlit-expanderHeader,
         [data-theme="dark"] [data-testid="stExpander"] .streamlit-expanderHeader *,
         html[data-theme="dark"] [data-testid="stExpander"] summary,
