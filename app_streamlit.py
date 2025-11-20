@@ -1884,31 +1884,31 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 🔍 DIAGNÓSTICO: Mostrar datos graficados
-if st.checkbox("🔍 Mostrar datos de depuración", value=False, key="debug_data"):
-    st.markdown("### 📊 Datos Históricos Graficados")
-    st.dataframe(df_hist_trace[['Fecha', 'Ejecución']].tail(10))
-    st.markdown(f"**Último punto histórico:** {df_hist_trace['Fecha'].iloc[-1]} = {df_hist_trace['Ejecución'].iloc[-1]:,.0f}")
-
-    st.markdown("### 📈 Datos de Proyección Graficados (DESPUÉS de consolidación)")
-    for escenario in escenarios_sel:
-        st.markdown(f"**{escenario}:**")
-        df_esc = df_proj_sel[df_proj_sel["Escenario"] == escenario].copy()
-        if not df_esc.empty:
-            df_plot_debug = df_esc.copy()
-            df_plot_debug = df_plot_debug.sort_values('Fecha').copy()
-            df_plot_debug['Fecha_Original'] = df_plot_debug['Fecha']
-            if tipo_visualizacion == "Semestral":
-                df_plot_debug['Fecha'] = df_plot_debug['Fecha_Original'].apply(
-                    lambda x: pd.Timestamp(year=x.year, month=3, day=15) if x.month <= 6 else pd.Timestamp(year=x.year, month=9, day=15)
-                )
-                df_plot_debug = df_plot_debug.groupby('Fecha', as_index=False).last()
-                st.dataframe(df_plot_debug[['Fecha_Original', 'Fecha', 'Proyección']].tail(10))
-            else:
-                df_plot_debug['Año'] = df_plot_debug['Fecha_Original'].dt.year
-                df_plot_debug = df_plot_debug.groupby('Año').last().reset_index()
-                df_plot_debug['Fecha'] = df_plot_debug['Año'].apply(lambda y: pd.Timestamp(year=y, month=6, day=30))
-                st.dataframe(df_plot_debug[['Fecha_Original', 'Fecha', 'Año', 'Proyección']].tail(10))
+# 🔍 DIAGNÓSTICO: Mostrar datos graficados (COMENTADO)
+# if st.checkbox("🔍 Mostrar datos de depuración", value=False, key="debug_data"):
+#     st.markdown("### 📊 Datos Históricos Graficados")
+#     st.dataframe(df_hist_trace[['Fecha', 'Ejecución']].tail(10))
+#     st.markdown(f"**Último punto histórico:** {df_hist_trace['Fecha'].iloc[-1]} = {df_hist_trace['Ejecución'].iloc[-1]:,.0f}")
+#
+#     st.markdown("### 📈 Datos de Proyección Graficados (DESPUÉS de consolidación)")
+#     for escenario in escenarios_sel:
+#         st.markdown(f"**{escenario}:**")
+#         df_esc = df_proj_sel[df_proj_sel["Escenario"] == escenario].copy()
+#         if not df_esc.empty:
+#             df_plot_debug = df_esc.copy()
+#             df_plot_debug = df_plot_debug.sort_values('Fecha').copy()
+#             df_plot_debug['Fecha_Original'] = df_plot_debug['Fecha']
+#             if tipo_visualizacion == "Semestral":
+#                 df_plot_debug['Fecha'] = df_plot_debug['Fecha_Original'].apply(
+#                     lambda x: pd.Timestamp(year=x.year, month=3, day=15) if x.month <= 6 else pd.Timestamp(year=x.year, month=9, day=15)
+#                 )
+#                 df_plot_debug = df_plot_debug.groupby('Fecha', as_index=False).last()
+#                 st.dataframe(df_plot_debug[['Fecha_Original', 'Fecha', 'Proyección']].tail(10))
+#             else:
+#                 df_plot_debug['Año'] = df_plot_debug['Fecha_Original'].dt.year
+#                 df_plot_debug = df_plot_debug.groupby('Año').last().reset_index()
+#                 df_plot_debug['Fecha'] = df_plot_debug['Año'].apply(lambda y: pd.Timestamp(year=y, month=6, day=30))
+#                 st.dataframe(df_plot_debug[['Fecha_Original', 'Fecha', 'Año', 'Proyección']].tail(10))
 
 # Filtrar histrico segn el tipo de visualización seleccionado
 with st.expander(" Ver Datos Detallados (Histórico y Proyección)"):
