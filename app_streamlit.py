@@ -1262,6 +1262,33 @@ df_proj_sel = df_proj[
 df_proj_sel['Fecha'] = pd.to_datetime(df_proj_sel['Fecha'])
 df_proj_sel = df_proj_sel.sort_values('Fecha')
 
+# ==============================
+# Detectar indicadores bianuales (usar años 2027 y 2029)
+# ==============================
+bianual_ids = {202, 361}
+bianual_names = {"Great Place to Work", "Índice de Inclusión"}
+indicator_is_bianual = False
+indicator_id = None
+for possible_id_col in ['Id', 'ID', 'id', 'Indicador_Id', 'IndicadorId']:
+    if possible_id_col in df_hist_sel.columns and not df_hist_sel.empty:
+        try:
+            indicator_id = int(df_hist_sel.iloc[0][possible_id_col])
+        except Exception:
+            indicator_id = df_hist_sel.iloc[0][possible_id_col]
+        break
+
+if (indicator_id in bianual_ids) or (indicador_sel in bianual_names):
+    indicator_is_bianual = True
+
+# Años de comparación por defecto (pueden cambiarse según periodicidad)
+if indicator_is_bianual:
+    COMP_YEAR_1, COMP_YEAR_2 = 2027, 2029
+else:
+    COMP_YEAR_1, COMP_YEAR_2 = 2026, 2030
+
+# Año base histórico usado para calcular variaciones (no se modifica)
+BASE_YEAR = 2025
+
 # Configuración de decimales y sentido
 decimal_places = 0
 if 'Decimales_Ejecucion' in df_hist_sel.columns and not df_hist_sel.empty:
@@ -1287,10 +1314,10 @@ colores_escenarios = {
 df_base = df_proj[(df_proj["Indicador"] == indicador_sel) & (df_proj["Modelo"] == modelo_sel) & (df_proj["Escenario"] == 'Realista')]
 
 if not df_base.empty:
-    valor_2026 = df_base[df_base['Fecha'].dt.year == 2026]['Proyección'].max()
-    valor_2030 = df_base[df_base['Fecha'].dt.year == 2030]['Proyección'].max()
-    ultimo_historico = ultimo_semestre_val(df_hist_sel, target_year=2025)
-    variacion_periodo = valor_2030 - valor_2026 if pd.notna(valor_2030) and pd.notna(valor_2026) else 0
+    valor_y1 = df_base[df_base['Fecha'].dt.year == COMP_YEAR_1]['Proyección'].max()
+    valor_y2 = df_base[df_base['Fecha'].dt.year == COMP_YEAR_2]['Proyección'].max()
+    ultimo_historico = ultimo_semestre_val(df_hist_sel, target_year=BASE_YEAR)
+    variacion_periodo = valor_y2 - valor_y1 if pd.notna(valor_y2) and pd.notna(valor_y1) else 0
 
     st.markdown(f'<div style="background:{colores_escenarios.get("Base", "#2c5f8d")}; color:#ffffff; font-weight:800; font-size:1.15rem; padding:.6rem .9rem; border-radius:10px; margin: 0 0 .75rem 0; letter-spacing:.3px;">⚖️ ESCENARIO BASE</div>', unsafe_allow_html=True)
     col1, col2, col3, col4 = st.columns(4)
@@ -1298,10 +1325,10 @@ if not df_base.empty:
     with col1:
         st.markdown(f'<div class="metric-card" style="border-left-color: #2ecc71;"><div class="metric-label">📈 ÚLTIMO HISTÓRICO</div><div class="metric-value" style="color: #1e293b;">{format_number(ultimo_historico, decimal_places)}</div></div>', unsafe_allow_html=True)
     with col2:
-        st.markdown(f'<div class="metric-card" style="border-left-color: #2c5f8d;"><div class="metric-label">🎯 PROYECCIÓN (2026)</div><div class="metric-value" style="color: #2c5f8d;">{format_number(valor_2026, decimal_places)}</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="metric-card" style="border-left-color: #2c5f8d;"><div class="metric-label">🎯 PROYECCIÓN ({COMP_YEAR_1})</div><div class="metric-value" style="color: #2c5f8d;">{format_number(valor_y1, decimal_places)}</div></div>', unsafe_allow_html=True)
     with col3:
         delta_color = "#2ecc71" if variacion_periodo > 0 else ("#e74c3c" if variacion_periodo < 0 else "#f1c40f")
-        st.markdown(f'<div class="metric-card" style="border-left-color: #f39c12;"><div class="metric-label">⭐ PROYECCIÓN (2030)</div><div class="metric-value" style="color: #f39c12; margin-bottom: 0.25rem;">{format_number(valor_2030, decimal_places)}</div><div style="color: {delta_color}; font-size: 1rem; font-weight: 600; margin-top: 0.25rem;">Δ {valor_2030 - valor_2026:+,.{int(decimal_places)}f}</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="metric-card" style="border-left-color: #f39c12;"><div class="metric-label">⭐ PROYECCIÓN ({COMP_YEAR_2})</div><div class="metric-value" style="color: #f39c12; margin-bottom: 0.25rem;">{format_number(valor_y2, decimal_places)}</div><div style="color: {delta_color}; font-size: 1rem; font-weight: 600; margin-top: 0.25rem;">Δ {valor_y2 - valor_y1:+,.{int(decimal_places)}f}</div></div>', unsafe_allow_html=True)
     with col4:
         if variacion_periodo > 0: tendencia, icon_tend, color_tend = "Creciente", "🟢", "#2ecc71"
         elif variacion_periodo < 0: tendencia, icon_tend, color_tend = "Decreciente", "🔴", "#e74c3c"
@@ -1522,7 +1549,7 @@ all_years = sorted(set(hist_years + proj_years))
 
 if all_years:
     min_year = min(all_years) if all_years else 2021  # 🔥 Usar el mínimo real de los datos filtrados
-    max_year = max(max(all_years), 2030)
+    max_year = max(max(all_years), COMP_YEAR_2)
     all_years = list(range(min_year, max_year + 1))
 else:
     all_years = list(range(2021, 2031))  # 🔥 Default desde 2021
@@ -1594,7 +1621,7 @@ fig.update_layout(
         ticklabelposition='outside',
         range=[
             df_hist_trace['Fecha'].min().strftime('%Y-%m-%d') if not df_hist_trace.empty else "2021-07-01", 
-            df_proj_sel['Fecha'].max().strftime('%Y-%m-%d') if not df_proj_sel.empty else "2030-12-31"
+            df_proj_sel['Fecha'].max().strftime('%Y-%m-%d') if not df_proj_sel.empty else f"{COMP_YEAR_2}-12-31"
         ]
     ),
     yaxis=dict(
@@ -1720,10 +1747,10 @@ if tiene_datos_antiguos:
 # COMPARATIVO DE ESCENARIOS
 # ==============================
 if not df_proj_sel.empty and len(escenarios_sel) > 0:
-    st.markdown("### Comparativo de Escenarios (vs Último 2025)")
+    st.markdown(f"### Comparativo de Escenarios (vs Último {BASE_YEAR})")
     num_cols = max(1, len(escenarios_sel))
     cols = st.columns(num_cols)
-    base_2025 = ultimo_semestre_val(df_hist_sel, target_year=2025)
+    base_historico = ultimo_semestre_val(df_hist_sel, target_year=BASE_YEAR)
 
     for i, escenario in enumerate(escenarios_sel):
         esc_color = colores_escenarios.get(escenario, '#2c5f8d')
@@ -1735,32 +1762,32 @@ if not df_proj_sel.empty and len(escenarios_sel) > 0:
                 return np.nan
             return dfx.sort_values('Fecha').iloc[-1]['Proyección']
 
-        v26 = get_year_value(df_e, 2026)
-        v30 = get_year_value(df_e, 2030)
+        v_y1 = get_year_value(df_e, COMP_YEAR_1)
+        v_y2 = get_year_value(df_e, COMP_YEAR_2)
 
-        pct26 = np.nan
-        pct30 = np.nan
-        if pd.notna(base_2025) and base_2025 != 0:
-            if pd.notna(v26):
-                pct26 = (v26 - base_2025) / abs(base_2025) * 100.0
-            if pd.notna(v30):
-                pct30 = (v30 - base_2025) / abs(base_2025) * 100.0
+        pct_y1 = np.nan
+        pct_y2 = np.nan
+        if pd.notna(base_historico) and base_historico != 0:
+            if pd.notna(v_y1):
+                pct_y1 = (v_y1 - base_historico) / abs(base_historico) * 100.0
+            if pd.notna(v_y2):
+                pct_y2 = (v_y2 - base_historico) / abs(base_historico) * 100.0
 
         with cols[i]:
             st.markdown(
                 f"""
                 <div class="metric-card" style="border-left-color: {esc_color};">
                     <div style="background:{esc_color}; color:#ffffff; font-weight:800; font-size:1.1rem; padding:.45rem .7rem; border-radius:8px; margin-bottom:.75rem; letter-spacing:.3px;">{escenario.upper()}</div>
-                    <div class="metric-label">Base · Último 2025</div>
-                    <div class="metric-value" style="color: #1e293b;">{format_number(base_2025, decimal_places) if pd.notna(base_2025) else 'N/A'}</div>
-                    <div class="metric-label" style="margin-top:0.75rem;">{escenario} · 2026</div>
-                    <div class="metric-value" style="color: {esc_color};">{format_number(v26, decimal_places) if pd.notna(v26) else 'N/A'}</div>
-                    <div class="metric-label" style="margin-top:0.25rem;">Δ% vs 2025</div>
-                    <div class="metric-value" style="color: {'#2ecc71' if (pd.notna(pct26) and pct26>=0) else '#e74c3c'};font-size:1.2rem;">{(f"{pct26:,.2f}%" if pd.notna(pct26) else 'N/A')}</div>
-                    <div class="metric-label" style="margin-top:0.75rem;">{escenario} · 2030</div>
-                    <div class="metric-value" style="color: {esc_color};">{format_number(v30, decimal_places) if pd.notna(v30) else 'N/A'}</div>
-                    <div class="metric-label" style="margin-top:0.25rem;">Δ% vs 2025</div>
-                    <div class="metric-value" style="color: {'#2ecc71' if (pd.notna(pct30) and pct30>=0) else '#e74c3c'};font-size:1.2rem;">{(f"{pct30:,.2f}%" if pd.notna(pct30) else 'N/A')}</div>
+                    <div class="metric-label">Base · Último {BASE_YEAR}</div>
+                    <div class="metric-value" style="color: #1e293b;">{format_number(base_historico, decimal_places) if pd.notna(base_historico) else 'N/A'}</div>
+                    <div class="metric-label" style="margin-top:0.75rem;">{escenario} · {COMP_YEAR_1}</div>
+                    <div class="metric-value" style="color: {esc_color};">{format_number(v_y1, decimal_places) if pd.notna(v_y1) else 'N/A'}</div>
+                    <div class="metric-label" style="margin-top:0.25rem;">Δ% vs {BASE_YEAR}</div>
+                    <div class="metric-value" style="color: {'#2ecc71' if (pd.notna(pct_y1) and pct_y1>=0) else '#e74c3c'};font-size:1.2rem;">{(f"{pct_y1:,.2f}%" if pd.notna(pct_y1) else 'N/A')}</div>
+                    <div class="metric-label" style="margin-top:0.75rem;">{escenario} · {COMP_YEAR_2}</div>
+                    <div class="metric-value" style="color: {esc_color};">{format_number(v_y2, decimal_places) if pd.notna(v_y2) else 'N/A'}</div>
+                    <div class="metric-label" style="margin-top:0.25rem;">Δ% vs {BASE_YEAR}</div>
+                    <div class="metric-value" style="color: {'#2ecc71' if (pd.notna(pct_y2) and pct_y2>=0) else '#e74c3c'};font-size:1.2rem;">{(f"{pct_y2:,.2f}%" if pd.notna(pct_y2) else 'N/A')}</div>
                 </div>
                 """,
                 unsafe_allow_html=True
