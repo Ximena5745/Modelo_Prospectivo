@@ -1792,9 +1792,19 @@ if not df_proj_sel.empty and len(escenarios_sel) > 0:
         pct_y2 = np.nan
         if pd.notna(base_historico) and base_historico != 0:
             if pd.notna(v_y1):
-                pct_y1 = (v_y1 - base_historico) / abs(base_historico) * 100.0
+                if indicador_negativo:
+                    # Para indicadores negativos: invertir la fórmula (periodo_inicial/periodo_final - 1) * 100
+                    pct_y1 = (base_historico / v_y1 - 1) * 100.0
+                else:
+                    # Para indicadores positivos: fórmula estándar
+                    pct_y1 = (v_y1 - base_historico) / abs(base_historico) * 100.0
             if pd.notna(v_y2):
-                pct_y2 = (v_y2 - base_historico) / abs(base_historico) * 100.0
+                if indicador_negativo:
+                    # Para indicadores negativos: invertir la fórmula (periodo_inicial/periodo_final - 1) * 100
+                    pct_y2 = (base_historico / v_y2 - 1) * 100.0
+                else:
+                    # Para indicadores positivos: fórmula estándar
+                    pct_y2 = (v_y2 - base_historico) / abs(base_historico) * 100.0
 
         with cols[i]:
             st.markdown(
