@@ -1628,39 +1628,39 @@ fig.update_layout(
     xaxis=dict(
         title=dict(
             text="<b>PERIODO</b>",
-            font=dict(size=15, weight=700, family="Poppins", color="#1e293b"),  # 🔥 Aumentado a 15px
-            standoff=10  # 🔥 Mayor separación
+            font=dict(size=20, weight=700, family="Poppins", color="#1e293b"),  # 🔥 AUMENTADO de 15px a 20px
+            standoff=15  # 🔥 Mayor separación
         ),
         showgrid=True, gridcolor='rgba(0,0,0,0.05)', gridwidth=1,
         tickmode='array',  # 🔥 FORZAR uso de tickvals/ticktext personalizados
-        tickvals=tickvals, 
-        ticktext=ticktext, 
-        tickfont=dict(size=12, family="Poppins", color="#1e293b", weight=600),  # 🔥 AUMENTADO a 12px
-        linecolor='#cbd5e0', linewidth=2, mirror=True, showline=True, 
-        automargin=True, 
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickfont=dict(size=16, family="Poppins", color="#1e293b", weight=600),  # 🔥 AUMENTADO de 12px a 16px
+        linecolor='#cbd5e0', linewidth=2, mirror=True, showline=True,
+        automargin=True,
         tickangle=-45,  # 🔥 DIAGONAL para mejor legibilidad con muchas etiquetas
-        title_standoff=15, fixedrange=False,  # 🔥 HABILITAR ZOOM (fixedrange=False)
-        ticklabeloverflow='allow', 
+        title_standoff=20, fixedrange=False,  # 🔥 HABILITAR ZOOM (fixedrange=False)
+        ticklabeloverflow='allow',
         ticklabelposition='outside',
         range=[
-            df_hist_trace['Fecha'].min().strftime('%Y-%m-%d') if not df_hist_trace.empty else "2021-07-01", 
+            df_hist_trace['Fecha'].min().strftime('%Y-%m-%d') if not df_hist_trace.empty else "2021-07-01",
             df_proj_sel['Fecha'].max().strftime('%Y-%m-%d') if not df_proj_sel.empty else f"{COMP_YEAR_2}-12-31"
         ]
     ),
     yaxis=dict(
         title=dict(
             text=f"<b>{indicador_sel.upper()}</b>",
-            font=dict(size=15, weight=700, family="Poppins", color="#1e293b"),  # 🔥 Aumentado a 15px
-            standoff=12  # 🔥 Aumentado de 10 a 12
+            font=dict(size=20, weight=700, family="Poppins", color="#1e293b"),  # 🔥 AUMENTADO de 15px a 20px
+            standoff=15  # 🔥 Aumentado de 12 a 15
         ),
         showgrid=True, gridcolor='rgba(0,0,0,0.05)', gridwidth=1,
         tickformat=f",.{int(decimal_places)}f",
-        tickfont=dict(size=12, family="Poppins", color="#1e293b", weight=600),  # 🔥 Aumentado a 12px
-        title_standoff=18, showline=True, linecolor='#cbd5e0',  # 🔥 Mayor separación
+        tickfont=dict(size=16, family="Poppins", color="#1e293b", weight=600),  # 🔥 AUMENTADO de 12px a 16px
+        title_standoff=20, showline=True, linecolor='#cbd5e0',  # 🔥 Aumentado de 18 a 20
         linewidth=2, mirror=True, zeroline=False, automargin=True, fixedrange=False  # 🔥 HABILITAR ZOOM
     ),
     hoverlabel=dict(
-        bgcolor="white", font_size=12, font_family="Poppins",  # 🔥 Hover aumentado a 12px
+        bgcolor="white", font_size=15, font_family="Poppins",  # 🔥 Hover aumentado de 12px a 15px
         bordercolor="#cbd5e0", namelength=-1, align="left"
     ),
     margin=dict(t=80, b=90, r=40, l=100, pad=8),  # 🔥 MÁRGENES OPTIMIZADOS para mayor espacio
