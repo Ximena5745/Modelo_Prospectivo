@@ -1319,6 +1319,8 @@ if not df_base.empty:
     ultimo_historico = ultimo_semestre_val(df_hist_sel, target_year=BASE_YEAR)
     variacion_periodo = valor_y2 - valor_y1 if pd.notna(valor_y2) and pd.notna(valor_y1) else 0
 
+    st.markdown(f'<h2 style="color: #1e3a5f; font-size: 1.8rem; font-weight: 700; margin: 1.5rem 0 1rem 0; letter-spacing: -0.3px;">📊 {indicador_sel}</h2>', unsafe_allow_html=True)
+
     st.markdown(f'<div style="background:{colores_escenarios.get("Base", "#2c5f8d")}; color:#ffffff; font-weight:800; font-size:1.15rem; padding:.6rem .9rem; border-radius:10px; margin: 0 0 .75rem 0; letter-spacing:.3px;">⚖️ ESCENARIO BASE</div>', unsafe_allow_html=True)
     col1, col2, col3, col4 = st.columns(4)
 
@@ -1603,21 +1605,14 @@ fig.update_layout(
     template="plotly_white",
     plot_bgcolor='#ffffff',
     paper_bgcolor='#ffffff',
-    height=700,  # 🔥 AUMENTADO de 600 a 700px para optimizar espacio
-    font=dict(family="Poppins", size=12, color="#1e293b", weight=600),  # 🔥 Fuente base aumentada a 12px y bold
+    height=800,  # 🔥 AUMENTADO de 700 a 800px para más espacio vertical
+    font=dict(family="Poppins", size=13, color="#1e293b", weight=600),  # 🔥 Fuente base aumentada a 13px y bold
     title=dict(
         text=f"<b>{indicador_sel}</b>",
-        x=0.5, y=0.97, xanchor='center', yanchor='top',
+        x=0.5, y=0.995, xanchor='center', yanchor='top',  # 🔥 MOVIDO MÁS ARRIBA (0.997 a 0.995) para evitar superposición
         font=dict(size=20, color="#1e3a5f", family="Poppins", weight="bold")  # 🔥 Título aumentado a 20px
     ),
-    annotations=[
-        dict(
-            text="Evolución Histórica y Proyección",
-            x=0.02, y=0.92, xref="paper", yref="paper",
-            showarrow=False,
-            font=dict(size=14, color="#4a5568", family="Poppins", weight=600)  # 🔥 Subtítulo a 14px
-        )
-    ],
+    annotations=[],  # 🔥 REMOVIDA anotación "Evolución Histórica y Proyección"
     hovermode='x unified',
     legend=dict(
         orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5,
@@ -1663,7 +1658,7 @@ fig.update_layout(
         bgcolor="white", font_size=15, font_family="Poppins",  # 🔥 Hover aumentado de 12px a 15px
         bordercolor="#cbd5e0", namelength=-1, align="left"
     ),
-    margin=dict(t=80, b=90, r=40, l=100, pad=8),  # 🔥 MÁRGENES OPTIMIZADOS para mayor espacio
+    margin=dict(t=100, b=120, r=50, l=130, pad=10),  # 🔥 MÁRGENES AUMENTADOS para más espacio (t=100, b=120, l=130)
     shapes=shapes,
     # 🔥 CONFIGURACIÓN DE HERRAMIENTAS DE LA GRÁFICA (MODEBAR)
     modebar=dict(
