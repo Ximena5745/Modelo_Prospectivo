@@ -1159,11 +1159,11 @@ def convert_df_to_xlsx(df):
 def calcular_config_etiquetas(num_puntos: int, tipo_visualizacion: str) -> dict:
     """
     Calcula la configuración de etiquetas para los ejes de la gráfica.
-    
+
     Args:
         num_puntos: Número de puntos de datos
         tipo_visualizacion: 'Anual' o 'Semestral'
-        
+
     Returns:
         dict: Configuración de etiquetas para los ejes que incluye:
             - show: si mostrar las etiquetas
@@ -1173,9 +1173,9 @@ def calcular_config_etiquetas(num_puntos: int, tipo_visualizacion: str) -> dict:
     """
     base_config = {
         'show': True,
-        'size': 12  # Tamaño de fuente base
+        'size': 16  # Tamaño de fuente base AUMENTADO de 12 a 16
     }
-    
+
     if tipo_visualizacion == "Anual":
         if num_puntos <= 10:
             return {**base_config, 'angle': 0, 'skip': 1}
@@ -1187,13 +1187,13 @@ def calcular_config_etiquetas(num_puntos: int, tipo_visualizacion: str) -> dict:
         if num_puntos <= 20:
             return {**base_config, 'angle': 0, 'skip': 1}
         elif num_puntos <= 40:
-            return {**base_config, 'angle': 45, 'skip': 2, 'size': 11}
+            return {**base_config, 'angle': 45, 'skip': 2, 'size': 15}  # AUMENTADO de 11 a 15
         else:
             return {
-                **base_config, 
-                'angle': 45, 
+                **base_config,
+                'angle': 45,
                 'skip': max(2, num_puntos // 10),
-                'size': 10  # Tamaño más pequeño para muchos puntos
+                'size': 13  # AUMENTADO de 10 a 13
             }
 
 def format_number(value, decimals):
