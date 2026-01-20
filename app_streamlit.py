@@ -1204,7 +1204,13 @@ def format_number(value, decimals):
     except:
         return str(value)
 
-def ultimo_semestre_val(df_hist_source: pd.DataFrame, target_year: int = 2025):
+def ultimo_semestre_val(df_hist_source: pd.DataFrame, target_year: int = 2025, tipo_cierre_param: str = "Último valor"):
+    """
+    Obtiene el valor histórico del año objetivo según el Tipo_Cierre del indicador.
+    - Acumulativo: suma los valores de todos los semestres del año
+    - Promedio: promedia los valores de todos los semestres del año
+    - Último valor: toma el último registro del año
+    """
     try:
         if df_hist_source is None or df_hist_source.empty:
             return np.nan
@@ -1212,11 +1218,26 @@ def ultimo_semestre_val(df_hist_source: pd.DataFrame, target_year: int = 2025):
         if 'Fuente' in dfh.columns:
             dfh = dfh[dfh['Fuente'] == 'Semestral']
         dfx = dfh[dfh['Fecha'].dt.year == target_year]
+
         if not dfx.empty:
-            return dfx.sort_values('Fecha').iloc[-1]['Ejecución']
+            if tipo_cierre_param == "Acumulativo":
+                return dfx['Ejecución'].sum()
+            elif tipo_cierre_param == "Promedio":
+                return dfx['Ejecución'].mean()
+            else:
+                return dfx.sort_values('Fecha').iloc[-1]['Ejecución']
+
+        # Si no hay datos del año objetivo, buscar en el año anterior
         dfx_prev = dfh[dfh['Fecha'].dt.year == (target_year - 1)]
         if not dfx_prev.empty:
-            return dfx_prev.sort_values('Fecha').iloc[-1]['Ejecución']
+            if tipo_cierre_param == "Acumulativo":
+                return dfx_prev['Ejecución'].sum()
+            elif tipo_cierre_param == "Promedio":
+                return dfx_prev['Ejecución'].mean()
+            else:
+                return dfx_prev.sort_values('Fecha').iloc[-1]['Ejecución']
+
+        # Último recurso: buscar cualquier dato hasta la fecha límite
         dfx_lte = dfh[dfh['Fecha'] <= pd.to_datetime(f'{target_year}-12-31')]
         if not dfx_lte.empty:
             return dfx_lte.sort_values('Fecha').iloc[-1]['Ejecución']
@@ -1335,7 +1356,7 @@ def calcular_valor_anual(df, year, tipo_cierre_ind):
 if not df_base.empty:
     valor_y1 = calcular_valor_anual(df_base, COMP_YEAR_1, tipo_cierre)
     valor_y2 = calcular_valor_anual(df_base, COMP_YEAR_2, tipo_cierre)
-    ultimo_historico = ultimo_semestre_val(df_hist_sel, target_year=BASE_YEAR)
+    ultimo_historico = ultimo_semestre_val(df_hist_sel, target_year=BASE_YEAR, tipo_cierre_param=tipo_cierre)
     variacion_periodo = valor_y2 - valor_y1 if pd.notna(valor_y2) and pd.notna(valor_y1) else 0
 
     st.markdown(f'<h2 style="color: #1e3a5f; font-size: 1.8rem; font-weight: 700; margin: 1.5rem 0 1rem 0; letter-spacing: -0.3px;">📊 {indicador_sel}</h2>', unsafe_allow_html=True)
@@ -1796,7 +1817,7 @@ if not df_proj_sel.empty and len(escenarios_sel) > 0:
     st.markdown(f"### Comparativo de Escenarios (vs Último {BASE_YEAR})")
     num_cols = max(1, len(escenarios_sel))
     cols = st.columns(num_cols)
-    base_historico = ultimo_semestre_val(df_hist_sel, target_year=BASE_YEAR)
+    base_historico = ultimo_semestre_val(df_hist_sel, target_year=BASE_YEAR, tipo_cierre_param=tipo_cierre)
 
     for i, escenario in enumerate(escenarios_sel):
         esc_color = colores_escenarios.get(escenario, '#2c5f8d')
