@@ -1686,7 +1686,7 @@ fig.update_layout(
         bgcolor="white", font_size=15, font_family="Poppins",  # 🔥 Hover aumentado de 12px a 15px
         bordercolor="#cbd5e0", namelength=-1, align="left"
     ),
-    margin=dict(t=100, b=120, r=50, l=130, pad=10),  # 🔥 MÁRGENES AUMENTADOS para más espacio (t=100, b=120, l=130)
+    margin=dict(t=100, b=160, r=50, l=130, pad=10),  # 🔥 MÁRGENES AUMENTADOS para más espacio (b=160 para mostrar PERIODO completo)
     shapes=shapes,
     # 🔥 CONFIGURACIÓN DE HERRAMIENTAS DE LA GRÁFICA (MODEBAR)
     modebar=dict(
