@@ -1300,6 +1300,13 @@ if 'Sentido' in df_hist_sel.columns and not df_hist_sel.empty:
 else:
     indicador_negativo = False
 
+# Obtener Tipo_Cierre del indicador para agregación anual de proyecciones
+tipo_cierre = "Último valor"  # Default
+if 'Tipo_Cierre' in df_hist_sel.columns and not df_hist_sel.empty:
+    tipo_cierre_raw = df_hist_sel['Tipo_Cierre'].iloc[0]
+    if pd.notna(tipo_cierre_raw):
+        tipo_cierre = str(tipo_cierre_raw).strip()
+
 colores_escenarios = {
     'Optimista': '#2ecc71',
     'Base': '#2c5f8d',
@@ -1313,9 +1320,21 @@ colores_escenarios = {
 # ==============================
 df_base = df_proj[(df_proj["Indicador"] == indicador_sel) & (df_proj["Modelo"] == modelo_sel) & (df_proj["Escenario"] == 'Realista')]
 
+# Función auxiliar para calcular valor anual según Tipo_Cierre
+def calcular_valor_anual(df, year, tipo_cierre_ind):
+    df_year = df[df['Fecha'].dt.year == year]['Proyección']
+    if df_year.empty:
+        return None
+    if tipo_cierre_ind == "Acumulativo":
+        return df_year.sum()
+    elif tipo_cierre_ind == "Promedio":
+        return df_year.mean()
+    else:
+        return df_year.max()  # Último valor
+
 if not df_base.empty:
-    valor_y1 = df_base[df_base['Fecha'].dt.year == COMP_YEAR_1]['Proyección'].max()
-    valor_y2 = df_base[df_base['Fecha'].dt.year == COMP_YEAR_2]['Proyección'].max()
+    valor_y1 = calcular_valor_anual(df_base, COMP_YEAR_1, tipo_cierre)
+    valor_y2 = calcular_valor_anual(df_base, COMP_YEAR_2, tipo_cierre)
     ultimo_historico = ultimo_semestre_val(df_hist_sel, target_year=BASE_YEAR)
     variacion_periodo = valor_y2 - valor_y1 if pd.notna(valor_y2) and pd.notna(valor_y1) else 0
 
@@ -1481,8 +1500,17 @@ for escenario in escenarios_sel:
             # Consolidar duplicados tomando el último valor cronológico por fecha normalizada
             df_plot = df_plot.groupby('Fecha', as_index=False).last()
         else:
+            # Vista Anual: agregar según Tipo_Cierre del indicador
             df_plot['Año'] = df_plot['Fecha_Original'].dt.year
-            df_plot = df_plot.groupby('Año').last().reset_index()
+            if tipo_cierre == "Acumulativo":
+                # Sumar ambos semestres
+                df_plot = df_plot.groupby('Año').agg({'Proyección': 'sum'}).reset_index()
+            elif tipo_cierre == "Promedio":
+                # Promediar ambos semestres
+                df_plot = df_plot.groupby('Año').agg({'Proyección': 'mean'}).reset_index()
+            else:
+                # Último valor (comportamiento por defecto)
+                df_plot = df_plot.groupby('Año').last().reset_index()
             df_plot['Fecha'] = df_plot['Año'].apply(lambda y: pd.Timestamp(year=y, month=6, day=30))
 
         df_plot = df_plot.sort_values('Fecha')
@@ -1774,14 +1802,19 @@ if not df_proj_sel.empty and len(escenarios_sel) > 0:
         esc_color = colores_escenarios.get(escenario, '#2c5f8d')
         df_e = df_proj_sel[df_proj_sel['Escenario'] == escenario]
 
-        def get_year_value(df, year):
+        def get_year_value(df, year, tipo_cierre_ind):
             dfx = df[df['Fecha'].dt.year == year]
             if dfx.empty:
                 return np.nan
-            return dfx.sort_values('Fecha').iloc[-1]['Proyección']
+            if tipo_cierre_ind == "Acumulativo":
+                return dfx['Proyección'].sum()
+            elif tipo_cierre_ind == "Promedio":
+                return dfx['Proyección'].mean()
+            else:
+                return dfx.sort_values('Fecha').iloc[-1]['Proyección']
 
-        v_y1 = get_year_value(df_e, COMP_YEAR_1)
-        v_y2 = get_year_value(df_e, COMP_YEAR_2)
+        v_y1 = get_year_value(df_e, COMP_YEAR_1, tipo_cierre)
+        v_y2 = get_year_value(df_e, COMP_YEAR_2, tipo_cierre)
 
         pct_y1 = np.nan
         pct_y2 = np.nan
@@ -1935,8 +1968,16 @@ with st.expander(" Ver Datos Detallados (Histórico y Proyección)"):
     
     # Filtrar proyecciones segn el tipo de visualizacin
     if tipo_visualizacion == "Anual":
-        # Para visualizacin anual, solo mostrar proyecciones de fin de año (Diciembre)
-        df_proj_filtered = df_proj_sel[df_proj_sel['Fecha'].dt.month == 12].copy()
+        # Para visualización anual, agregar proyecciones según Tipo_Cierre
+        df_proj_filtered = df_proj_sel.copy()
+        df_proj_filtered['Año'] = df_proj_filtered['Fecha'].dt.year
+        if tipo_cierre == "Acumulativo":
+            df_proj_filtered = df_proj_filtered.groupby(['Año', 'Indicador', 'Escenario']).agg({'Proyección': 'sum'}).reset_index()
+        elif tipo_cierre == "Promedio":
+            df_proj_filtered = df_proj_filtered.groupby(['Año', 'Indicador', 'Escenario']).agg({'Proyección': 'mean'}).reset_index()
+        else:
+            df_proj_filtered = df_proj_filtered.groupby(['Año', 'Indicador', 'Escenario']).last().reset_index()
+        df_proj_filtered['Fecha'] = df_proj_filtered['Año'].apply(lambda y: pd.Timestamp(year=y, month=6, day=30))
     else:
         # Para visualizacin semestral, mostrar todas las proyecciones
         df_proj_filtered = df_proj_sel.copy()
