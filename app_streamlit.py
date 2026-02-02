@@ -769,6 +769,7 @@ for c in expected_proj_cols:
 # ==============================
 ORDEN_INDICADORES = {
     "Calidad": [
+        "Total Programas",
         "Programas acreditables acreditados Sede Bogotá",
         "Relación Estudiante-Docente Tiempo completo",
         "Relación estudiante docente Tiempo Completo Equivalente",
